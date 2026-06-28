@@ -38,3 +38,16 @@ export interface BoardStats {
   servedToday: number;
   noShows: number;
 }
+
+export interface Appointment {
+  id: string;
+  clientName: string;
+  barberId: string | null;
+  barberName: string | null;
+  serviceName: string | null;
+  serviceId: string | null;
+  scheduledStart: string;
+  status: "booked" | "arrived";
+  channel: string;
+  isRegular: boolean;
+}

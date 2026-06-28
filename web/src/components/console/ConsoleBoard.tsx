@@ -14,11 +14,15 @@ import {
   seatQueueItem,
   notifyQueueItem,
   completeBooking,
+  arriveBooking,
+  seatBooking,
+  cancelBooking,
 } from "@/lib/api/console";
 import ChairsBoard from "./ChairsBoard";
 import LiveQueue from "./LiveQueue";
 import QuickStats from "./QuickStats";
 import AddWalkinModal from "./AddWalkinModal";
+import Appointments from "./Appointments";
 
 const POLL_INTERVAL_MS = 8_000;
 
@@ -102,6 +106,21 @@ export default function ConsoleBoard() {
     refresh();
   }
 
+  async function handleArrive(id: string) {
+    await arriveBooking(id);
+    refresh();
+  }
+
+  async function handleSeatBooking(id: string) {
+    await seatBooking(id);
+    refresh();
+  }
+
+  async function handleCancelBooking(id: string) {
+    await cancelBooking(id);
+    refresh();
+  }
+
   async function handleSeat(id: string) {
     await seatQueueItem(id);
     refresh();
@@ -157,6 +176,24 @@ export default function ConsoleBoard() {
         {board && (
           <ChairsBoard chairs={board.chairs} onComplete={handleComplete} />
         )}
+
+        {/* Today's appointments */}
+        <div>
+          <h2
+            className="text-lg font-semibold mb-4"
+            style={{ color: "var(--navy)" }}
+          >
+            Today&apos;s appointments
+          </h2>
+          {board && (
+            <Appointments
+              appointments={board.appointments ?? []}
+              onArrive={handleArrive}
+              onSeat={handleSeatBooking}
+              onCancel={handleCancelBooking}
+            />
+          )}
+        </div>
 
         {/* Live queue */}
         <div>

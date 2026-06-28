@@ -1,7 +1,7 @@
 import { getCurrentStaff } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
-import type { ChairStatus, QueueItem, BoardStats } from "@/lib/booking/types";
+import type { ChairStatus, QueueItem, BoardStats, Appointment } from "@/lib/booking/types";
 
 const TZ = "Africa/Nairobi";
 
@@ -187,5 +187,51 @@ export async function GET() {
     noShows: noShows ?? 0,
   };
 
-  return NextResponse.json({ chairs, queue, stats });
+  // ── Today's scheduled appointments (booked or arrived) ───────────────────
+  const { data: apptRows, error: apptErr } = await admin
+    .from("bookings")
+    .select(
+      "id, barber_id, service_id, scheduled_start, status, channel, clients(name, total_visits), staff(name), services(name)",
+    )
+    .in("status", ["booked", "arrived"])
+    .gte("scheduled_start", todayStart)
+    .lte("scheduled_start", todayEnd)
+    .order("scheduled_start");
+
+  if (apptErr) {
+    return NextResponse.json({ error: apptErr.message }, { status: 500 });
+  }
+
+  type ApptRow = {
+    id: unknown;
+    barber_id: unknown;
+    service_id: unknown;
+    scheduled_start: unknown;
+    status: unknown;
+    channel: unknown;
+    clients: unknown;
+    staff: unknown;
+    services: unknown;
+  };
+
+  const appointments: Appointment[] = (apptRows ?? []).map((aRaw: unknown) => {
+    const a = aRaw as ApptRow;
+    const client = firstRel<{ name: string; total_visits: number }>(a.clients);
+    const barber = firstRel<{ name: string }>(a.staff);
+    const service = firstRel<{ name: string }>(a.services);
+    return {
+      id: a.id as string,
+      clientName: client?.name ?? "Unknown",
+      barberId: (a.barber_id as string | null) ?? null,
+      barberName: barber?.name ?? null,
+      serviceName: service?.name ?? null,
+      serviceId: (a.service_id as string | null) ?? null,
+      scheduledStart: a.scheduled_start as string,
+      status: a.status as "booked" | "arrived",
+      channel: (a.channel as string) ?? "unknown",
+      isRegular: (client?.total_visits ?? 0) >= 5,
+    };
+  });
+
+  return NextResponse.json({ chairs, queue, appointments, stats });
 }

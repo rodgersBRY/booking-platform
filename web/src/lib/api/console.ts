@@ -2,11 +2,14 @@
 // All functions are called from client components.
 // TODO: swap polling for Supabase realtime
 
-import type { ChairStatus, QueueItem, BoardStats } from "@/lib/booking/types";
+import type { ChairStatus, QueueItem, BoardStats, Appointment } from "@/lib/booking/types";
+
+export type { Appointment };
 
 export interface BoardData {
   chairs: ChairStatus[];
   queue: QueueItem[];
+  appointments: Appointment[];
   stats: BoardStats;
 }
 
@@ -94,6 +97,18 @@ export async function addWalkin(payload: WalkinPayload): Promise<WalkinResult> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+}
+
+export async function arriveBooking(id: string): Promise<void> {
+  await apiFetch(`/api/bookings/${id}/arrive`, { method: "POST" });
+}
+
+export async function seatBooking(id: string): Promise<{ booking: unknown }> {
+  return apiFetch<{ booking: unknown }>(`/api/bookings/${id}/seat`, { method: "POST" });
+}
+
+export async function cancelBooking(id: string): Promise<void> {
+  await apiFetch(`/api/bookings/${id}/cancel`, { method: "POST" });
 }
 
 export async function searchClients(q: string): Promise<ClientSearchResult[]> {
