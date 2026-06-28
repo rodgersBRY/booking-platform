@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
           name,
           phone,
           acquisition_source: acquisitionSource ?? null,
+          preferred_barber_id: preferredBarberId ?? null,
         })
         .select("id")
         .single();
@@ -89,6 +90,16 @@ export async function POST(request: NextRequest) {
       }
       clientId = newClient.id as string;
     }
+  }
+
+  // Learn the client's preferred barber: if a specific barber was chosen and the
+  // client doesn't have one recorded yet, set it (best-effort — never blocks the walk-in).
+  if (preferredBarberId) {
+    await admin
+      .from("clients")
+      .update({ preferred_barber_id: preferredBarberId })
+      .eq("id", clientId)
+      .is("preferred_barber_id", null);
   }
 
   // Fetch service duration.

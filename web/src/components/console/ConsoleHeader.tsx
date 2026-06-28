@@ -32,8 +32,9 @@ export default function ConsoleHeader({ staffName, staffRole }: Props) {
     >
       <div className="flex items-center gap-3">
         <span className="text-xl font-semibold tracking-tight">
-          Fade &amp; Sharp
+          Barberia Cuts
         </span>
+        
         <span
           className="text-xs font-medium px-2 py-0.5 rounded-full"
           style={{ background: 'var(--brass)', color: '#fff' }}

@@ -160,10 +160,10 @@ export default function AddWalkinModal({
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="rounded-2xl p-0 max-w-lg w-full shadow-2xl backdrop:bg-black/40 m-auto"
+      className="rounded-2xl p-0 max-w-lg w-full shadow-2xl backdrop:bg-black/50 m-auto"
       style={{ background: 'var(--card)', color: 'var(--navy)' }}
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-7">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-7 min-h-76">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Add walk-in</h2>
