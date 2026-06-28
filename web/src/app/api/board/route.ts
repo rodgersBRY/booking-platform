@@ -191,7 +191,7 @@ export async function GET() {
   const { data: apptRows, error: apptErr } = await admin
     .from("bookings")
     .select(
-      "id, barber_id, service_id, scheduled_start, status, channel, clients(name, total_visits), staff(name), services(name)",
+      "id, barber_id, service_id, scheduled_start, status, channel, clients(name, total_visits), staff!barber_id(name), services(name)",
     )
     .in("status", ["booked", "arrived"])
     .gte("scheduled_start", todayStart)
