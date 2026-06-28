@@ -28,6 +28,7 @@ online (website Book Now → API). Every booking is tagged by `channel`; every c
 - [`docs/auth.md`](docs/auth.md) — auth model, roles, route protection, first-owner setup.
 - [`docs/booking-engine.md`](docs/booking-engine.md) — availability engine + console API endpoints.
 - [`docs/returning-customer-recognition.md`](docs/returning-customer-recognition.md) — recognizing regulars in the walk-in flow.
+- [`docs/public-booking.md`](docs/public-booking.md) — public online booking page + public API.
 - [`docs/ui-design.md`](docs/ui-design.md) — UI philosophy, role-based screens, design language.
 - [`web/README.md`](web/README.md) — web app setup and run instructions.
 
@@ -39,6 +40,7 @@ online (website Book Now → API). Every booking is tagged by `channel`; every c
 - ✅ Booking/availability engine + console API endpoints + seed data.
 - ✅ Receptionist console UI (chairs board, live queue, walk-in capture).
 - ✅ Returning-customer recognition (phone/name search, Regular badge at 5+ visits).
-- ⏳ Next: owner dashboard, barber view, public booking; then wire n8n to the API.
+- ✅ Public online booking page (`/book`) + public booking API (online channel).
+- ⏳ Next: owner dashboard, barber view, 15-min grace job; then wire n8n to the API.
 
 Each implemented feature is documented under [`docs/`](docs/).
