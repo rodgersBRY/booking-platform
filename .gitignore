@@ -1,0 +1,15 @@
+# OS / editor
+.DS_Store
+*.log
+
+# Claude tooling
+.claude/
+
+# Node / Next (also covered by web/.gitignore, kept here for safety)
+**/node_modules/
+web/.next/
+web/out/
+web/build/
+.env
+.env.local
+**/.env.local
