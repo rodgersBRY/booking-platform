@@ -14,8 +14,9 @@ export async function POST(request: NextRequest) {
   }
 
   let body: {
-    name: string;
-    phone: string;
+    clientId?: string;
+    name?: string;
+    phone?: string;
     preferredBarberId?: string;
     serviceId: string;
     acquisitionSource?: string;
@@ -27,44 +28,67 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, phone, preferredBarberId, serviceId, acquisitionSource } = body;
+  const { clientId: bodyClientId, name, phone, preferredBarberId, serviceId, acquisitionSource } = body;
 
-  if (!name || !phone || !serviceId) {
+  if (!serviceId) {
     return NextResponse.json(
-      { error: "Missing required fields: name, phone, serviceId" },
+      { error: "Missing required field: serviceId" },
       { status: 400 },
     );
   }
 
   const admin = createAdminClient();
 
-  // Resolve or create client by phone.
+  // Resolve or create client.
   let clientId: string;
-  const { data: existing } = await admin
-    .from("clients")
-    .select("id")
-    .eq("phone", phone)
-    .maybeSingle();
 
-  if (existing) {
-    clientId = existing.id as string;
-  } else {
-    const { data: newClient, error: clientErr } = await admin
+  if (bodyClientId) {
+    // Returning client — look up by provided id.
+    const { data: found, error: findErr } = await admin
       .from("clients")
-      .insert({
-        name,
-        phone,
-        acquisition_source: acquisitionSource ?? null,
-      })
       .select("id")
-      .single();
-    if (clientErr || !newClient) {
+      .eq("id", bodyClientId)
+      .maybeSingle();
+    if (findErr || !found) {
+      return NextResponse.json({ error: "Client not found" }, { status: 404 });
+    }
+    clientId = found.id as string;
+  } else {
+    // New-customer path — name and phone are required.
+    if (!name || !phone) {
       return NextResponse.json(
-        { error: clientErr?.message ?? "Failed to create client" },
-        { status: 500 },
+        { error: "Missing required fields: name, phone (or provide clientId)" },
+        { status: 400 },
       );
     }
-    clientId = newClient.id as string;
+
+    // Find or create by phone.
+    const { data: existing } = await admin
+      .from("clients")
+      .select("id")
+      .eq("phone", phone)
+      .maybeSingle();
+
+    if (existing) {
+      clientId = existing.id as string;
+    } else {
+      const { data: newClient, error: clientErr } = await admin
+        .from("clients")
+        .insert({
+          name,
+          phone,
+          acquisition_source: acquisitionSource ?? null,
+        })
+        .select("id")
+        .single();
+      if (clientErr || !newClient) {
+        return NextResponse.json(
+          { error: clientErr?.message ?? "Failed to create client" },
+          { status: 500 },
+        );
+      }
+      clientId = newClient.id as string;
+    }
   }
 
   // Fetch service duration.

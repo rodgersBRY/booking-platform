@@ -27,6 +27,7 @@ online (website Book Now → API). Every booking is tagged by `channel`; every c
 - [`docs/database-schema.md`](docs/database-schema.md) — tables, constraints, the double-booking guard, RLS.
 - [`docs/auth.md`](docs/auth.md) — auth model, roles, route protection, first-owner setup.
 - [`docs/booking-engine.md`](docs/booking-engine.md) — availability engine + console API endpoints.
+- [`docs/returning-customer-recognition.md`](docs/returning-customer-recognition.md) — recognizing regulars in the walk-in flow.
 - [`docs/ui-design.md`](docs/ui-design.md) — UI philosophy, role-based screens, design language.
 - [`web/README.md`](web/README.md) — web app setup and run instructions.
 
@@ -36,6 +37,8 @@ online (website Book Now → API). Every booking is tagged by `channel`; every c
 - ✅ Web app scaffolded (Next.js 16 + Supabase) with the full Postgres schema.
 - ✅ Auth + role-based access (owner / receptionist / barber) with route protection.
 - ✅ Booking/availability engine + console API endpoints + seed data.
-- ⏳ Next: receptionist console UI; then owner dashboard, barber view, public booking.
+- ✅ Receptionist console UI (chairs board, live queue, walk-in capture).
+- ✅ Returning-customer recognition (phone/name search, Regular badge at 5+ visits).
+- ⏳ Next: owner dashboard, barber view, public booking; then wire n8n to the API.
 
 Each implemented feature is documented under [`docs/`](docs/).

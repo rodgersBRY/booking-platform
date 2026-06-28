@@ -102,7 +102,7 @@ export async function GET() {
   const { data: queueRows, error: queueErr } = await admin
     .from("queue_entries")
     .select(
-      "id, client_id, barber_id, joined_at, choice, status, clients(name), staff(name)",
+      "id, client_id, barber_id, joined_at, choice, status, clients(name, total_visits), staff(name)",
     )
     .in("status", ["waiting", "notified"])
     .order("joined_at");
@@ -125,9 +125,10 @@ export async function GET() {
   };
   const queue: QueueItem[] = (queueRows ?? []).map((qRaw: unknown) => {
     const q = qRaw as QueueRow;
-    const clientRel = q.clients as { name: string }[] | null;
+    const clientRel = q.clients as { name: string; total_visits: number }[] | null;
     const staffRel = q.staff as { name: string }[] | null;
     const clientName = Array.isArray(clientRel) ? (clientRel[0]?.name ?? "Unknown") : "Unknown";
+    const totalVisits = Array.isArray(clientRel) ? (clientRel[0]?.total_visits ?? 0) : 0;
     const preferredBarberName = Array.isArray(staffRel) ? (staffRel[0]?.name ?? null) : null;
     const barberId = q.barber_id as string | null;
     const waitedMinutes = Math.round(
@@ -148,6 +149,7 @@ export async function GET() {
       status: q.status as string,
       waitedMinutes,
       estimatedWaitMinutes,
+      isRegular: totalVisits >= 5,
     };
   });
 

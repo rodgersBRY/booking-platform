@@ -30,6 +30,7 @@ export interface QueueItem {
   status: string;
   waitedMinutes: number;
   estimatedWaitMinutes: number | null;
+  isRegular: boolean;
 }
 
 export interface BoardStats {

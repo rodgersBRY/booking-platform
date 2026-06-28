@@ -1,7 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import type { BoardData, Barber, Service, WalkinResult } from '@/lib/api/console';
+import { useEffect, useRef, useState } from "react";
+import type {
+  BoardData,
+  Barber,
+  Service,
+  WalkinResult,
+} from "@/lib/api/console";
 import {
   fetchBoard,
   fetchBarbers,
@@ -9,15 +14,15 @@ import {
   seatQueueItem,
   notifyQueueItem,
   completeBooking,
-} from '@/lib/api/console';
-import ChairsBoard from './ChairsBoard';
-import LiveQueue from './LiveQueue';
-import QuickStats from './QuickStats';
-import AddWalkinModal from './AddWalkinModal';
+} from "@/lib/api/console";
+import ChairsBoard from "./ChairsBoard";
+import LiveQueue from "./LiveQueue";
+import QuickStats from "./QuickStats";
+import AddWalkinModal from "./AddWalkinModal";
 
 const POLL_INTERVAL_MS = 8_000;
 
-type WalkinToast = { message: string; type: 'seated' | 'queued' };
+type WalkinToast = { message: string; type: "seated" | "queued" };
 
 export default function ConsoleBoard() {
   const [board, setBoard] = useState<BoardData | null>(null);
@@ -59,7 +64,7 @@ export default function ConsoleBoard() {
         })
         .catch(() => {
           if (!cancelled) {
-            setFetchError('Could not reach the server. Retrying…');
+            setFetchError("Could not reach the server. Retrying…");
             setLoading(false);
           }
         });
@@ -85,9 +90,9 @@ export default function ConsoleBoard() {
 
   function handleWalkinAdded(result: WalkinResult) {
     if (result.seated) {
-      showToast({ message: 'Walk-in seated straight away.', type: 'seated' });
+      showToast({ message: "Walk-in seated straight away.", type: "seated" });
     } else {
-      showToast({ message: 'Walk-in added to the queue.', type: 'queued' });
+      showToast({ message: "Walk-in added to the queue.", type: "queued" });
     }
     refresh();
   }
@@ -118,7 +123,9 @@ export default function ConsoleBoard() {
   if (fetchError && !board) {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-sm" style={{ color: 'var(--late)' }}>{fetchError}</p>
+        <p className="text-sm" style={{ color: "var(--late)" }}>
+          {fetchError}
+        </p>
       </div>
     );
   }
@@ -131,13 +138,16 @@ export default function ConsoleBoard() {
 
         {/* Chairs heading + Add walk-in */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold" style={{ color: 'var(--navy)' }}>
+          <h2
+            className="text-lg font-semibold"
+            style={{ color: "var(--navy)" }}
+          >
             Chairs
           </h2>
           <button
             onClick={() => setShowModal(true)}
             className="px-6 py-3 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
-            style={{ background: 'var(--brass)', color: '#fff' }}
+            style={{ background: "var(--brass)", color: "#fff" }}
           >
             Add walk-in
           </button>
@@ -150,7 +160,10 @@ export default function ConsoleBoard() {
 
         {/* Live queue */}
         <div>
-          <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--navy)' }}>
+          <h2
+            className="text-lg font-semibold mb-4"
+            style={{ color: "var(--navy)" }}
+          >
             Queue
           </h2>
           {board && (
@@ -164,7 +177,10 @@ export default function ConsoleBoard() {
 
         {/* Stale-data warning when we have board data but refresh failed */}
         {fetchError && board && (
-          <p className="text-xs text-center opacity-50" style={{ color: 'var(--late)' }}>
+          <p
+            className="text-xs text-center opacity-50"
+            style={{ color: "var(--late)" }}
+          >
             {fetchError}
           </p>
         )}
@@ -185,8 +201,9 @@ export default function ConsoleBoard() {
         <div
           className="fixed bottom-6 right-6 px-5 py-3 rounded-xl text-sm font-medium shadow-lg"
           style={{
-            background: toast.type === 'seated' ? 'var(--free)' : 'var(--in-chair)',
-            color: '#fff',
+            background:
+              toast.type === "seated" ? "var(--free)" : "var(--in-chair)",
+            color: "#fff",
           }}
         >
           {toast.message}

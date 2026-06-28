@@ -22,9 +22,24 @@ export interface Service {
   price: number;
 }
 
-export interface WalkinPayload {
+export interface ClientSearchResult {
+  id: string;
   name: string;
   phone: string;
+  preferredBarberId: string | null;
+  preferredBarberName: string | null;
+  totalVisits: number;
+  lastVisitAt: string | null;
+  isRegular: boolean;
+}
+
+export interface WalkinPayload {
+  /** Present when submitting a recognised returning customer. */
+  clientId?: string;
+  /** Required when clientId is absent. */
+  name?: string;
+  /** Required when clientId is absent. */
+  phone?: string;
   preferredBarberId?: string;
   serviceId: string;
   acquisitionSource?: string;
@@ -79,4 +94,12 @@ export async function addWalkin(payload: WalkinPayload): Promise<WalkinResult> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+}
+
+export async function searchClients(q: string): Promise<ClientSearchResult[]> {
+  const params = new URLSearchParams({ q });
+  const data = await apiFetch<{ clients: ClientSearchResult[] }>(
+    `/api/clients/search?${params.toString()}`
+  );
+  return data.clients;
 }
