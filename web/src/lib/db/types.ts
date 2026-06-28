@@ -44,6 +44,8 @@ export interface Staff {
   phone: string | null;
   email: string | null;
   telegram_chat_id: string | null;
+  password_hash: string | null;
+  auth_user_id: string | null;
   status: ClientStatus;
   created_at: string;
 }

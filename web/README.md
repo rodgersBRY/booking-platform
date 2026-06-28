@@ -54,5 +54,20 @@ src/app/               routes, API handlers, UI
   permissions itself (see the Roles & permissions section of the blueprint).
 - The n8n automation authenticates to the API with `AUTOMATION_API_KEY`.
 
+## Status
+
+| Feature | Status |
+| ------- | ------ |
+| DB schema (init) | ✅ Done — `0001_init.sql` |
+| Auth + role-based access | ✅ Done — `0002_auth.sql`, `src/proxy.ts`, `src/lib/auth.ts` |
+| Owner dashboard | 🔲 Stub only |
+| Receptionist console | 🔲 Stub only |
+| Barber "My day" view | 🔲 Stub only |
+| Public booking page | 🔲 Not started |
+
+See `docs/auth.md` for the auth model, role→route map, and first-owner-user setup steps.
+
+---
+
 > Note: this project's `AGENTS.md` warns that the installed Next.js may differ from common
 > conventions — consult `node_modules/next/dist/docs/` before writing route/component code.
