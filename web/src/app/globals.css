@@ -1,8 +1,35 @@
 @import "tailwindcss";
 
+/* ── Brand & canvas tokens ─────────────────────────────────── */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Barber-navy ink */
+  --navy:        #1a2540;
+  --navy-light:  #243050;
+
+  /* Warm brass accent — used sparingly */
+  --brass:       #b8893a;
+  --brass-light: #d4a84b;
+
+  /* Canvas */
+  --canvas:      #f4f5f7;
+  --card:        #ffffff;
+
+  /* Status colors (loud, unmistakable) */
+  --free:        #16a34a; /* green  */
+  --free-bg:     #dcfce7;
+  --waiting:     #d97706; /* amber  */
+  --waiting-bg:  #fef3c7;
+  --in-chair:    #2563eb; /* blue   */
+  --in-chair-bg: #dbeafe;
+  --late:        #dc2626; /* red    */
+  --late-bg:     #fee2e2;
+
+  /* Notified = amber variant */
+  --notified:    #d97706;
+  --notified-bg: #fef3c7;
 }
 
 @theme inline {
@@ -12,15 +39,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--navy);
+  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
 }
