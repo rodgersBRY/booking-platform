@@ -121,9 +121,7 @@ export async function getAvailability({
   const leadCutoff = new Date(nowUtc.getTime() + 30 * 60 * 1000);
 
   // Is this date today (in EAT)?
-  const todayEat = new Date(
-    nowUtc.toLocaleString("en-US", { timeZone: TZ }),
-  );
+  const todayEat = new Date(nowUtc.toLocaleString("en-US", { timeZone: TZ }));
   const todayStr = `${todayEat.getFullYear()}-${String(todayEat.getMonth() + 1).padStart(2, "0")}-${String(todayEat.getDate()).padStart(2, "0")}`;
   const isToday = date === todayStr;
 
@@ -141,8 +139,14 @@ export async function getAvailability({
 
     // There may be multiple rows (split shifts) but typically one.
     for (const avail of avails) {
-      const windowStart = eatTimeToUtc(date, (avail.start_time as string).slice(0, 5));
-      const windowEnd = eatTimeToUtc(date, (avail.end_time as string).slice(0, 5));
+      const windowStart = eatTimeToUtc(
+        date,
+        (avail.start_time as string).slice(0, 5),
+      );
+      const windowEnd = eatTimeToUtc(
+        date,
+        (avail.end_time as string).slice(0, 5),
+      );
 
       // 2. Get time-off blocks for this barber that overlap the day.
       const { data: timeOffs } = await admin
