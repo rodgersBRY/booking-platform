@@ -15,10 +15,7 @@ export default function LoginForm() {
       )}
 
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="email"
-          className="text-sm font-medium text-zinc-700"
-        >
+        <label htmlFor="email" className="text-sm font-medium text-zinc-700">
           Email
         </label>
         <input
@@ -33,10 +30,7 @@ export default function LoginForm() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="password"
-          className="text-sm font-medium text-zinc-700"
-        >
+        <label htmlFor="password" className="text-sm font-medium text-zinc-700">
           Password
         </label>
         <input
