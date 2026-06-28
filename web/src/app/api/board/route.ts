@@ -21,6 +21,16 @@ function eatTodayBounds(): { start: string; end: string } {
   return { start: startUtc.toISOString(), end: endUtc.toISOString() };
 }
 
+/**
+ * PostgREST embeds a to-one relation as a single object (and a to-many as an array).
+ * Normalize either shape to the first row so name lookups don't fall through to "Unknown".
+ */
+function firstRel<T>(rel: unknown): T | null {
+  if (rel == null) return null;
+  if (Array.isArray(rel)) return (rel[0] as T) ?? null;
+  return rel as T;
+}
+
 export async function GET() {
   const staff = await getCurrentStaff();
   if (!staff) {
@@ -68,13 +78,12 @@ export async function GET() {
   for (const b of inChairBookings ?? []) {
     const endMs = new Date(b.scheduled_end as string).getTime();
     const minutesLeft = Math.max(0, Math.round((endMs - now.getTime()) / 60000));
-    // Supabase returns joined relations as arrays; pick the first element.
-    const clientRel = b.clients as unknown as { name: string }[] | null;
-    const serviceRel = b.services as unknown as { name: string }[] | null;
+    const client = firstRel<{ name: string }>(b.clients);
+    const service = firstRel<{ name: string }>(b.services);
     inChairByBarber.set(b.barber_id as string, {
       bookingId: b.id as string,
-      clientName: Array.isArray(clientRel) ? (clientRel[0]?.name ?? "Unknown") : "Unknown",
-      serviceName: Array.isArray(serviceRel) ? (serviceRel[0]?.name ?? "Unknown") : "Unknown",
+      clientName: client?.name ?? "Unknown",
+      serviceName: service?.name ?? "Unknown",
       minutesLeft,
     });
   }
@@ -125,11 +134,11 @@ export async function GET() {
   };
   const queue: QueueItem[] = (queueRows ?? []).map((qRaw: unknown) => {
     const q = qRaw as QueueRow;
-    const clientRel = q.clients as { name: string; total_visits: number }[] | null;
-    const staffRel = q.staff as { name: string }[] | null;
-    const clientName = Array.isArray(clientRel) ? (clientRel[0]?.name ?? "Unknown") : "Unknown";
-    const totalVisits = Array.isArray(clientRel) ? (clientRel[0]?.total_visits ?? 0) : 0;
-    const preferredBarberName = Array.isArray(staffRel) ? (staffRel[0]?.name ?? null) : null;
+    const client = firstRel<{ name: string; total_visits: number }>(q.clients);
+    const staffRel = firstRel<{ name: string }>(q.staff);
+    const clientName = client?.name ?? "Unknown";
+    const totalVisits = client?.total_visits ?? 0;
+    const preferredBarberName = staffRel?.name ?? null;
     const barberId = q.barber_id as string | null;
     const waitedMinutes = Math.round(
       (now.getTime() - new Date(q.joined_at as string).getTime()) / 60000,
