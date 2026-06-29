@@ -69,6 +69,7 @@ src/app/               routes, API handlers, UI
 | Staff management         | ✅ Done — /dashboard/staff, GET/POST /api/staff, PATCH /api/staff/[id] |
 | Public booking page      | 🔲 Not started                                               |
 | 15-min grace job         | ✅ Done — GET /api/cron/grace (header-auth)                  |
+| Automation endpoints     | ✅ Done — GET /api/automation/bookings/new, /upcoming, /overdue-inchair; GET /api/automation/owner/digest |
 
 See `docs/auth.md` for the auth model, role→route map, and first-owner-user setup steps.
 

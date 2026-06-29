@@ -30,7 +30,7 @@ export default function AddStaffModal({ onClose, onAdded }: Props) {
     setSubmitting(true);
     setError(null);
     try {
-      const s = await createStaff({ name, role, email, phone: phone || undefined, password });
+      const s = await createStaff({ name, role, email, phone, password });
       onAdded(s);
     } catch (err) {
       setError((err as Error).message ?? "Something went wrong.");
@@ -75,8 +75,8 @@ export default function AddStaffModal({ onClose, onAdded }: Props) {
         </div>
 
         <div>
-          <label className={labelClass} htmlFor="sf-phone">Phone <span className="opacity-40">(optional)</span></label>
-          <input id="sf-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+254 7xx xxx xxx" className={inputClass} style={inputStyle} />
+          <label className={labelClass} htmlFor="sf-phone">Phone</label>
+          <input id="sf-phone" type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+254 7xx xxx xxx — needed for WhatsApp notifications" className={inputClass} style={inputStyle} />
         </div>
 
         <div>

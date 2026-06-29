@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
 
   const { name, role, email, phone, password } = body;
   if (!name || !email || !password) return NextResponse.json({ error: "name, email, and password are required" }, { status: 400 });
+  if (!phone) return NextResponse.json({ error: "phone is required for WhatsApp notifications" }, { status: 400 });
   if (role !== "receptionist" && role !== "barber") return NextResponse.json({ error: "Role must be receptionist or barber" }, { status: 400 });
 
   const admin = createAdminClient();
