@@ -28,6 +28,7 @@ export async function GET() {
   if (!staff) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  
   if (staff.role !== "barber" && staff.role !== "owner") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
