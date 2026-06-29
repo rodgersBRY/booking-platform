@@ -10,7 +10,7 @@ export async function POST(
   if (!staff) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (staff.role !== "owner" && staff.role !== "receptionist") {
+  if (!["owner", "receptionist", "barber"].includes(staff.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -26,6 +26,11 @@ export async function POST(
 
   if (bookErr || !booking) {
     return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  }
+
+  // Barbers may only seat their own bookings.
+  if (staff.role === "barber" && booking.barber_id !== staff.id) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   if (!["booked", "arrived"].includes(booking.status as string)) {

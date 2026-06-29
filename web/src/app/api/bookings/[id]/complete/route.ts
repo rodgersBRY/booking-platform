@@ -5,14 +5,30 @@ import { NextRequest, NextResponse } from "next/server";
 // TODO: AUTOMATION_API_KEY auth — n8n will authenticate via this header in production.
 
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const staff = await getCurrentStaff();
   if (!staff) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (staff.role !== "owner" && staff.role !== "receptionist") {
+
+  // Parse optional body first.
+  let body: { amountCharged?: number; paymentMethod?: string } = {};
+  try {
+    body = await request.json();
+  } catch {
+    // Body is optional.
+  }
+  const amountCharged = body.amountCharged ?? 0;
+  const paymentMethod = body.paymentMethod ?? null;
+
+  // Base role gate — barber ownership checked after fetching booking.
+  if (
+    staff.role !== "owner" &&
+    staff.role !== "receptionist" &&
+    staff.role !== "barber"
+  ) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -28,6 +44,11 @@ export async function POST(
 
   if (bookErr || !booking) {
     return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  }
+
+  // Barbers may only complete their own bookings.
+  if (staff.role === "barber" && booking.barber_id !== staff.id) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   if (booking.status === "completed") {
@@ -55,7 +76,8 @@ export async function POST(
       barber_id: booking.barber_id as string | null,
       service_id: booking.service_id as string,
       completed_at: now,
-      amount_charged: 0,
+      amount_charged: amountCharged,
+      payment_method: paymentMethod,
     })
     .select()
     .single();
