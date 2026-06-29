@@ -27,6 +27,11 @@ export default async function DashboardPage() {
           </form>
         </div>
         <DashboardBoard />
+        <div className="mt-8 pt-6 border-t border-zinc-200">
+          <a href="/dashboard/staff" className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--brass)" }}>
+            Manage staff →
+          </a>
+        </div>
       </div>
     </div>
   );

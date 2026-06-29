@@ -66,6 +66,7 @@ src/app/               routes, API handlers, UI
 | Owner dashboard          | ✅ Done — `GET /api/dashboard/stats`, `src/components/dashboard/` |
 | Receptionist console     | 🔲 Stub only                                                 |
 | Barber "My day" view     | ✅ Done — `/me`, `/api/me/day`, `src/components/me/`         |
+| Staff management         | ✅ Done — /dashboard/staff, GET/POST /api/staff, PATCH /api/staff/[id] |
 | Public booking page      | 🔲 Not started                                               |
 
 See `docs/auth.md` for the auth model, role→route map, and first-owner-user setup steps.

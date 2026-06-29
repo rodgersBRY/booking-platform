@@ -42,7 +42,9 @@ export async function getCurrentStaff(): Promise<StaffWithAuthId | null> {
 
   if (error || !data) return null;
 
-  return data as StaffWithAuthId;
+  const row = data as StaffWithAuthId;
+  if (row.status !== "active") return null;
+  return row;
 }
 
 /**
