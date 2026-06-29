@@ -14,7 +14,7 @@ export function createAdminClient() {
       "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars.",
     );
   }
-  
+
   return createClient(url, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });

@@ -70,8 +70,10 @@ function firstRel<T>(rel: unknown): T | null {
 
 export async function GET() {
   const staff = await getCurrentStaff();
-  if (!staff) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (staff.role !== "owner") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!staff)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (staff.role !== "owner")
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const admin = createAdminClient();
   const now = new Date();
@@ -95,12 +97,13 @@ export async function GET() {
   const { data: monthVisits, error: visitsErr } = await admin
     .from("visits")
     .select(
-      "id, barber_id, service_id, amount_charged, completed_at, clients(id, created_at), services(name)"
+      "id, barber_id, service_id, amount_charged, completed_at, clients(id, created_at), services(name)",
     )
     .gte("completed_at", monthStart)
     .lte("completed_at", monthEnd);
 
-  if (visitsErr) return NextResponse.json({ error: visitsErr.message }, { status: 500 });
+  if (visitsErr)
+    return NextResponse.json({ error: visitsErr.message }, { status: 500 });
 
   const visits = (monthVisits ?? []) as VisitRow[];
 
@@ -162,7 +165,7 @@ export async function GET() {
       .gte("scheduled_start", nowIso);
 
     const notAtRisk = new Set(
-      (futureBooked ?? []).map((b: { client_id: string }) => b.client_id)
+      (futureBooked ?? []).map((b: { client_id: string }) => b.client_id),
     );
     atRiskCount = atRiskIds.filter((id) => !notAtRisk.has(id)).length;
   }
@@ -175,11 +178,13 @@ export async function GET() {
     .eq("status", "active");
 
   const barberMap = new Map<string, string>(
-    (barberRows ?? []).map((b: { id: string; name: string }) => [b.id, b.name])
+    (barberRows ?? []).map((b: { id: string; name: string }) => [b.id, b.name]),
   );
 
   // ── 4. Per-barber week stats (from visits already fetched) ─────────────────
-  const weekVisits = visits.filter((v) => inRange(v.completed_at, weekStart, weekEnd));
+  const weekVisits = visits.filter((v) =>
+    inRange(v.completed_at, weekStart, weekEnd),
+  );
 
   const barberStats = new Map<string, { visits: number; revenue: number }>();
   for (const v of weekVisits) {
@@ -198,7 +203,10 @@ export async function GET() {
   }));
 
   // ── 5. Top 3 services week ──────────────────────────────────────────────────
-  const serviceMap = new Map<string, { name: string; count: number; revenue: number }>();
+  const serviceMap = new Map<
+    string,
+    { name: string; count: number; revenue: number }
+  >();
   for (const v of weekVisits) {
     if (!v.service_id) continue;
     const svc = firstRel<{ name: string }>(v.services);
@@ -215,7 +223,12 @@ export async function GET() {
   const topServices = [...serviceMap.entries()]
     .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 3)
-    .map(([sid, val]) => ({ serviceId: sid, serviceName: val.name, count: val.count, revenue: val.revenue }));
+    .map(([sid, val]) => ({
+      serviceId: sid,
+      serviceName: val.name,
+      count: val.count,
+      revenue: val.revenue,
+    }));
 
   // ── 6. Channel mix week ─────────────────────────────────────────────────────
   const { data: weekBookingRows } = await admin
@@ -229,10 +242,12 @@ export async function GET() {
     const ch = (b as { channel: string | null }).channel ?? "unknown";
     channelCounts.set(ch, (channelCounts.get(ch) ?? 0) + 1);
   }
-  const channelMix = Array.from(channelCounts.entries()).map(([channel, count]) => ({
-    channel,
-    count,
-  }));
+  const channelMix = Array.from(channelCounts.entries()).map(
+    ([channel, count]) => ({
+      channel,
+      count,
+    }),
+  );
 
   // ── 7. No-show rate week (2 head queries) ──────────────────────────────────
   const { count: noShows } = await admin
@@ -250,7 +265,9 @@ export async function GET() {
     .lte("scheduled_start", weekEnd);
 
   const noShowRate =
-    terminalBookings && terminalBookings > 0 ? (noShows ?? 0) / terminalBookings : 0;
+    terminalBookings && terminalBookings > 0
+      ? (noShows ?? 0) / terminalBookings
+      : 0;
 
   return NextResponse.json({
     kpis: {

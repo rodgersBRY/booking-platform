@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
   if (!staff) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  
   if (staff.role !== "owner" && staff.role !== "receptionist") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }

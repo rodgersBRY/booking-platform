@@ -25,18 +25,21 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
+
   if (!serviceId) {
     return NextResponse.json(
       { error: "Missing required field: serviceId" },
       { status: 400 },
     );
   }
+
   if (!scheduledStart) {
     return NextResponse.json(
       { error: "Missing required field: scheduledStart" },
       { status: 400 },
     );
   }
+
   // Online bookings require a concrete barber (from slot selection).
   if (!barberId) {
     return NextResponse.json(

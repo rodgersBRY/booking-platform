@@ -40,7 +40,9 @@ export function DashboardBoard() {
 
   if (!data) {
     return (
-      <div className="text-sm text-zinc-400 animate-pulse">Loading dashboard…</div>
+      <div className="text-sm text-zinc-400 animate-pulse">
+        Loading dashboard…
+      </div>
     );
   }
 
@@ -136,20 +138,28 @@ export function DashboardBoard() {
             >
               {Math.round(data.week.noShowRate * 100)}%
             </span>
-            <span className="text-sm text-zinc-400 mb-1">of terminal bookings</span>
+            <span className="text-sm text-zinc-400 mb-1">
+              of terminal bookings
+            </span>
           </div>
           <div className="mt-3 h-2 rounded-full bg-zinc-100">
             <div
               className={`h-2 rounded-full transition-all ${
-                data.week.noShowRate > 0.15 ? "bg-[var(--late)]" : "bg-[var(--free)]"
+                data.week.noShowRate > 0.15
+                  ? "bg-[var(--late)]"
+                  : "bg-[var(--free)]"
               }`}
-              style={{ width: `${Math.min(100, Math.round(data.week.noShowRate * 100))}%` }}
+              style={{
+                width: `${Math.min(100, Math.round(data.week.noShowRate * 100))}%`,
+              }}
             />
           </div>
         </div>
       </div>
 
-      <p className="text-xs text-zinc-300 text-right">Auto-refreshes every 60 s</p>
+      <p className="text-xs text-zinc-300 text-right">
+        Auto-refreshes every 60 s
+      </p>
     </div>
   );
 }

@@ -10,6 +10,7 @@ export async function POST(
   if (!staff) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  
   if (!["owner", "receptionist", "barber"].includes(staff.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }

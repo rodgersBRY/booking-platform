@@ -106,7 +106,9 @@ export async function getAvailability({
       .select("id")
       .eq("role", "barber")
       .eq("status", "active");
+
     if (bErr || !barbers) return [];
+
     barberIds = barbers.map((b: { id: string }) => b.id);
   } else {
     barberIds = [barberId];

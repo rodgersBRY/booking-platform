@@ -2,7 +2,12 @@
 // All functions are called from client components.
 // TODO: swap polling for Supabase realtime
 
-import type { ChairStatus, QueueItem, BoardStats, Appointment } from "@/lib/booking/types";
+import type {
+  ChairStatus,
+  QueueItem,
+  BoardStats,
+  Appointment,
+} from "@/lib/booking/types";
 
 export type { Appointment };
 
@@ -57,7 +62,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     const err = new Error(
-      (body as { error?: string }).error ?? `HTTP ${res.status}`
+      (body as { error?: string }).error ?? `HTTP ${res.status}`,
     );
     (err as Error & { status: number }).status = res.status;
     throw err;
@@ -104,7 +109,9 @@ export async function arriveBooking(id: string): Promise<void> {
 }
 
 export async function seatBooking(id: string): Promise<{ booking: unknown }> {
-  return apiFetch<{ booking: unknown }>(`/api/bookings/${id}/seat`, { method: "POST" });
+  return apiFetch<{ booking: unknown }>(`/api/bookings/${id}/seat`, {
+    method: "POST",
+  });
 }
 
 export async function cancelBooking(id: string): Promise<void> {
@@ -114,7 +121,7 @@ export async function cancelBooking(id: string): Promise<void> {
 export async function searchClients(q: string): Promise<ClientSearchResult[]> {
   const params = new URLSearchParams({ q });
   const data = await apiFetch<{ clients: ClientSearchResult[] }>(
-    `/api/clients/search?${params.toString()}`
+    `/api/clients/search?${params.toString()}`,
   );
   return data.clients;
 }

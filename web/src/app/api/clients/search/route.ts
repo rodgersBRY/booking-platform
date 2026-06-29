@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
   if (!staff) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   if (staff.role !== "owner" && staff.role !== "receptionist") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -68,6 +69,7 @@ export async function GET(request: NextRequest) {
       total_visits: (row.total_visits as number) ?? 0,
       last_visit_at: row.last_visit_at as string | null,
     });
+    
     if (rows.length >= 8) break;
   }
 
