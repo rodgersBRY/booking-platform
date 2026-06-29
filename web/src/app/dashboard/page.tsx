@@ -1,5 +1,6 @@
 import { requireRole } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
+import { DashboardBoard } from "@/components/dashboard/DashboardBoard";
 
 export const metadata = { title: "Owner dashboard — Fade & Sharp" };
 
@@ -8,12 +9,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 p-8">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">
-              Owner dashboard
-            </h1>
+            <h1 className="text-2xl font-semibold text-zinc-900">Owner dashboard</h1>
             <p className="text-sm text-zinc-500 mt-1">
               Signed in as {staff.name} &middot; {staff.role}
             </p>
@@ -27,9 +26,7 @@ export default async function DashboardPage() {
             </button>
           </form>
         </div>
-        <p className="text-zinc-400 text-sm">
-          Dashboard content coming soon.
-        </p>
+        <DashboardBoard />
       </div>
     </div>
   );

@@ -63,7 +63,7 @@ src/app/               routes, API handlers, UI
 | Seed data                | ✅ Done — `0003_seed.sql` (3 barbers, 6 services, 3 clients) |
 | Booking / availability engine | ✅ Done — `src/lib/booking/availability.ts`, `src/lib/booking/types.ts` |
 | Console API endpoints    | ✅ Done — `GET /api/barbers`, `GET /api/services`, `GET /api/availability`, `POST /api/bookings`, `GET /api/board`, `POST /api/walkins`, `POST /api/queue/{id}/seat`, `POST /api/queue/{id}/notify`, `POST /api/bookings/{id}/complete` |
-| Owner dashboard          | 🔲 Stub only                                                 |
+| Owner dashboard          | ✅ Done — `GET /api/dashboard/stats`, `src/components/dashboard/` |
 | Receptionist console     | 🔲 Stub only                                                 |
 | Barber "My day" view     | 🔲 Stub only                                                 |
 | Public booking page      | 🔲 Not started                                               |
