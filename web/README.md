@@ -65,7 +65,7 @@ src/app/               routes, API handlers, UI
 | Console API endpoints    | ✅ Done — `GET /api/barbers`, `GET /api/services`, `GET /api/availability`, `POST /api/bookings`, `GET /api/board`, `POST /api/walkins`, `POST /api/queue/{id}/seat`, `POST /api/queue/{id}/notify`, `POST /api/bookings/{id}/complete` |
 | Owner dashboard          | ✅ Done — `GET /api/dashboard/stats`, `src/components/dashboard/` |
 | Receptionist console     | 🔲 Stub only                                                 |
-| Barber "My day" view     | 🔲 Stub only                                                 |
+| Barber "My day" view     | ✅ Done — `/me`, `/api/me/day`, `src/components/me/`         |
 | Public booking page      | 🔲 Not started                                               |
 
 See `docs/auth.md` for the auth model, role→route map, and first-owner-user setup steps.

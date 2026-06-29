@@ -1,5 +1,6 @@
 import { requireRole } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
+import MyDayBoard from "@/components/me/MyDayBoard";
 
 export const metadata = { title: "My day — Fade & Sharp" };
 
@@ -25,9 +26,7 @@ export default async function MePage() {
             </button>
           </form>
         </div>
-        <p className="text-zinc-400 text-sm">
-          Schedule content coming soon.
-        </p>
+        <MyDayBoard staffId={staff.id} />
       </div>
     </div>
   );
