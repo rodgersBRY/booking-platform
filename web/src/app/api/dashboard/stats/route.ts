@@ -198,22 +198,24 @@ export async function GET() {
   }));
 
   // ── 5. Top 3 services week ──────────────────────────────────────────────────
-  const serviceCount = new Map<string, { name: string; count: number }>();
+  const serviceMap = new Map<string, { name: string; count: number; revenue: number }>();
   for (const v of weekVisits) {
     if (!v.service_id) continue;
     const svc = firstRel<{ name: string }>(v.services);
-    const cur = serviceCount.get(v.service_id) ?? {
+    const existing = serviceMap.get(v.service_id) ?? {
       name: svc?.name ?? "Unknown",
       count: 0,
+      revenue: 0,
     };
-    cur.count++;
-    serviceCount.set(v.service_id, cur);
+    existing.count++;
+    existing.revenue += (v.amount_charged as number) ?? 0;
+    serviceMap.set(v.service_id, existing);
   }
 
-  const topServices = Array.from(serviceCount.entries())
+  const topServices = [...serviceMap.entries()]
     .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 3)
-    .map(([serviceId, s]) => ({ serviceId, serviceName: s.name, count: s.count }));
+    .map(([sid, val]) => ({ serviceId: sid, serviceName: val.name, count: val.count, revenue: val.revenue }));
 
   // ── 6. Channel mix week ─────────────────────────────────────────────────────
   const { data: weekBookingRows } = await admin

@@ -18,6 +18,7 @@ export interface ChairStatus {
   bookingId?: string;
   currentClientName?: string;
   serviceName?: string;
+  servicePrice?: number | null;
   minutesLeft?: number;
 }
 

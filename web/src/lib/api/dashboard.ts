@@ -17,7 +17,7 @@ export interface DashboardStats {
   };
   week: {
     perBarber: { barberId: string; barberName: string; visits: number; revenue: number }[];
-    topServices: { serviceId: string; serviceName: string; count: number }[];
+    topServices: { serviceId: string; serviceName: string; count: number; revenue: number }[];
     channelMix: { channel: string; count: number }[];
     noShowRate: number;
   };

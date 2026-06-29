@@ -4,6 +4,7 @@ interface ServiceRow {
   serviceId: string;
   serviceName: string;
   count: number;
+  revenue: number;
 }
 
 interface TopServicesProps {
@@ -27,7 +28,7 @@ export function TopServices({ services }: TopServicesProps) {
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-baseline mb-1">
                 <span className="text-sm font-medium text-[var(--navy)] truncate">{s.serviceName}</span>
-                <span className="text-sm text-zinc-500 ml-2 shrink-0">{s.count}</span>
+                <span className="text-sm text-zinc-500 ml-2 shrink-0">KES {s.revenue.toLocaleString()} · {s.count} visit{s.count !== 1 ? 's' : ''}</span>
               </div>
               <div className="h-1.5 rounded-full bg-zinc-100">
                 <div

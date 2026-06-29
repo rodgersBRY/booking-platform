@@ -58,7 +58,7 @@ export async function GET() {
   const { data: inChairBookings } = await admin
     .from("bookings")
     .select(
-      "id, barber_id, scheduled_end, clients(name), services(name)",
+      "id, barber_id, scheduled_end, clients(name), services(name, price)",
     )
     .eq("status", "in_chair")
     .lte("scheduled_start", nowIso)
@@ -71,6 +71,7 @@ export async function GET() {
       bookingId: string;
       clientName: string;
       serviceName: string;
+      servicePrice: number | null;
       minutesLeft: number;
     }
   >();
@@ -79,11 +80,12 @@ export async function GET() {
     const endMs = new Date(b.scheduled_end as string).getTime();
     const minutesLeft = Math.max(0, Math.round((endMs - now.getTime()) / 60000));
     const client = firstRel<{ name: string }>(b.clients);
-    const service = firstRel<{ name: string }>(b.services);
+    const service = firstRel<{ name: string; price: number }>(b.services);
     inChairByBarber.set(b.barber_id as string, {
       bookingId: b.id as string,
       clientName: client?.name ?? "Unknown",
       serviceName: service?.name ?? "Unknown",
+      servicePrice: service?.price ?? null,
       minutesLeft,
     });
   }
@@ -100,6 +102,7 @@ export async function GET() {
           bookingId: active.bookingId,
           currentClientName: active.clientName,
           serviceName: active.serviceName,
+          servicePrice: active.servicePrice,
           minutesLeft: active.minutesLeft,
         };
       }

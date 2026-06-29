@@ -13,7 +13,6 @@ import {
   fetchServices,
   seatQueueItem,
   notifyQueueItem,
-  completeBooking,
   arriveBooking,
   seatBooking,
   cancelBooking,
@@ -101,11 +100,6 @@ export default function ConsoleBoard() {
     refresh();
   }
 
-  async function handleComplete(bookingId: string) {
-    await completeBooking(bookingId);
-    refresh();
-  }
-
   async function handleArrive(id: string) {
     await arriveBooking(id);
     refresh();
@@ -174,7 +168,7 @@ export default function ConsoleBoard() {
 
         {/* Chairs board */}
         {board && (
-          <ChairsBoard chairs={board.chairs} onComplete={handleComplete} />
+          <ChairsBoard chairs={board.chairs} onRefresh={refresh} />
         )}
 
         {/* Today's appointments */}

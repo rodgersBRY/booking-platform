@@ -1,30 +1,40 @@
 "use client";
 
+import { useState } from "react";
 import type { ChairStatus } from "@/lib/booking/types";
+import CompleteBookingModal from "./CompleteBookingModal";
 
 interface Props {
   chairs: ChairStatus[];
-  onComplete: (bookingId: string) => Promise<void>;
+  onRefresh: () => void;
 }
 
 interface ChairCardProps {
   chair: ChairStatus;
-  onComplete: (bookingId: string) => Promise<void>;
+  onDoneClick: () => void;
 }
 
-function ChairCard({ chair, onComplete }: ChairCardProps) {
+function ChairCard({ chair, onDoneClick }: ChairCardProps) {
   const isFree = chair.status === "free";
+  const isOverdue =
+    !isFree && chair.minutesLeft != null && chair.minutesLeft <= 0;
 
-  const borderColor = isFree ? "var(--free)" : "var(--in-chair)";
-  const badgeBg = isFree ? "var(--free-bg)" : "var(--in-chair-bg)";
-  const badgeColor = isFree ? "var(--free)" : "var(--in-chair)";
-  const badgeLabel = isFree ? "Free" : "In chair";
-
-  async function handleDone() {
-    if (chair.bookingId) {
-      await onComplete(chair.bookingId);
-    }
-  }
+  const borderColor = isFree
+    ? "var(--free)"
+    : isOverdue
+    ? "var(--late)"
+    : "var(--in-chair)";
+  const badgeBg = isFree
+    ? "var(--free-bg)"
+    : isOverdue
+    ? "var(--late-bg, #fee2e2)"
+    : "var(--in-chair-bg)";
+  const badgeColor = isFree
+    ? "var(--free)"
+    : isOverdue
+    ? "var(--late)"
+    : "var(--in-chair)";
+  const badgeLabel = isFree ? "Free" : isOverdue ? "Overdue" : "In chair";
 
   return (
     <div
@@ -61,9 +71,15 @@ function ChairCard({ chair, onComplete }: ChairCardProps) {
             <p className="text-sm opacity-60">{chair.serviceName}</p>
           )}
           {chair.minutesLeft != null && (
-            <p className="text-sm" style={{ color: "var(--in-chair)" }}>
-              ~{Math.round(chair.minutesLeft)} min left
-            </p>
+            isOverdue ? (
+              <p className="text-sm font-medium" style={{ color: "var(--late)" }}>
+                Overdue
+              </p>
+            ) : (
+              <p className="text-sm" style={{ color: "var(--in-chair)" }}>
+                ~{Math.round(chair.minutesLeft)} min left
+              </p>
+            )
           )}
         </div>
       )}
@@ -73,7 +89,7 @@ function ChairCard({ chair, onComplete }: ChairCardProps) {
       {/* Done action */}
       {!isFree && chair.bookingId && (
         <button
-          onClick={handleDone}
+          onClick={onDoneClick}
           className="w-full py-2.5 rounded-xl text-sm font-semibold transition-opacity hover:opacity-80 active:opacity-70"
           style={{ background: "var(--free-bg)", color: "var(--free)" }}
         >
@@ -84,21 +100,43 @@ function ChairCard({ chair, onComplete }: ChairCardProps) {
   );
 }
 
-export default function ChairsBoard({ chairs, onComplete }: Props) {
+export default function ChairsBoard({ chairs, onRefresh }: Props) {
+  const [completingChair, setCompletingChair] = useState<ChairStatus | null>(null);
+
   if (chairs.length === 0) {
     return <p className="text-sm opacity-50">No barbers configured yet.</p>;
   }
 
   return (
-    <div
-      className="grid gap-4"
-      style={{
-        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-      }}
-    >
-      {chairs.map((chair) => (
-        <ChairCard key={chair.barberId} chair={chair} onComplete={onComplete} />
-      ))}
-    </div>
+    <>
+      <div
+        className="grid gap-4"
+        style={{
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+        }}
+      >
+        {chairs.map((chair) => (
+          <ChairCard
+            key={chair.barberId}
+            chair={chair}
+            onDoneClick={() => setCompletingChair(chair)}
+          />
+        ))}
+      </div>
+
+      {completingChair && completingChair.bookingId && (
+        <CompleteBookingModal
+          bookingId={completingChair.bookingId}
+          clientName={completingChair.currentClientName ?? "Unknown"}
+          serviceName={completingChair.serviceName ?? null}
+          servicePrice={completingChair.servicePrice ?? null}
+          onClose={() => setCompletingChair(null)}
+          onDone={() => {
+            setCompletingChair(null);
+            onRefresh();
+          }}
+        />
+      )}
+    </>
   );
 }
