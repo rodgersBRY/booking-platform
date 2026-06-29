@@ -38,11 +38,10 @@ BEGIN
       (0, '13:00', '21:00')
   ) AS d(weekday, start_time, end_time);
 
-  -- 3 sample clients, each with a preferred barber (subselect by name so it works
-  -- regardless of generated UUIDs).
+  -- 3 sample clients, each with a preferred barber.
   INSERT INTO clients (name, phone, acquisition_source, preferred_barber_id) VALUES
-    ('Josphat Mwirigi', '+254700000001', 'referral',  (SELECT id FROM staff WHERE name = 'James' AND role = 'barber')),
-    ('Aisha Mohamed',   '+254700000002', 'walkin',    (SELECT id FROM staff WHERE name = 'Mary'  AND role = 'barber')),
-    ('Kevin Otieno',    '+254700000003', 'whatsapp',  (SELECT id FROM staff WHERE name = 'Tunde' AND role = 'barber'));
+    ('Josphat Mwirigi', '+254700000001', 'referral', james_id),
+    ('Aisha Mohamed',   '+254700000002', 'walkin',   mary_id),
+    ('Kevin Otieno',    '+254700000003', 'whatsapp', tunde_id);
 
 END $$;
