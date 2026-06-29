@@ -67,6 +67,7 @@ src/app/               routes, API handlers, UI
 | Receptionist console     | 🔲 Stub only                                                 |
 | Barber "My day" view     | 🔲 Stub only                                                 |
 | Public booking page      | 🔲 Not started                                               |
+| 15-min grace job         | ✅ Done — GET /api/cron/grace (header-auth)                  |
 
 See `docs/auth.md` for the auth model, role→route map, and first-owner-user setup steps.
 
