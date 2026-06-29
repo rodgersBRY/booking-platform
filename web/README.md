@@ -68,6 +68,7 @@ src/app/               routes, API handlers, UI
 | Barber "My day" view     | ✅ Done — `/me`, `/api/me/day`, `src/components/me/`         |
 | Staff management         | ✅ Done — /dashboard/staff, GET/POST /api/staff, PATCH /api/staff/[id] |
 | Public booking page      | 🔲 Not started                                               |
+| 15-min grace job         | ✅ Done — GET /api/cron/grace (header-auth)                  |
 
 See `docs/auth.md` for the auth model, role→route map, and first-owner-user setup steps.
 
