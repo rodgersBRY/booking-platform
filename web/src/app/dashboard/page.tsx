@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import { DashboardBoard } from "@/components/dashboard/DashboardBoard";
 
-export const metadata = { title: "Owner dashboard — Fade & Sharp" };
+export const metadata = { title: "Owner dashboard — Barberia Cuts" };
 
 export default async function DashboardPage() {
   const staff = await requireRole("owner");

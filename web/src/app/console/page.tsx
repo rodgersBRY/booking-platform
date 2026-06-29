@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/auth";
 import ConsoleHeader from "@/components/console/ConsoleHeader";
 import ConsoleBoard from "@/components/console/ConsoleBoard";
 
-export const metadata = { title: "Reception — Fade & Sharp" };
+export const metadata = { title: "Reception — Barberia Cuts" };
 
 export default async function ConsolePage() {
   // Role gate — redirects to /login or role home if unauthorized.

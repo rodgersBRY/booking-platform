@@ -64,7 +64,7 @@ export default async function BookPage() {
             className="text-lg font-bold tracking-wide"
             style={{ color: "var(--navy)" }}
           >
-            Fade &amp; Sharp
+            Barberia Cuts
           </span>
         </div>
         <h1 className="text-2xl font-bold" style={{ color: "var(--navy)" }}>

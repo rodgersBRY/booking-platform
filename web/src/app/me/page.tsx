@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import MyDayBoard from "@/components/me/MyDayBoard";
 
-export const metadata = { title: "My day — Fade & Sharp" };
+export const metadata = { title: "My day — Barberia Cuts" };
 
 export default async function MePage() {
   const staff = await requireRole("owner", "barber");
