@@ -89,9 +89,9 @@ export function DashboardBoard() {
             accent="brass"
           />
           <KpiCard
-            title="At-risk clients"
+            title="Quiet clients"
             value={data.kpis.atRiskClients}
-            subtitle="Inactive 21+ days, no upcoming booking"
+            subtitle="Haven't been in 21+ days, no upcoming booking"
             accent={data.kpis.atRiskClients > 0 ? "warning" : "default"}
           />
         </div>
