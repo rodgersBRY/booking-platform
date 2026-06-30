@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await admin
     .from("bookings")
-    .select("id, scheduled_start, clients(name), services(name), staff!barber_id(name, phone)")
+    .select("id, scheduled_start, client_id, clients(name, phone), services(name), staff!barber_id(name, phone)")
     .in("status", ["booked", "arrived"])
     .gte("scheduled_start", now)
     .lte("scheduled_start", in24h)
@@ -30,18 +30,20 @@ export async function GET(request: NextRequest) {
 
   const appLink = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/me`;
 
-  type Row = { id: unknown; scheduled_start: unknown; clients: unknown; services: unknown; staff: unknown };
+  type Row = { id: unknown; scheduled_start: unknown; client_id: unknown; clients: unknown; services: unknown; staff: unknown };
   const bookings = (data ?? [])
     .map((raw: unknown) => {
       const b = raw as Row;
-      const client = firstRel<{ name: string }>(b.clients);
+      const client = firstRel<{ name: string; phone: string | null }>(b.clients);
       const service = firstRel<{ name: string }>(b.services);
       const barber = firstRel<{ name: string; phone: string | null }>(b.staff);
       if (!barber?.phone) return null;
       return {
         bookingId: b.id as string,
+        clientId: b.client_id as string,
         scheduledStart: b.scheduled_start as string,
         clientName: client?.name ?? "Unknown",
+        clientPhone: client?.phone ?? null,
         serviceName: service?.name ?? null,
         barberName: barber.name,
         barberPhone: barber.phone,

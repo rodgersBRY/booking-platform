@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
   const { data: completedBookings, error } = await admin
     .from("bookings")
     .select(
-      "id, clients(name, phone), staff!barber_id(name), services(name)",
+      "id, client_id, clients(name, phone), staff!barber_id(name), services(name)",
     )
     .eq("status", "completed")
     .gte("updated_at", start)
@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
 
   type BookingRow = {
     id: string;
+    client_id: string;
     clients: unknown;
     staff: unknown;
     services: unknown;
@@ -75,6 +76,7 @@ export async function GET(request: NextRequest) {
     const service = firstRel<{ name: string }>(b.services);
     return {
       bookingId: b.id,
+      clientId: b.client_id,
       clientName: client?.name ?? "Unknown",
       clientPhone: client?.phone ?? null,
       barberName: barber?.name ?? null,
