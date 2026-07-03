@@ -158,29 +158,29 @@ function AppointmentRow({ item, onArrive, onSeat, onCancel }: RowProps) {
           <button
             onClick={handleArrive}
             disabled={busy}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-40"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-60 disabled:cursor-wait"
             style={{ background: "var(--free-bg)", color: "var(--free)" }}
           >
-            Arrived
+            {busy ? "Saving…" : "Arrived"}
           </button>
         )}
         {isArrived && (
           <button
             onClick={handleSeat}
             disabled={busy}
-            className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+            className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80 disabled:opacity-60 disabled:cursor-wait"
             style={{ background: "var(--in-chair-bg)", color: "var(--in-chair)" }}
           >
-            Seat now
+            {busy ? "Seating…" : "Seat now"}
           </button>
         )}
         <button
           onClick={handleCancel}
           disabled={busy}
-          className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-40"
+          className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-60 disabled:cursor-wait"
           style={{ background: "var(--late-bg)", color: "var(--late)" }}
         >
-          Cancel
+          {busy ? "Cancelling…" : "Cancel"}
         </button>
       </div>
     </li>

@@ -27,6 +27,7 @@ export default function StaffBoard() {
   const [showAdd, setShowAdd] = useState(false);
   const [resetTarget, setResetTarget] = useState<StaffListItem | null>(null);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   function refresh() { setRefreshTick((t) => t + 1); }
 
@@ -44,11 +45,14 @@ export default function StaffBoard() {
 
   async function handleToggleStatus(member: StaffListItem) {
     const next = member.status === "active" ? "inactive" : "active";
+    setBusyId(member.id);
     try {
       await setStaffStatus(member.id, next);
       refresh();
     } catch (e) {
       alert((e as Error).message);
+    } finally {
+      setBusyId(null);
     }
   }
 
@@ -95,10 +99,15 @@ export default function StaffBoard() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleToggleStatus(m)}
-                          className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-opacity hover:opacity-70"
+                          disabled={busyId === m.id}
+                          className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-opacity hover:opacity-70 disabled:opacity-50 disabled:cursor-wait"
                           style={{ borderColor: "#d1d5db", color: "var(--navy)" }}
                         >
-                          {m.status === "active" ? "Deactivate" : "Reactivate"}
+                          {busyId === m.id
+                            ? "Saving…"
+                            : m.status === "active"
+                              ? "Deactivate"
+                              : "Reactivate"}
                         </button>
                         <button
                           onClick={() => setResetTarget(m)}

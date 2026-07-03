@@ -108,19 +108,19 @@ function QueueRow({ item, onSeat, onNotify }: RowProps) {
           <button
             onClick={handleNotify}
             disabled={busy}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-40"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-60 disabled:cursor-wait"
             style={{ background: "var(--waiting-bg)", color: "var(--waiting)" }}
           >
-            Notify
+            {busy ? "Notifying…" : "Notify"}
           </button>
         )}
         <button
           onClick={handleSeat}
           disabled={busy}
-          className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80 disabled:opacity-40"
+          className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80 disabled:opacity-60 disabled:cursor-wait"
           style={{ background: "var(--in-chair-bg)", color: "var(--in-chair)" }}
         >
-          Seat now
+          {busy ? "Seating…" : "Seat now"}
         </button>
       </div>
     </li>
