@@ -29,18 +29,34 @@ export default function StaffBoard() {
   const [refreshTick, setRefreshTick] = useState(0);
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  function refresh() { setRefreshTick((t) => t + 1); }
+  function refresh() {
+    setRefreshTick((t) => t + 1);
+  }
 
   useEffect(() => {
     let cancelled = false;
     function poll() {
       fetchStaff()
-        .then((data) => { if (!cancelled) { setStaff(data); setError(null); setLoading(false); } })
-        .catch((e: Error) => { if (!cancelled) { setError(e.message); setLoading(false); } });
+        .then((data) => {
+          if (!cancelled) {
+            setStaff(data);
+            setError(null);
+            setLoading(false);
+          }
+        })
+        .catch((e: Error) => {
+          if (!cancelled) {
+            setError(e.message);
+            setLoading(false);
+          }
+        });
     }
     poll();
     const id = setInterval(poll, POLL_INTERVAL_MS);
-    return () => { cancelled = true; clearInterval(id); };
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
   }, [refreshTick]);
 
   async function handleToggleStatus(member: StaffListItem) {
@@ -56,8 +72,16 @@ export default function StaffBoard() {
     }
   }
 
-  if (loading) return <p className="text-sm opacity-40 py-12 text-center">Loading staff…</p>;
-  if (error) return <p className="text-sm py-12 text-center" style={{ color: "var(--late)" }}>{error}</p>;
+  if (loading)
+    return (
+      <p className="text-sm opacity-40 py-12 text-center">Loading staff…</p>
+    );
+  if (error)
+    return (
+      <p className="text-sm py-12 text-center" style={{ color: "var(--late)" }}>
+        {error}
+      </p>
+    );
 
   return (
     <>
@@ -71,28 +95,57 @@ export default function StaffBoard() {
         </button>
       </div>
 
-      <div className="rounded-2xl shadow-sm overflow-hidden" style={{ background: "var(--card, #fff)" }}>
+      <div
+        className="rounded-2xl shadow-sm overflow-hidden"
+        style={{ background: "var(--card, #fff)" }}
+      >
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left border-b" style={{ borderColor: "#f3f4f6" }}>
+            <tr
+              className="text-left border-b"
+              style={{ borderColor: "#f3f4f6" }}
+            >
               {["Name", "Role", "Email", "Status", "Actions"].map((h) => (
-                <th key={h} className="px-5 py-3 font-semibold opacity-60" style={{ color: "var(--navy)" }}>{h}</th>
+                <th
+                  key={h}
+                  className="px-5 py-3 font-semibold opacity-60"
+                  style={{ color: "var(--navy)" }}
+                >
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>
+
           <tbody>
             {staff.map((m) => {
-              const rc = ROLE_COLORS[m.role] ?? ROLE_COLORS.owner;
+              // const rc = ROLE_COLORS[m.role] ?? ROLE_COLORS.owner;
               const sc = STATUS_COLORS[m.status] ?? STATUS_COLORS.inactive;
               return (
-                <tr key={m.id} className="border-b last:border-0" style={{ borderColor: "#f9fafb" }}>
-                  <td className="px-5 py-4 font-medium" style={{ color: "var(--navy)" }}>{m.name}</td>
+                <tr
+                  key={m.id}
+                  className="border-b last:border-0"
+                  style={{ borderColor: "#f9fafb" }}
+                >
+                  <td
+                    className="px-5 py-4 font-medium"
+                    style={{ color: "var(--navy)" }}
+                  >
+                    {m.name}
+                  </td>
                   <td className="px-5 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={rc}>{m.role}</span>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold">
+                      {m.role}
+                    </span>
                   </td>
                   <td className="px-5 py-4 opacity-70">{m.email ?? "—"}</td>
                   <td className="px-5 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={sc}>{m.status}</span>
+                    <span
+                      className="px-2.5 py-1 rounded-full text-xs font-semibold"
+                      style={sc}
+                    >
+                      {m.status}
+                    </span>
                   </td>
                   <td className="px-5 py-4">
                     {m.role !== "owner" && (
@@ -101,7 +154,10 @@ export default function StaffBoard() {
                           onClick={() => handleToggleStatus(m)}
                           disabled={busyId === m.id}
                           className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-opacity hover:opacity-70 disabled:opacity-50 disabled:cursor-wait"
-                          style={{ borderColor: "#d1d5db", color: "var(--navy)" }}
+                          style={{
+                            borderColor: "#d1d5db",
+                            color: "var(--navy)",
+                          }}
                         >
                           {busyId === m.id
                             ? "Saving…"
@@ -112,7 +168,10 @@ export default function StaffBoard() {
                         <button
                           onClick={() => setResetTarget(m)}
                           className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-opacity hover:opacity-70"
-                          style={{ borderColor: "#d1d5db", color: "var(--navy)" }}
+                          style={{
+                            borderColor: "#d1d5db",
+                            color: "var(--navy)",
+                          }}
                         >
                           Reset password
                         </button>
@@ -123,7 +182,11 @@ export default function StaffBoard() {
               );
             })}
             {staff.length === 0 && (
-              <tr><td colSpan={5} className="px-5 py-8 text-center opacity-40">No staff yet.</td></tr>
+              <tr>
+                <td colSpan={5} className="px-5 py-8 text-center opacity-40">
+                  No staff yet.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -132,14 +195,20 @@ export default function StaffBoard() {
       {showAdd && (
         <AddStaffModal
           onClose={() => setShowAdd(false)}
-          onAdded={() => { setShowAdd(false); refresh(); }}
+          onAdded={() => {
+            setShowAdd(false);
+            refresh();
+          }}
         />
       )}
       {resetTarget && (
         <ResetPasswordModal
           staff={resetTarget}
           onClose={() => setResetTarget(null)}
-          onDone={() => { setResetTarget(null); refresh(); }}
+          onDone={() => {
+            setResetTarget(null);
+            refresh();
+          }}
         />
       )}
     </>
