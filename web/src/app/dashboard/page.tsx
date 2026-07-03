@@ -12,7 +12,9 @@ export default async function DashboardPage() {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">Owner dashboard</h1>
+            <h1 className="text-2xl font-semibold text-zinc-900">
+              Owner dashboard
+            </h1>
             <p className="text-sm text-zinc-500 mt-1">
               Signed in as {staff.name} &middot; {staff.role}
             </p>
@@ -26,15 +28,34 @@ export default async function DashboardPage() {
             </button>
           </form>
         </div>
-        <DashboardBoard />
-        <div className="mt-8 pt-6 border-t border-zinc-200 flex gap-6">
-          <a href="/dashboard/staff" className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--brass)" }}>
-            Manage staff →
-          </a>
-          <a href="/dashboard/services" className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: "var(--brass)" }}>
-            Manage services &amp; prices →
-          </a>
+        <div className="my-8 pt-6 border-t border-zinc-200 flex justify-end gap-6">
+          <div
+            className="p-2 rounded"
+            style={{ border: "1px solid var(--brass)" }}
+          >
+            <a
+              href="/dashboard/staff"
+              className="text-sm font-medium hover:opacity-70 transition-opacity"
+              style={{ color: "var(--brass)" }}
+            >
+              Manage staff →
+            </a>
+          </div>
+
+          <div
+            className="p-2 rounded"
+            style={{ border: "1px solid var(--brass)" }}
+          >
+            <a
+              href="/dashboard/services"
+              className="text-sm font-medium hover:opacity-70 transition-opacity"
+              style={{ color: "var(--brass)" }}
+            >
+              Manage services &amp; prices →
+            </a>
+          </div>
         </div>
+        <DashboardBoard />
       </div>
     </div>
   );
