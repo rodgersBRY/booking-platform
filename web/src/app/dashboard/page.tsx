@@ -12,9 +12,7 @@ export default async function DashboardPage() {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">
-              Owner dashboard
-            </h1>
+            <h1 className="text-2xl font-semibold text-zinc-900">Dashboard</h1>
             <p className="text-sm text-zinc-500 mt-1">
               Signed in as {staff.name} &middot; {staff.role}
             </p>
@@ -28,6 +26,7 @@ export default async function DashboardPage() {
             </button>
           </form>
         </div>
+
         <div className="my-8 pt-6 border-t border-zinc-200 flex justify-end gap-6">
           <div
             className="p-2 rounded"

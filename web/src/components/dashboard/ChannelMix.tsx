@@ -35,7 +35,7 @@ export function ChannelMix({ channels }: ChannelMixProps) {
             <span className="w-20 shrink-0 text-zinc-600 font-medium">{label}</span>
             <div className="flex-1 h-2 rounded-full bg-zinc-100">
               <div
-                className="h-2 rounded-full bg-[var(--navy)]"
+                className="h-2 rounded-full bg-(--navy)"
                 style={{ width: `${pct}%` }}
               />
             </div>

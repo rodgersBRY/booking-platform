@@ -1,6 +1,7 @@
 import { requireRole } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import StaffBoard from "@/components/dashboard/StaffBoard";
+import { DashboardSignoutButtons } from "@/components/dashboard/DashboardSignoutButtons";
 
 export const metadata = { title: "Staff — Barberia Cuts" };
 
@@ -12,14 +13,12 @@ export default async function StaffPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-semibold text-zinc-900">Staff</h1>
-            <p className="text-sm text-zinc-500 mt-1">Signed in as {staff.name} · owner</p>
+            <p className="text-sm text-zinc-500 mt-1">
+              Signed in as {staff.name} · owner
+            </p>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="/dashboard" className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors">← Dashboard</a>
-            <form action={signOut}>
-              <button type="submit" className="text-sm text-zinc-500 hover:text-zinc-900 underline underline-offset-2 transition-colors">Sign out</button>
-            </form>
-          </div>
+
+          <DashboardSignoutButtons signOut={signOut} />
         </div>
         <StaffBoard />
       </div>
