@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { StaffListItem } from "@/lib/api/staff";
 import { fetchStaff, setStaffStatus } from "@/lib/api/staff";
 import AddStaffModal from "./AddStaffModal";
@@ -8,16 +8,20 @@ import ResetPasswordModal from "./ResetPasswordModal";
 
 const POLL_INTERVAL_MS = 15_000;
 
-const ROLE_COLORS: Record<string, { bg: string; color: string }> = {
-  owner: { bg: "#e4e4e7", color: "#3f3f46" },
-  receptionist: { bg: "var(--navy)", color: "#fff" },
-  barber: { bg: "var(--brass)", color: "#fff" },
-};
+const ROLE_COLORS: Record<string, { backgroundColor: string; color: string }> =
+  {
+    owner: { backgroundColor: "#e4e4e7", color: "#3f3f46" },
+    receptionist: { backgroundColor: "var(--navy)", color: "#fff" },
+    barber: { backgroundColor: "var(--brass)", color: "#fff" },
+  };
 
-const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
-  active: { bg: "var(--free)", color: "#fff" },
-  inactive: { bg: "#e4e4e7", color: "#6b7280" },
-  blocked: { bg: "var(--late)", color: "#fff" },
+const STATUS_COLORS: Record<
+  string,
+  { backgroundColor: string; color: string }
+> = {
+  active: { backgroundColor: "var(--free)", color: "#fff" },
+  inactive: { backgroundColor: "#e4e4e7", color: "#6b7280" },
+  blocked: { backgroundColor: "var(--late)", color: "#fff" },
 };
 
 export default function StaffBoard() {
@@ -119,7 +123,7 @@ export default function StaffBoard() {
 
           <tbody>
             {staff.map((m) => {
-              // const rc = ROLE_COLORS[m.role] ?? ROLE_COLORS.owner;
+              const rc = ROLE_COLORS[m.role] ?? ROLE_COLORS.owner;
               const sc = STATUS_COLORS[m.status] ?? STATUS_COLORS.inactive;
               return (
                 <tr
@@ -134,7 +138,10 @@ export default function StaffBoard() {
                     {m.name}
                   </td>
                   <td className="px-5 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold">
+                    <span
+                      className="px-2.5 py-1 rounded-full text-xs font-semibold"
+                      style={rc}
+                    >
                       {m.role}
                     </span>
                   </td>
