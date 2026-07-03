@@ -46,7 +46,7 @@ export async function PATCH(
     if (!t.auth_user_id) return NextResponse.json({ error: "No auth account linked to this staff member" }, { status: 409 });
     if (!body.password) return NextResponse.json({ error: "password is required" }, { status: 400 });
 
-    const { error: pwErr } = await admin.auth.admin.updateUser(t.auth_user_id as string, { password: body.password });
+    const { error: pwErr } = await admin.auth.admin.updateUserById(t.auth_user_id as string, { password: body.password });
     if (pwErr) return NextResponse.json({ error: pwErr.message }, { status: 500 });
     return NextResponse.json({ ok: true });
   }
