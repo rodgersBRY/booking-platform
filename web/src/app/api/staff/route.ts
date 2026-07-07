@@ -1,5 +1,8 @@
 import { getCurrentStaff } from "@/lib/auth";
+import { defaultAvailabilityForBarber } from "@/lib/staff/availability";
+import { CREATABLE_ROLES, isBookableRole } from "@/lib/staff/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { StaffRole } from "@/lib/db/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -40,7 +43,12 @@ export async function POST(request: NextRequest) {
   const { name, role, email, phone, password } = body;
   if (!name || !email || !password) return NextResponse.json({ error: "name, email, and password are required" }, { status: 400 });
   if (!phone) return NextResponse.json({ error: "phone is required for WhatsApp notifications" }, { status: 400 });
-  if (role !== "receptionist" && role !== "barber") return NextResponse.json({ error: "Role must be receptionist or barber" }, { status: 400 });
+  if (!CREATABLE_ROLES.includes(role as StaffRole)) {
+    return NextResponse.json(
+      { error: `Role must be one of: ${CREATABLE_ROLES.join(", ")}` },
+      { status: 400 },
+    );
+  }
 
   const admin = createAdminClient();
 
@@ -70,6 +78,21 @@ export async function POST(request: NextRequest) {
   }
 
   const r = row as Record<string, unknown>;
+  if (isBookableRole(role as StaffRole)) {
+    const { error: availabilityErr } = await admin
+      .from("barber_availability")
+      .insert(defaultAvailabilityForBarber(String(r.id)));
+
+    if (availabilityErr) {
+      await admin.from("staff").delete().eq("id", r.id);
+      await admin.auth.admin.deleteUser(created.user.id);
+      return NextResponse.json(
+        { error: availabilityErr.message },
+        { status: 500 },
+      );
+    }
+  }
+
   return NextResponse.json({
     staff: { id: r.id, name: r.name, role: r.role, email: r.email, phone: r.phone, status: r.status, authUserId: r.auth_user_id, createdAt: r.created_at }
   }, { status: 201 });

@@ -65,6 +65,8 @@ export default function AddStaffModal({ onClose, onAdded }: Props) {
           <label className={labelClass} htmlFor="sf-role">Role</label>
           <select id="sf-role" value={role} onChange={(e) => setRole(e.target.value)} className={inputClass} style={inputStyle}>
             <option value="barber">Barber</option>
+            <option value="beautician">Beautician</option>
+            <option value="masseuse">Masseuse</option>
             <option value="receptionist">Receptionist</option>
           </select>
         </div>

@@ -1,4 +1,5 @@
 import { getCurrentStaff } from "@/lib/auth";
+import { BOOKABLE_ROLES } from "@/lib/staff/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
@@ -170,11 +171,11 @@ export async function GET() {
     atRiskCount = atRiskIds.filter((id) => !notAtRisk.has(id)).length;
   }
 
-  // ── 3. Active barbers for name lookup ──────────────────────────────────────
+  // ── 3. Active bookable staff for name lookup ───────────────────────────────
   const { data: barberRows } = await admin
     .from("staff")
     .select("id, name")
-    .eq("role", "barber")
+    .in("role", BOOKABLE_ROLES)
     .eq("status", "active");
 
   const barberMap = new Map<string, string>(

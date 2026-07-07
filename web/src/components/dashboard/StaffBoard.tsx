@@ -13,6 +13,8 @@ const ROLE_COLORS: Record<string, { backgroundColor: string; color: string }> =
     owner: { backgroundColor: "#e4e4e7", color: "#3f3f46" },
     receptionist: { backgroundColor: "var(--navy)", color: "#fff" },
     barber: { backgroundColor: "var(--brass)", color: "#fff" },
+    beautician: { backgroundColor: "var(--in-chair)", color: "#fff" },
+    masseuse: { backgroundColor: "var(--waiting)", color: "#fff" },
   };
 
 const STATUS_COLORS: Record<

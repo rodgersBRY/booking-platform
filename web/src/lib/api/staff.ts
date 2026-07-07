@@ -1,7 +1,7 @@
 export interface StaffListItem {
   id: string;
   name: string;
-  role: "owner" | "receptionist" | "barber";
+  role: "owner" | "receptionist" | "barber" | "beautician" | "masseuse";
   email: string | null;
   phone: string | null;
   status: "active" | "inactive" | "blocked";

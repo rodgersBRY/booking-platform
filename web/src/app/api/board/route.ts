@@ -1,4 +1,5 @@
 import { getCurrentStaff } from "@/lib/auth";
+import { BOOKABLE_ROLES } from "@/lib/staff/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 import type { ChairStatus, QueueItem, BoardStats, Appointment } from "@/lib/booking/types";
@@ -42,11 +43,11 @@ export async function GET() {
   const nowIso = now.toISOString();
   const { start: todayStart, end: todayEnd } = eatTodayBounds();
 
-  // ── Active barbers ────────────────────────────────────────────────────────
+  // ── Active bookable staff (barbers, beauticians, masseuses) ────────────────
   const { data: barbers, error: barberErr } = await admin
     .from("staff")
     .select("id, name")
-    .eq("role", "barber")
+    .in("role", BOOKABLE_ROLES)
     .eq("status", "active")
     .order("name");
 
