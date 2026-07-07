@@ -53,6 +53,13 @@ class BookingController extends GetxController {
   final staffError = RxnString();
   final RxnString selectedStaffId = RxnString();
 
+  /// "Any barber" if every eligible staff member shares one role, else generic.
+  String get anyStaffLabel {
+    final roles = staff.map((s) => s.role).toSet();
+    if (roles.length == 1) return 'Any ${roles.first}';
+    return 'Any available staff';
+  }
+
   // ── Step 3: date + slot ──────────────────────────────────────────────────
   final RxString activeDate = ''.obs;
   final slots = <SlotModel>[].obs;
@@ -74,7 +81,6 @@ class BookingController extends GetxController {
   void onInit() {
     super.onInit();
     loadServices();
-    loadStaff();
   }
 
   Future<void> loadServices() async {
@@ -89,11 +95,15 @@ class BookingController extends GetxController {
     }
   }
 
-  Future<void> loadStaff() async {
+  /// Staff eligible for the currently selected service — call after
+  /// [selectService]. No selected service means no staff to show.
+  Future<void> loadStaffForSelectedService() async {
+    final serviceId = selectedService.value?.id;
+    if (serviceId == null) return;
     staffLoading.value = true;
     staffError.value = null;
     try {
-      staff.value = await _repo.fetchStaff();
+      staff.value = await _repo.fetchStaff(serviceId: serviceId);
     } catch (_) {
       staffError.value = "Couldn't load staff. Please try again.";
     } finally {
@@ -108,7 +118,9 @@ class BookingController extends GetxController {
 
   void selectService(ServiceModel service) {
     selectedService.value = service;
+    selectedStaffId.value = null;
     Get.toNamed(AppRoutes.bookStaff);
+    loadStaffForSelectedService();
   }
 
   void selectStaff(String staffId) {

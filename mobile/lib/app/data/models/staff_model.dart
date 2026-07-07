@@ -1,13 +1,16 @@
-/// A bookable staff member — barbers today, but the backend's staff table
-/// also covers receptionist/beautician/masseuse roles, so this stays generic
-/// on the app side even though today's API only ever returns barbers.
+/// A bookable staff member — barber, beautician, or masseuse.
 class StaffModel {
   final String id;
   final String name;
+  final String role;
 
-  StaffModel({required this.id, required this.name});
+  StaffModel({required this.id, required this.name, required this.role});
 
   factory StaffModel.fromJson(Map<String, dynamic> json) {
-    return StaffModel(id: json['id'] as String, name: json['name'] as String);
+    return StaffModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      role: json['role'] as String,
+    );
   }
 }

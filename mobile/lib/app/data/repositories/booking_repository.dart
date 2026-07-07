@@ -20,11 +20,14 @@ class BookingRepository {
         .toList();
   }
 
-  /// The endpoint is still "/public/barbers" server-side — only the barber
-  /// role exists in the backend today — but the app treats the result as
-  /// generic bookable staff.
-  Future<List<StaffModel>> fetchStaff() async {
-    final res = await _dio.get('/public/barbers');
+  /// The endpoint is still "/public/barbers" server-side (legacy name), but
+  /// it now returns any bookable role. Pass [serviceId] to get only staff
+  /// eligible for that service — omit it to get everyone.
+  Future<List<StaffModel>> fetchStaff({String? serviceId}) async {
+    final res = await _dio.get(
+      '/public/barbers',
+      queryParameters: serviceId != null ? {'serviceId': serviceId} : null,
+    );
     final list = res.data['barbers'] as List;
     return list
         .map((e) => StaffModel.fromJson(e as Map<String, dynamic>))

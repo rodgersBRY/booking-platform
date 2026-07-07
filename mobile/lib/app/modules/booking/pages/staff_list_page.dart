@@ -5,6 +5,8 @@ import '../../../theme/app_colors.dart';
 import '../../../widgets/selectable_card.dart';
 import '../booking_controller.dart';
 
+String _capitalize(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+
 class StaffListPage extends GetView<BookingController> {
   const StaffListPage({super.key});
 
@@ -23,8 +25,19 @@ class StaffListPage extends GetView<BookingController> {
               children: [
                 Text(controller.staffError.value!, style: const TextStyle(color: AppColors.late)),
                 const SizedBox(height: 12),
-                OutlinedButton(onPressed: controller.loadStaff, child: const Text('Retry')),
+                OutlinedButton(
+                  onPressed: controller.loadStaffForSelectedService,
+                  child: const Text('Retry'),
+                ),
               ],
+            ),
+          );
+        }
+        if (controller.staff.isEmpty) {
+          return const Center(
+            child: Text(
+              'No staff available for this service right now.',
+              style: TextStyle(color: Colors.black45),
             ),
           );
         }
@@ -38,8 +51,8 @@ class StaffListPage extends GetView<BookingController> {
                 child: SelectableCard(
                   selected: controller.selectedStaffId.value == anyStaffId,
                   onTap: () => controller.selectStaff(anyStaffId),
-                  child: const _StaffTile(
-                    name: 'Any barber',
+                  child: _StaffTile(
+                    name: _capitalize(controller.anyStaffLabel),
                     subtitle: "We'll pick whoever is free",
                   ),
                 ),
@@ -52,7 +65,10 @@ class StaffListPage extends GetView<BookingController> {
                   () => SelectableCard(
                     selected: controller.selectedStaffId.value == member.id,
                     onTap: () => controller.selectStaff(member.id),
-                    child: _StaffTile(name: member.name, subtitle: 'Barber'),
+                    child: _StaffTile(
+                      name: member.name,
+                      subtitle: _capitalize(member.role),
+                    ),
                   ),
                 ),
               ),
