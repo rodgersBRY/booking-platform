@@ -1,15 +1,35 @@
 import 'package:get/get.dart';
 
-import '../modules/home/home_binding.dart';
-import '../modules/home/home_page.dart';
+import '../modules/booking/booking_binding.dart';
+import '../modules/booking/pages/confirmation_page.dart';
+import '../modules/booking/pages/details_page.dart';
+import '../modules/booking/pages/service_list_page.dart';
+import '../modules/booking/pages/slot_page.dart';
+import '../modules/booking/pages/staff_list_page.dart';
+import '../modules/login/login_binding.dart';
+import '../modules/login/login_page.dart';
+import '../modules/welcome/welcome_page.dart';
 import 'app_routes.dart';
 
 class AppPages {
   static final routes = <GetPage>[
+    GetPage(name: AppRoutes.welcome, page: () => const WelcomePage()),
     GetPage(
-      name: AppRoutes.home,
-      page: () => const HomePage(),
-      binding: HomeBinding(),
+      name: AppRoutes.login,
+      page: () => const LoginPage(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.bookService,
+      page: () => const ServiceListPage(),
+      binding: BookingBinding(),
+    ),
+    GetPage(name: AppRoutes.bookStaff, page: () => const StaffListPage()),
+    GetPage(name: AppRoutes.bookSlot, page: () => const SlotPage()),
+    GetPage(name: AppRoutes.bookDetails, page: () => const DetailsPage()),
+    GetPage(
+      name: AppRoutes.bookConfirmation,
+      page: () => const ConfirmationPage(),
     ),
   ];
 }

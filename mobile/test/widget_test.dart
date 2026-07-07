@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:barberia_cuts/app/modules/home/home_binding.dart';
-import 'package:barberia_cuts/app/modules/home/home_page.dart';
+import 'package:barberia_cuts/app/modules/welcome/welcome_page.dart';
 
 void main() {
-  testWidgets('Home page renders title', (WidgetTester tester) async {
-    HomeBinding().dependencies();
-    await tester.pumpWidget(const MaterialApp(home: HomePage()));
+  testWidgets('Welcome page renders brand and CTAs', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: WelcomePage()));
 
     expect(find.text('Barberia Cuts'), findsOneWidget);
+    expect(find.text('Continue as guest'), findsOneWidget);
+    expect(find.text('Sign in'), findsOneWidget);
   });
 }

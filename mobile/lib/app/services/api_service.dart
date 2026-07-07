@@ -27,6 +27,7 @@ class ApiService extends GetxService {
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
+          
           handler.next(options);
         },
       ),

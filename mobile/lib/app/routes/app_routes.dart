@@ -1,3 +1,9 @@
 abstract class AppRoutes {
-  static const home = '/';
+  static const welcome = '/';
+  static const login = '/login';
+  static const bookService = '/book/service';
+  static const bookStaff = '/book/staff';
+  static const bookSlot = '/book/slot';
+  static const bookDetails = '/book/details';
+  static const bookConfirmation = '/book/confirmation';
 }
