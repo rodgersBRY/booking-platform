@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 
-import '../../data/models/barber_model.dart';
 import '../../data/models/service_model.dart';
 import '../../data/models/slot_model.dart';
+import '../../data/models/staff_model.dart';
 import '../../data/repositories/booking_repository.dart';
 import '../../routes/app_routes.dart';
 
-const anyBarberId = 'any';
+const anyStaffId = 'any';
 
 class BookingController extends GetxController {
   final BookingRepository _repo = BookingRepository();
@@ -18,10 +18,10 @@ class BookingController extends GetxController {
   final Rxn<ServiceModel> selectedService = Rxn<ServiceModel>();
 
   // ── Step 2: staff ────────────────────────────────────────────────────────
-  final barbers = <BarberModel>[].obs;
-  final barbersLoading = true.obs;
-  final barbersError = RxnString();
-  final RxnString selectedBarberId = RxnString();
+  final staff = <StaffModel>[].obs;
+  final staffLoading = true.obs;
+  final staffError = RxnString();
+  final RxnString selectedStaffId = RxnString();
 
   // ── Step 3: date + slot ──────────────────────────────────────────────────
   final RxString activeDate = ''.obs;
@@ -44,7 +44,7 @@ class BookingController extends GetxController {
   void onInit() {
     super.onInit();
     loadServices();
-    loadBarbers();
+    loadStaff();
   }
 
   Future<void> loadServices() async {
@@ -59,15 +59,15 @@ class BookingController extends GetxController {
     }
   }
 
-  Future<void> loadBarbers() async {
-    barbersLoading.value = true;
-    barbersError.value = null;
+  Future<void> loadStaff() async {
+    staffLoading.value = true;
+    staffError.value = null;
     try {
-      barbers.value = await _repo.fetchBarbers();
+      staff.value = await _repo.fetchStaff();
     } catch (_) {
-      barbersError.value = "Couldn't load barbers. Please try again.";
+      staffError.value = "Couldn't load staff. Please try again.";
     } finally {
-      barbersLoading.value = false;
+      staffLoading.value = false;
     }
   }
 
@@ -76,8 +76,8 @@ class BookingController extends GetxController {
     Get.toNamed(AppRoutes.bookStaff);
   }
 
-  void selectBarber(String barberId) {
-    selectedBarberId.value = barberId;
+  void selectStaff(String staffId) {
+    selectedStaffId.value = staffId;
     selectedSlot.value = null;
     Get.toNamed(AppRoutes.bookSlot);
     loadSlots(nextDates(14).first);
@@ -95,14 +95,14 @@ class BookingController extends GetxController {
   }
 
   Future<void> loadSlots(String date) async {
-    if (selectedService.value == null || selectedBarberId.value == null) return;
+    if (selectedService.value == null || selectedStaffId.value == null) return;
     activeDate.value = date;
     slots.clear();
     slotsError.value = null;
     slotsLoading.value = true;
     try {
       slots.value = await _repo.fetchAvailability(
-        barberId: selectedBarberId.value!,
+        staffId: selectedStaffId.value!,
         serviceId: selectedService.value!.id,
         date: date,
       );
@@ -142,7 +142,7 @@ class BookingController extends GetxController {
     final result = await _repo.createBooking(
       name: name.value.trim(),
       phone: phone.value.trim(),
-      barberId: selectedSlot.value!.barberId,
+      staffId: selectedSlot.value!.staffId,
       serviceId: selectedService.value!.id,
       scheduledStart: selectedSlot.value!.start,
     );
@@ -169,7 +169,7 @@ class BookingController extends GetxController {
   /// Reset all state and start a fresh booking.
   void startOver() {
     selectedService.value = null;
-    selectedBarberId.value = null;
+    selectedStaffId.value = null;
     selectedSlot.value = null;
     slots.clear();
     activeDate.value = '';

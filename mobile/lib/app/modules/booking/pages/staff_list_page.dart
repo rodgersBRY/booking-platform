@@ -13,17 +13,17 @@ class StaffListPage extends GetView<BookingController> {
     return Scaffold(
       appBar: AppBar(title: const Text('Who would you like?')),
       body: Obx(() {
-        if (controller.barbersLoading.value) {
+        if (controller.staffLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (controller.barbersError.value != null) {
+        if (controller.staffError.value != null) {
           return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(controller.barbersError.value!, style: const TextStyle(color: AppColors.late)),
+                Text(controller.staffError.value!, style: const TextStyle(color: AppColors.late)),
                 const SizedBox(height: 12),
-                OutlinedButton(onPressed: controller.loadBarbers, child: const Text('Retry')),
+                OutlinedButton(onPressed: controller.loadStaff, child: const Text('Retry')),
               ],
             ),
           );
@@ -36,8 +36,8 @@ class StaffListPage extends GetView<BookingController> {
               () => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: SelectableCard(
-                  selected: controller.selectedBarberId.value == anyBarberId,
-                  onTap: () => controller.selectBarber(anyBarberId),
+                  selected: controller.selectedStaffId.value == anyStaffId,
+                  onTap: () => controller.selectStaff(anyStaffId),
                   child: const _StaffTile(
                     name: 'Any barber',
                     subtitle: "We'll pick whoever is free",
@@ -45,14 +45,14 @@ class StaffListPage extends GetView<BookingController> {
                 ),
               ),
             ),
-            ...controller.barbers.map(
-              (barber) => Padding(
+            ...controller.staff.map(
+              (member) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Obx(
                   () => SelectableCard(
-                    selected: controller.selectedBarberId.value == barber.id,
-                    onTap: () => controller.selectBarber(barber.id),
-                    child: _StaffTile(name: barber.name, subtitle: 'Barber'),
+                    selected: controller.selectedStaffId.value == member.id,
+                    onTap: () => controller.selectStaff(member.id),
+                    child: _StaffTile(name: member.name, subtitle: 'Barber'),
                   ),
                 ),
               ),

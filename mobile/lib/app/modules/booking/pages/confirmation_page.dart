@@ -12,13 +12,11 @@ class ConfirmationPage extends GetView<BookingController> {
   Widget build(BuildContext context) {
     final service = controller.selectedService.value;
     final slot = controller.selectedSlot.value;
-    final barberId = controller.selectedBarberId.value;
-    final barberName = barberId == anyBarberId
-        ? (controller.barbers
-                  .firstWhereOrNull((b) => b.id == slot?.barberId)
-                  ?.name ??
+    final staffId = controller.selectedStaffId.value;
+    final staffName = staffId == anyStaffId
+        ? (controller.staff.firstWhereOrNull((s) => s.id == slot?.staffId)?.name ??
               'Your barber')
-        : (controller.barbers.firstWhereOrNull((b) => b.id == barberId)?.name ??
+        : (controller.staff.firstWhereOrNull((s) => s.id == staffId)?.name ??
               'Your barber');
 
     final dateLabel = slot != null
@@ -51,7 +49,7 @@ class ConfirmationPage extends GetView<BookingController> {
                 child: Column(
                   children: [
                     _SummaryRow('Service', service?.name ?? ''),
-                    _SummaryRow('With', barberName),
+                    _SummaryRow('With', staffName),
                     _SummaryRow('Date', dateLabel),
                     _SummaryRow('Time', slot?.label ?? ''),
                   ],

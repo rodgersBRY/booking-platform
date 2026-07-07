@@ -16,15 +16,18 @@ class ServiceListPage extends GetView<BookingController> {
         if (controller.servicesLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
+
         if (controller.servicesError.value != null) {
           return _ErrorRetry(
             message: controller.servicesError.value!,
             onRetry: controller.loadServices,
           );
         }
+
         if (controller.services.isEmpty) {
           return const Center(child: Text('No services available right now.'));
         }
+        
         return ListView.separated(
           padding: const EdgeInsets.all(20),
           itemCount: controller.services.length,

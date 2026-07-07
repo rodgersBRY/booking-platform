@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 import '../../services/api_service.dart';
-import '../models/barber_model.dart';
 import '../models/booking_submit_result.dart';
 import '../models/service_model.dart';
 import '../models/slot_model.dart';
+import '../models/staff_model.dart';
 
 /// Hits the same /api/public/* endpoints the web guest booking flow uses —
 /// no auth required, no separate backend.
@@ -20,22 +20,25 @@ class BookingRepository {
         .toList();
   }
 
-  Future<List<BarberModel>> fetchBarbers() async {
+  /// The endpoint is still "/public/barbers" server-side — only the barber
+  /// role exists in the backend today — but the app treats the result as
+  /// generic bookable staff.
+  Future<List<StaffModel>> fetchStaff() async {
     final res = await _dio.get('/public/barbers');
     final list = res.data['barbers'] as List;
     return list
-        .map((e) => BarberModel.fromJson(e as Map<String, dynamic>))
+        .map((e) => StaffModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<List<SlotModel>> fetchAvailability({
-    required String barberId,
+    required String staffId,
     required String serviceId,
     required String date,
   }) async {
     final res = await _dio.get(
       '/public/availability',
-      queryParameters: {'barber': barberId, 'service': serviceId, 'date': date},
+      queryParameters: {'barber': staffId, 'service': serviceId, 'date': date},
     );
     final list = res.data['slots'] as List;
     return list
@@ -46,7 +49,7 @@ class BookingRepository {
   Future<BookingSubmitResult> createBooking({
     required String name,
     required String phone,
-    required String barberId,
+    required String staffId,
     required String serviceId,
     required String scheduledStart,
   }) async {
@@ -55,7 +58,7 @@ class BookingRepository {
         '/public/bookings',
         data: {
           'client': {'name': name, 'phone': phone},
-          'barberId': barberId,
+          'barberId': staffId,
           'serviceId': serviceId,
           'scheduledStart': scheduledStart,
         },
