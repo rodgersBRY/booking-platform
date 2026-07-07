@@ -6,6 +6,7 @@ import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/services/api_service.dart';
 import 'app/services/storage_service.dart';
+import 'app/theme/app_theme.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
@@ -23,7 +24,7 @@ class BarberiaCutsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Barberia Cuts',
-      theme: ThemeData(colorSchemeSeed: const Color(0xFF1A2540)),
+      theme: AppTheme.light,
       initialRoute: AppRoutes.home,
       getPages: AppPages.routes,
     );
