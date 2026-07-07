@@ -1,4 +1,5 @@
 import { getCurrentStaff } from "@/lib/auth";
+import { BOOKABLE_ROLES } from "@/lib/staff/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
@@ -11,8 +12,8 @@ export async function GET() {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("staff")
-    .select("id, name")
-    .eq("role", "barber")
+    .select("id, name, role")
+    .in("role", BOOKABLE_ROLES)
     .eq("status", "active")
     .order("name");
 

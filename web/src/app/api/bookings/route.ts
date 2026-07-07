@@ -60,6 +60,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: result.error }, { status: 404 });
   }
 
+  if (result.error === "role_mismatch") {
+    return NextResponse.json(
+      { error: result.error, message: result.message },
+      { status: 400 },
+    );
+  }
+
   if (result.error) {
     // Client creation failure or DB error.
     const is400 =

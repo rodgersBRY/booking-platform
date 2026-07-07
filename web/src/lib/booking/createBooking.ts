@@ -23,6 +23,7 @@ export type CreateBookingResult =
       slots: Slot[];
       booking?: never;
     }
+  | { error: "role_mismatch"; message: string; slots?: never; booking?: never }
   | { error: string; message?: string; slots?: never; booking?: never };
 
 /**
@@ -104,6 +105,34 @@ export async function createBooking(
 
   if (svcErr || !service) {
     return { error: "Service not found" };
+  }
+
+  // ── Defensive role-eligibility check ────────────────────────────────────────
+  // Authoritative guard: even if every UI upstream already filters staff by
+  // service eligibility, this is the one place every booking path funnels through.
+  if (barberId) {
+    const { data: staffRow, error: staffErr } = await admin
+      .from("staff")
+      .select("role")
+      .eq("id", barberId)
+      .single();
+    if (staffErr || !staffRow) {
+      return { error: "Staff member not found" };
+    }
+    const { data: eligibleRows, error: rolesErr } = await admin
+      .from("service_roles")
+      .select("role")
+      .eq("service_id", serviceId);
+    if (rolesErr) {
+      return { error: rolesErr.message };
+    }
+    const eligibleRoles = (eligibleRows ?? []).map((r) => r.role as string);
+    if (!eligibleRoles.includes(staffRow.role as string)) {
+      return {
+        error: "role_mismatch",
+        message: "This staff member cannot perform this service.",
+      };
+    }
   }
 
   const startDate = new Date(scheduledStart);

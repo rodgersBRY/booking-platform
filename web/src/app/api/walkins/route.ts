@@ -113,6 +113,33 @@ export async function POST(request: NextRequest) {
   }
   const duration = service.duration_minutes as number;
 
+  // Which staff role(s) can perform this service.
+  const { data: eligibleRoleRows, error: rolesErr } = await admin
+    .from("service_roles")
+    .select("role")
+    .eq("service_id", serviceId);
+  if (rolesErr) {
+    return NextResponse.json({ error: rolesErr.message }, { status: 500 });
+  }
+  const eligibleRoles = (eligibleRoleRows ?? []).map((r) => r.role as string);
+
+  if (preferredBarberId) {
+    const { data: preferredStaff, error: preferredErr } = await admin
+      .from("staff")
+      .select("role")
+      .eq("id", preferredBarberId)
+      .single();
+    if (preferredErr || !preferredStaff) {
+      return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
+    }
+    if (!eligibleRoles.includes(preferredStaff.role as string)) {
+      return NextResponse.json(
+        { error: "role_mismatch", message: "This staff member cannot perform this service." },
+        { status: 400 },
+      );
+    }
+  }
+
   const now = new Date();
   const nowIso = now.toISOString();
 
@@ -136,11 +163,11 @@ export async function POST(request: NextRequest) {
       seatBarberId = preferredBarberId;
     }
   } else {
-    // Find any free active barber.
+    // Find any free active staff member eligible for this service.
     const { data: barbers } = await admin
       .from("staff")
       .select("id")
-      .eq("role", "barber")
+      .in("role", eligibleRoles)
       .eq("status", "active");
 
     for (const b of barbers ?? []) {

@@ -101,10 +101,19 @@ export async function getAvailability({
   // Resolve barber list.
   let barberIds: string[];
   if (barberId === "any") {
+    // Only staff whose role is eligible for this service.
+    const { data: eligibleRoleRows, error: rolesErr } = await admin
+      .from("service_roles")
+      .select("role")
+      .eq("service_id", serviceId);
+    if (rolesErr) return [];
+    const eligibleRoles = (eligibleRoleRows ?? []).map((r) => r.role as string);
+    if (eligibleRoles.length === 0) return [];
+
     const { data: barbers, error: bErr } = await admin
       .from("staff")
       .select("id")
-      .eq("role", "barber")
+      .in("role", eligibleRoles)
       .eq("status", "active");
 
     if (bErr || !barbers) return [];
