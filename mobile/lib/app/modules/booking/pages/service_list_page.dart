@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../theme/app_colors.dart';
+import '../../../utils/format.dart';
 import '../../../widgets/selectable_card.dart';
 import '../booking_controller.dart';
 
@@ -11,7 +12,11 @@ class ServiceListPage extends GetView<BookingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('What would you like?')),
+      appBar: AppBar(
+        title: Obx(
+          () => Text(categoryLabel(controller.selectedCategory.value ?? '')),
+        ),
+      ),
       body: Obx(() {
         if (controller.servicesLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -24,16 +29,17 @@ class ServiceListPage extends GetView<BookingController> {
           );
         }
 
-        if (controller.services.isEmpty) {
-          return const Center(child: Text('No services available right now.'));
+        final services = controller.servicesInSelectedCategory;
+        if (services.isEmpty) {
+          return const Center(child: Text('No services in this category right now.'));
         }
-        
+
         return ListView.separated(
           padding: const EdgeInsets.all(20),
-          itemCount: controller.services.length,
+          itemCount: services.length,
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, i) {
-            final service = controller.services[i];
+            final service = services[i];
             return Obx(
               () => SelectableCard(
                 selected: controller.selectedService.value?.id == service.id,

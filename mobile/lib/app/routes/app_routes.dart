@@ -1,6 +1,7 @@
 abstract class AppRoutes {
   static const welcome = '/';
   static const login = '/login';
+  static const bookCategory = '/book/category';
   static const bookService = '/book/service';
   static const bookStaff = '/book/staff';
   static const bookSlot = '/book/slot';

@@ -8,14 +8,44 @@ import '../../routes/app_routes.dart';
 
 const anyStaffId = 'any';
 
+/// Bucket key used for services with no category set.
+const otherCategoryKey = '_other';
+
 class BookingController extends GetxController {
   final BookingRepository _repo = BookingRepository();
 
-  // ── Step 1: service ──────────────────────────────────────────────────────
+  // ── Step 1: category, then service ──────────────────────────────────────
   final services = <ServiceModel>[].obs;
   final servicesLoading = true.obs;
   final servicesError = RxnString();
+  final RxnString selectedCategory = RxnString();
   final Rxn<ServiceModel> selectedService = Rxn<ServiceModel>();
+
+  /// Unique categories, in first-seen order, with uncategorized services
+  /// bucketed under [otherCategoryKey] last.
+  List<String> get categories {
+    final seen = <String>[];
+    var hasOther = false;
+    for (final s in services) {
+      final key = s.category;
+      if (key == null || key.trim().isEmpty) {
+        hasOther = true;
+      } else if (!seen.contains(key)) {
+        seen.add(key);
+      }
+    }
+    if (hasOther) seen.add(otherCategoryKey);
+    return seen;
+  }
+
+  List<ServiceModel> get servicesInSelectedCategory {
+    final category = selectedCategory.value;
+    if (category == null) return const [];
+    if (category == otherCategoryKey) {
+      return services.where((s) => s.category == null || s.category!.trim().isEmpty).toList();
+    }
+    return services.where((s) => s.category == category).toList();
+  }
 
   // ── Step 2: staff ────────────────────────────────────────────────────────
   final staff = <StaffModel>[].obs;
@@ -69,6 +99,11 @@ class BookingController extends GetxController {
     } finally {
       staffLoading.value = false;
     }
+  }
+
+  void selectCategory(String category) {
+    selectedCategory.value = category;
+    Get.toNamed(AppRoutes.bookService);
   }
 
   void selectService(ServiceModel service) {
@@ -168,6 +203,7 @@ class BookingController extends GetxController {
 
   /// Reset all state and start a fresh booking.
   void startOver() {
+    selectedCategory.value = null;
     selectedService.value = null;
     selectedStaffId.value = null;
     selectedSlot.value = null;
@@ -178,6 +214,6 @@ class BookingController extends GetxController {
     submitError.value = null;
     slotTakenSlots.value = null;
     confirmedBooking.value = null;
-    Get.offAllNamed(AppRoutes.bookService);
+    Get.offAllNamed(AppRoutes.bookCategory);
   }
 }

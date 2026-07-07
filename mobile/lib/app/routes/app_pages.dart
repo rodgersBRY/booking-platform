@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../modules/booking/booking_binding.dart';
+import '../modules/booking/pages/category_list_page.dart';
 import '../modules/booking/pages/confirmation_page.dart';
 import '../modules/booking/pages/details_page.dart';
 import '../modules/booking/pages/service_list_page.dart';
@@ -20,10 +21,11 @@ class AppPages {
       binding: LoginBinding(),
     ),
     GetPage(
-      name: AppRoutes.bookService,
-      page: () => const ServiceListPage(),
+      name: AppRoutes.bookCategory,
+      page: () => const CategoryListPage(),
       binding: BookingBinding(),
     ),
+    GetPage(name: AppRoutes.bookService, page: () => const ServiceListPage()),
     GetPage(name: AppRoutes.bookStaff, page: () => const StaffListPage()),
     GetPage(name: AppRoutes.bookSlot, page: () => const SlotPage()),
     GetPage(name: AppRoutes.bookDetails, page: () => const DetailsPage()),
