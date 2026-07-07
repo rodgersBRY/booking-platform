@@ -1,0 +1,519 @@
+{
+  "haircuts": [
+    {
+      "service": "Platinum Haircut",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Platinum Fade",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Royal Shave",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Styling Only",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Kids Haircut",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Caucasian Haircut",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Fade Haircut",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Beard Trim",
+      "price": 500,
+      "currency": "KES"
+    },
+    {
+      "service": "Styling",
+      "price": 500,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut & Dye",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut & Dye Color (1 Dye)",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Hair Dye Only",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Texturizing",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Treatment",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut + Texturizer",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut + Texturizer + Dye",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut + Treatment + Dye",
+      "price": 3000,
+      "currency": "KES"
+    }
+  ],
+  "beards": [
+    {
+      "service": "Royal Shave",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Beard Trim",
+      "price": 500,
+      "currency": "KES"
+    }
+  ],
+  "hair_dyes": [
+    {
+      "service": "Coloured Dye (Long Hair)",
+      "price": 5000,
+      "currency": "KES"
+    },
+    {
+      "service": "Coloured Dye (Short Hair)",
+      "price": 4000,
+      "currency": "KES"
+    },
+    {
+      "service": "Black Dye",
+      "price": 1500,
+      "currency": "KES"
+    }
+  ],
+  "hair_relaxing": [
+    {
+      "service": "Texturizing Long Hair",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Texturizing Short Hair",
+      "price": 1000,
+      "currency": "KES"
+    }
+  ],
+  "hair_treatments": [
+    {
+      "service": "Protein Treatment",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Soothing Treatment",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Moisturizing Treatment",
+      "price": 1000,
+      "currency": "KES"
+    }
+  ],
+  "nail_care": [
+    {
+      "service": "Platinum Foot Care",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Platinum Hand Care",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Luxe Thermal Foot Care",
+      "price": 3500,
+      "currency": "KES"
+    },
+    {
+      "service": "Luxe Thermal Hand Care",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Anti-aging Coffee Foot Care",
+      "price": 3500,
+      "currency": "KES"
+    },
+    {
+      "service": "Anti-aging Coffee Hand Care",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Citrus Serenity Foot Care",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Citrus Serenity Hand Care",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Renewal Foot Care",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Renewal Hand Care",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Reflexology Foot Care",
+      "price": 4000,
+      "currency": "KES"
+    },
+    {
+      "service": "Cut & File Feet",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Nail Maintenance",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Foot or Hand Mask",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Feet & Nail Treatment",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Hand & Nail Treatment",
+      "price": 1500,
+      "currency": "KES"
+    }
+  ],
+  "facials": [
+    {
+      "service": "Anti-aging Facial (60 mins)",
+      "price": 4500,
+      "currency": "KES"
+    },
+    {
+      "service": "Hydrating Facial (60 mins)",
+      "price": 4000,
+      "currency": "KES"
+    },
+    {
+      "service": "Organic Facial (60 mins)",
+      "price": 3500,
+      "currency": "KES"
+    },
+    {
+      "service": "Deep Cleansing (35 mins)",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Barberia Facial Treatment",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Mini Facial",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Steaming",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Mask",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Scrub",
+      "price": 1000,
+      "currency": "KES"
+    }
+  ],
+  "massage": [
+    {
+      "service": "Swedish Massage (60 mins)",
+      "price": 4500,
+      "currency": "KES"
+    },
+    {
+      "service": "Swedish Massage (90 mins)",
+      "price": 6000,
+      "currency": "KES"
+    },
+    {
+      "service": "Unwind Massage (75 mins)",
+      "price": 5500,
+      "currency": "KES"
+    },
+    {
+      "service": "Aromatherapy Massage (60 mins)",
+      "price": 5500,
+      "currency": "KES"
+    },
+    {
+      "service": "Aromatherapy Massage (90 mins)",
+      "price": 6500,
+      "currency": "KES"
+    },
+    {
+      "service": "Deep Tissue Massage (60 mins)",
+      "price": 5000,
+      "currency": "KES"
+    },
+    {
+      "service": "Deep Tissue Massage (90 mins)",
+      "price": 6500,
+      "currency": "KES"
+    },
+    {
+      "service": "Platinum Swedish Massage",
+      "price": 4500,
+      "currency": "KES"
+    },
+    {
+      "service": "Platinum Deep Tissue Massage",
+      "price": 5000,
+      "currency": "KES"
+    },
+    {
+      "service": "Platinum Aromatherapy Massage",
+      "price": 5500,
+      "currency": "KES"
+    },
+    {
+      "service": "Platinum Hot Stone Massage",
+      "price": 6000,
+      "currency": "KES"
+    },
+    {
+      "service": "Back Massage",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Foot Massage",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Head & Shoulder Massage",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Hand Massage",
+      "price": 500,
+      "currency": "KES"
+    },
+    {
+      "service": "Indian Head Massage",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Back & Neck Relief",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Full Back Massage",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Traditional Thai Healing Massage",
+      "price": 8000,
+      "currency": "KES"
+    },
+    {
+      "service": "Four Hands Tandem Massage",
+      "price": 12000,
+      "currency": "KES"
+    },
+    {
+      "service": "Hot Stone Massage Therapy",
+      "price": 7000,
+      "currency": "KES"
+    }
+  ],
+  "body_treatments": [
+    {
+      "service": "Moroccan Body Scrub",
+      "price": 6000,
+      "currency": "KES"
+    },
+    {
+      "service": "Body Wrap/Mask",
+      "price": 4000,
+      "currency": "KES"
+    },
+    {
+      "service": "Coffee Body Scrub",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Citrus Salt/Sugar Scrub",
+      "price": 3000,
+      "currency": "KES"
+    },
+    {
+      "service": "Steam Bath",
+      "price": 2500,
+      "currency": "KES"
+    }
+  ],
+  "waxing": [
+    {
+      "service": "Armpit Waxing",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Underarm Waxing",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Upper Lip & Chin Waxing",
+      "price": 1000,
+      "currency": "KES"
+    },
+    {
+      "service": "Chest Waxing",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Back Waxing",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Half Arm Waxing",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Full Arm Waxing",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Half Leg Waxing",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Full Leg Waxing",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Leg Waxing",
+      "price": 1500,
+      "currency": "KES"
+    },
+    {
+      "service": "Chest or Back Waxing",
+      "price": 2000,
+      "currency": "KES"
+    },
+    {
+      "service": "Bikini Waxing",
+      "price": 2500,
+      "currency": "KES"
+    },
+    {
+      "service": "Brazilian Waxing",
+      "price": 3000,
+      "currency": "KES"
+    }
+  ],
+  "spa_packages": [
+    {
+      "service": "The Platinum Man",
+      "price": 12000,
+      "currency": "KES"
+    },
+    {
+      "service": "Jet Lag Away",
+      "price": 12000,
+      "currency": "KES"
+    },
+    {
+      "service": "Unwind & Relax",
+      "price": 11500,
+      "currency": "KES"
+    },
+    {
+      "service": "Mind & Body Healing",
+      "price": 14500,
+      "currency": "KES"
+    },
+    {
+      "service": "Platinum Ritual",
+      "price": 21000,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut + Dye + Facial + Manicure + Pedicure",
+      "price": 8000,
+      "currency": "KES"
+    },
+    {
+      "service": "Haircut + Fibre + Mini Facial + Manicure",
+      "price": 3500,
+      "currency": "KES"
+    }
+  ]
+}
