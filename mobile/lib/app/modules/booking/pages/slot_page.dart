@@ -18,16 +18,20 @@ class SlotPage extends GetView<BookingController> {
         children: [
           SizedBox(
             height: 72,
-            child: Obx(
-              () => ListView.separated(
+            child: Obx(() {
+              final activeDate = controller.activeDate.value;
+              return ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 itemCount: dates.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, i) {
                   final date = dates[i];
                   final parsed = DateTime.parse(date);
-                  final active = controller.activeDate.value == date;
+                  final active = activeDate == date;
                   return InkWell(
                     onTap: () => controller.loadSlots(date),
                     borderRadius: BorderRadius.circular(12),
@@ -38,7 +42,10 @@ class SlotPage extends GetView<BookingController> {
                         color: active ? AppColors.brass : AppColors.card,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: active ? AppColors.brass : const Color(0xFFE5E7EB),
+                          color:
+                              active
+                                  ? AppColors.brass
+                                  : const Color(0xFFE5E7EB),
                           width: 1.5,
                         ),
                       ),
@@ -64,8 +71,8 @@ class SlotPage extends GetView<BookingController> {
                     ),
                   );
                 },
-              ),
-            ),
+              );
+            }),
           ),
           const Divider(height: 1),
           Expanded(
@@ -89,6 +96,7 @@ class SlotPage extends GetView<BookingController> {
                   ),
                 );
               }
+              final selectedStart = controller.selectedSlot.value?.start;
               return GridView.builder(
                 padding: const EdgeInsets.all(16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -100,17 +108,24 @@ class SlotPage extends GetView<BookingController> {
                 itemCount: controller.slots.length,
                 itemBuilder: (context, i) {
                   final slot = controller.slots[i];
-                  final selected = controller.selectedSlot.value?.start == slot.start;
+                  final selected = selectedStart == slot.start;
                   return OutlinedButton(
                     onPressed: () => controller.selectSlot(slot),
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: selected ? AppColors.brass : AppColors.card,
+                      backgroundColor:
+                          selected ? AppColors.brass : AppColors.card,
                       foregroundColor: selected ? Colors.white : AppColors.navy,
                       side: BorderSide(
-                        color: selected ? AppColors.brass : const Color(0xFFE5E7EB),
+                        color:
+                            selected
+                                ? AppColors.brass
+                                : const Color(0xFFE5E7EB),
                       ),
                     ),
-                    child: Text(slot.label, style: const TextStyle(fontSize: 13)),
+                    child: Text(
+                      slot.label,
+                      style: const TextStyle(fontSize: 13),
+                    ),
                   );
                 },
               );
