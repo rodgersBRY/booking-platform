@@ -1,24 +1,28 @@
 import { getCurrentStaff } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { StaffRole } from "@/lib/db/types";
 import { NextRequest, NextResponse } from "next/server";
 
 type ServiceRow = {
   id: string;
   name: string;
+  category: string | null;
   description: string | null;
   duration_minutes: number;
   price: number;
   active: boolean;
 };
 
-function shape(s: ServiceRow) {
+function shape(s: ServiceRow, roles: StaffRole[]) {
   return {
     id: s.id,
     name: s.name,
+    category: s.category,
     description: s.description,
     durationMinutes: s.duration_minutes,
     price: s.price,
     active: s.active,
+    roles,
   };
 }
 
@@ -35,15 +39,24 @@ export async function PATCH(
   const { id } = await params;
   let body: {
     name?: string;
+    category?: string | null;
     description?: string | null;
     durationMinutes?: number;
     price?: number;
     active?: boolean;
+    roles?: StaffRole[];
   };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  if (body.roles !== undefined && body.roles.length === 0) {
+    return NextResponse.json(
+      { error: "roles cannot be empty — use active:false to disable a service instead" },
+      { status: 400 },
+    );
   }
 
   const update: Record<string, unknown> = {};
@@ -58,6 +71,9 @@ export async function PATCH(
   }
   if (body.description !== undefined) {
     update.description = body.description?.trim() || null;
+  }
+  if (body.category !== undefined) {
+    update.category = body.category?.trim() || null;
   }
   if (body.durationMinutes !== undefined) {
     if (typeof body.durationMinutes !== "number" || body.durationMinutes <= 0)
@@ -88,12 +104,31 @@ export async function PATCH(
     .from("services")
     .update(update)
     .eq("id", id)
-    .select("id, name, description, duration_minutes, price, active")
+    .select("id, name, category, description, duration_minutes, price, active")
     .single();
 
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data)
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
-  return NextResponse.json({ service: shape(data as ServiceRow) });
+
+  let roles: StaffRole[];
+  if (body.roles !== undefined) {
+    await admin.from("service_roles").delete().eq("service_id", id);
+    const { error: rolesErr } = await admin
+      .from("service_roles")
+      .insert(body.roles.map((role) => ({ service_id: id, role })));
+    if (rolesErr) {
+      return NextResponse.json({ error: rolesErr.message }, { status: 500 });
+    }
+    roles = body.roles;
+  } else {
+    const { data: roleRows } = await admin
+      .from("service_roles")
+      .select("role")
+      .eq("service_id", id);
+    roles = (roleRows ?? []).map((r) => r.role as StaffRole);
+  }
+
+  return NextResponse.json({ service: shape(data as ServiceRow, roles) });
 }

@@ -1,10 +1,14 @@
+export type BookableRole = "barber" | "beautician" | "masseuse";
+
 export interface ServiceItem {
   id: string;
   name: string;
+  category: string | null;
   description: string | null;
   durationMinutes: number;
   price: number;
   active: boolean;
+  roles: BookableRole[];
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -15,6 +19,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     (err as Error & { status: number }).status = res.status;
     throw err;
   }
+
   return res.json() as Promise<T>;
 }
 
@@ -26,9 +31,11 @@ export async function fetchAllServices(): Promise<ServiceItem[]> {
 
 export async function createService(p: {
   name: string;
+  category?: string;
   durationMinutes: number;
   price: number;
   description?: string;
+  roles?: BookableRole[];
 }): Promise<ServiceItem> {
   const data = await apiFetch<{ service: ServiceItem }>("/api/services", {
     method: "POST",
@@ -44,8 +51,10 @@ export async function updateService(
     name: string;
     durationMinutes: number;
     price: number;
+    category: string | null;
     description: string | null;
     active: boolean;
+    roles: BookableRole[];
   }>,
 ): Promise<ServiceItem> {
   const data = await apiFetch<{ service: ServiceItem }>(`/api/services/${id}`, {
