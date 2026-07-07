@@ -1,7 +1,12 @@
 // Hand-written types mirroring supabase/migrations/0001_init.sql.
 // Replaceable later with generated types: `supabase gen types typescript`.
 
-export type StaffRole = "owner" | "receptionist" | "barber";
+export type StaffRole =
+  | "owner"
+  | "receptionist"
+  | "barber"
+  | "beautician"
+  | "masseuse";
 export type ClientStatus = "active" | "inactive" | "blocked";
 export type AcquisitionSource =
   | "social"
@@ -53,11 +58,17 @@ export interface Staff {
 export interface Service {
   id: string;
   name: string;
+  category: string | null;
   description: string | null;
   duration_minutes: number;
   price: number;
   active: boolean;
   created_at: string;
+}
+
+export interface ServiceRole {
+  service_id: string;
+  role: StaffRole;
 }
 
 export interface Client {

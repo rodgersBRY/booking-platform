@@ -15,6 +15,8 @@ export function roleHome(role: StaffRole): string {
     case "receptionist":
       return "/console";
     case "barber":
+    case "beautician":
+    case "masseuse":
       return "/me";
   }
 }
