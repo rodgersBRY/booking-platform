@@ -1,24 +1,32 @@
 import { requireRole } from "@/lib/auth";
-import { signOut } from "@/app/login/actions";
 import StaffBoard from "@/components/dashboard/StaffBoard";
-import { DashboardSignoutButtons } from "@/components/dashboard/DashboardSignoutButtons";
+import { NavHeader } from "@/components/layout/NavHeader";
 
 export const metadata = { title: "Staff — Barberia Cuts" };
 
 export default async function StaffPage() {
   const staff = await requireRole("owner");
   return (
-    <div className="min-h-screen bg-zinc-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">Staff</h1>
-            <p className="text-sm text-zinc-500 mt-1">
-              Signed in as {staff.name} · owner
-            </p>
-          </div>
+    <div className="min-h-screen bg-zinc-50">
+      <NavHeader
+        staffName={staff.name}
+        staffRole={staff.role}
+        section="Staff"
+        links={[
+          { href: "/dashboard", label: "Dashboard" },
+          { href: "/dashboard/staff", label: "Staff" },
+          { href: "/dashboard/services", label: "Services" },
+          { href: "/console", label: "Reception" },
+          { href: "/me", label: "My day" },
+        ]}
+      />
 
-          <DashboardSignoutButtons signOut={signOut} />
+      <div className="max-w-4xl mx-auto px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-zinc-900">Staff</h1>
+          <p className="text-sm text-zinc-500 mt-1">
+            Add barbers and receptionists, then manage access.
+          </p>
         </div>
         <StaffBoard />
       </div>

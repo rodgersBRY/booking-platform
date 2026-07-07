@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/auth";
-import { signOut } from "@/app/login/actions";
 import { DashboardBoard } from "@/components/dashboard/DashboardBoard";
+import { NavHeader } from "@/components/layout/NavHeader";
 
 export const metadata = { title: "Owner dashboard — Barberia Cuts" };
 
@@ -8,51 +8,26 @@ export default async function DashboardPage() {
   const staff = await requireRole("owner");
 
   return (
-    <div className="min-h-screen bg-zinc-50 p-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">Dashboard</h1>
-            <p className="text-sm text-zinc-500 mt-1">
-              Signed in as {staff.name} &middot; {staff.role}
-            </p>
-          </div>
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="text-sm text-zinc-500 hover:text-zinc-900 underline underline-offset-2 transition-colors"
-            >
-              Sign out
-            </button>
-          </form>
-        </div>
+    <div className="min-h-screen bg-zinc-50">
+      <NavHeader
+        staffName={staff.name}
+        staffRole={staff.role}
+        section="Dashboard"
+        links={[
+          { href: "/dashboard", label: "Dashboard" },
+          { href: "/dashboard/staff", label: "Staff" },
+          { href: "/dashboard/services", label: "Services" },
+          { href: "/console", label: "Reception" },
+          { href: "/me", label: "My day" },
+        ]}
+      />
 
-        <div className="my-8 pt-6 border-t border-zinc-200 flex justify-end gap-6">
-          <div
-            className="p-2 rounded"
-            style={{ border: "1px solid var(--brass)" }}
-          >
-            <a
-              href="/dashboard/staff"
-              className="text-sm font-medium hover:opacity-70 transition-opacity"
-              style={{ color: "var(--brass)" }}
-            >
-              Manage staff →
-            </a>
-          </div>
-
-          <div
-            className="p-2 rounded"
-            style={{ border: "1px solid var(--brass)" }}
-          >
-            <a
-              href="/dashboard/services"
-              className="text-sm font-medium hover:opacity-70 transition-opacity"
-              style={{ color: "var(--brass)" }}
-            >
-              Manage services &amp; prices →
-            </a>
-          </div>
+      <div className="max-w-5xl mx-auto px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-zinc-900">Dashboard</h1>
+          <p className="text-sm text-zinc-500 mt-1">
+            Today&apos;s shop performance and live operations.
+          </p>
         </div>
         <DashboardBoard />
       </div>
