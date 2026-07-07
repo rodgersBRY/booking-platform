@@ -18,9 +18,12 @@ export interface BoardData {
   stats: BoardStats;
 }
 
+export type BookableRole = "barber" | "beautician" | "masseuse";
+
 export interface Barber {
   id: string;
   name: string;
+  role: BookableRole;
 }
 
 export interface Service {
@@ -28,6 +31,7 @@ export interface Service {
   name: string;
   durationMinutes: number;
   price: number;
+  roles: BookableRole[];
 }
 
 export interface ClientSearchResult {

@@ -1,4 +1,5 @@
 import { getCurrentStaff } from "@/lib/auth";
+import { isBookableRole } from "@/lib/staff/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
@@ -29,7 +30,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   
-  if (staff.role !== "barber" && staff.role !== "owner") {
+  if (staff.role !== "owner" && !isBookableRole(staff.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

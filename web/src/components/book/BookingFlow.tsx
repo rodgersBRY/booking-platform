@@ -11,9 +11,24 @@ interface Service {
   price: number;
 }
 
+type StaffRole = "barber" | "beautician" | "masseuse";
+
 interface Barber {
   id: string;
   name: string;
+  role: StaffRole;
+}
+
+const ROLE_LABELS: Record<StaffRole, string> = {
+  barber: "barber",
+  beautician: "beautician",
+  masseuse: "masseuse",
+};
+
+/** "Any barber" if the service maps to a single role, else a generic label. */
+function anyLabel(roles: StaffRole[]): string {
+  if (roles.length === 1) return `Any ${ROLE_LABELS[roles[0]]}`;
+  return "Any available staff";
 }
 
 interface Slot {
@@ -177,16 +192,22 @@ function ServiceStep({
 
 function BarberStep({
   barbers,
+  anyOptionLabel,
   selected,
   onSelect,
 }: {
   barbers: Barber[];
+  anyOptionLabel: string;
   selected: string | "any" | null;
   onSelect: (id: string | "any") => void;
 }) {
   const options: Array<{ id: string | "any"; name: string; sub: string }> = [
-    { id: "any", name: "Any barber", sub: "We'll pick whoever is free" },
-    ...barbers.map((b) => ({ id: b.id, name: b.name, sub: "Barber" })),
+    { id: "any", name: anyOptionLabel, sub: "We'll pick whoever is free" },
+    ...barbers.map((b) => ({
+      id: b.id,
+      name: b.name,
+      sub: ROLE_LABELS[b.role][0].toUpperCase() + ROLE_LABELS[b.role].slice(1),
+    })),
   ];
 
   return (
@@ -454,7 +475,7 @@ function ConfirmationScreen({ confirmation }: { confirmation: BookingConfirmatio
         </div>
         <div className="flex justify-between">
           <span className="text-sm" style={{ color: "#6b7280" }}>
-            Barber
+            With
           </span>
           <span className="text-sm font-medium" style={{ color: "var(--navy)" }}>
             {confirmation.barberName}
@@ -485,10 +506,16 @@ function ConfirmationScreen({ confirmation }: { confirmation: BookingConfirmatio
 
 interface BookingFlowProps {
   services: Service[];
-  barbers: Barber[];
+  staff: Barber[];
+  /** serviceId -> roles eligible to perform it */
+  serviceRoles: Record<string, StaffRole[]>;
 }
 
-export default function BookingFlow({ services, barbers }: BookingFlowProps) {
+export default function BookingFlow({
+  services,
+  staff,
+  serviceRoles,
+}: BookingFlowProps) {
   const [step, setStep] = useState<Step>(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedBarberId, setSelectedBarberId] = useState<string | "any" | null>(null);
@@ -499,6 +526,11 @@ export default function BookingFlow({ services, barbers }: BookingFlowProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [slotTakenSlots, setSlotTakenSlots] = useState<Slot[] | null>(null);
   const [confirmation, setConfirmation] = useState<BookingConfirmation | null>(null);
+
+  const eligibleRoles = selectedService
+    ? serviceRoles[selectedService.id] ?? []
+    : [];
+  const eligibleStaff = staff.filter((s) => eligibleRoles.includes(s.role));
 
   function canAdvance(): boolean {
     if (step === 1) return selectedService !== null;
@@ -544,9 +576,9 @@ export default function BookingFlow({ services, barbers }: BookingFlowProps) {
         return;
       }
 
-      // Success — find the barber name for the confirmation screen.
+      // Success — find the staff name for the confirmation screen.
       const barberName =
-        barbers.find((b) => b.id === concreteBarberId)?.name ?? "Your barber";
+        staff.find((b) => b.id === concreteBarberId)?.name ?? "Your barber";
 
       setConfirmation({
         barberName,
@@ -573,13 +605,17 @@ export default function BookingFlow({ services, barbers }: BookingFlowProps) {
         <ServiceStep
           services={services}
           selected={selectedService}
-          onSelect={(s) => setSelectedService(s)}
+          onSelect={(s) => {
+            setSelectedService(s);
+            setSelectedBarberId(null);
+          }}
         />
       )}
 
       {step === 2 && (
         <BarberStep
-          barbers={barbers}
+          barbers={eligibleStaff}
+          anyOptionLabel={anyLabel(eligibleRoles)}
           selected={selectedBarberId}
           onSelect={(id) => setSelectedBarberId(id)}
         />

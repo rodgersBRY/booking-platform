@@ -58,6 +58,14 @@ export default function AddWalkinModal({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const selectedService = services.find((s) => s.id === serviceId);
+  const eligibleRoles = selectedService?.roles ?? [];
+  const eligibleBarbers = serviceId
+    ? barbers.filter((b) => eligibleRoles.includes(b.role))
+    : barbers;
+  const anyOptionLabel =
+    eligibleRoles.length === 1 ? `Any ${eligibleRoles[0]}` : 'Any available staff';
+
   useEffect(() => {
     dialogRef.current?.showModal();
   }, []);
@@ -383,7 +391,10 @@ export default function AddWalkinModal({
                 id="wk-service"
                 required
                 value={serviceId}
-                onChange={(e) => setServiceId(e.target.value)}
+                onChange={(e) => {
+                  setServiceId(e.target.value);
+                  setPreferredBarberId('');
+                }}
                 className={inputClass}
                 style={inputStyle}
               >
@@ -398,7 +409,7 @@ export default function AddWalkinModal({
 
             <div>
               <label className={labelClass} htmlFor="wk-barber">
-                Preferred barber
+                Preferred staff
               </label>
               <select
                 id="wk-barber"
@@ -407,8 +418,8 @@ export default function AddWalkinModal({
                 className={inputClass}
                 style={inputStyle}
               >
-                <option value="">Any barber</option>
-                {barbers.map((b) => (
+                <option value="">{anyOptionLabel}</option>
+                {eligibleBarbers.map((b) => (
                   <option key={b.id} value={b.id}>
                     {b.name}
                   </option>

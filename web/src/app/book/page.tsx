@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { BOOKABLE_ROLES } from "@/lib/staff/roles";
 import BookingFlow from "@/components/book/BookingFlow";
 
 export const metadata = {
@@ -6,19 +7,25 @@ export const metadata = {
   description: "Book your barbershop appointment online — quick, easy, free.",
 };
 
-async function getServicesAndBarbers() {
+// Narrowed to the roles BOOKABLE_ROLES/service_roles ever actually contain —
+// BookingFlow's props don't need the full StaffRole union (owner/receptionist
+// never appear here).
+type BookableStaffRole = "barber" | "beautician" | "masseuse";
+
+async function getServicesAndStaff() {
   const admin = createAdminClient();
 
-  const [{ data: servicesRaw }, { data: barbersRaw }] = await Promise.all([
+  const [{ data: servicesRaw }, { data: staffRaw }] = await Promise.all([
     admin
       .from("services")
-      .select("id, name, duration_minutes, price")
+      .select("id, name, category, duration_minutes, price")
       .eq("active", true)
+      .order("category")
       .order("name"),
     admin
       .from("staff")
-      .select("id, name")
-      .eq("role", "barber")
+      .select("id, name, role")
+      .in("role", BOOKABLE_ROLES)
       .eq("status", "active")
       .order("name"),
   ]);
@@ -27,26 +34,45 @@ async function getServicesAndBarbers() {
     (s: {
       id: string;
       name: string;
+      category: string | null;
       duration_minutes: number;
       price: number;
     }) => ({
       id: s.id,
       name: s.name,
+      category: s.category,
       durationMinutes: s.duration_minutes,
       price: s.price,
     }),
   );
 
-  const barbers = (barbersRaw ?? []).map((b: { id: string; name: string }) => ({
-    id: b.id,
-    name: b.name,
-  }));
+  const staff = (staffRaw ?? []).map(
+    (s: { id: string; name: string; role: string }) => ({
+      id: s.id,
+      name: s.name,
+      role: s.role as BookableStaffRole,
+    }),
+  );
 
-  return { services, barbers };
+  const serviceIds = services.map((s) => s.id);
+  const serviceRoles: Record<string, BookableStaffRole[]> = {};
+  if (serviceIds.length > 0) {
+    const { data: roleRows } = await admin
+      .from("service_roles")
+      .select("service_id, role")
+      .in("service_id", serviceIds);
+    for (const r of roleRows ?? []) {
+      const list = serviceRoles[r.service_id as string] ?? [];
+      list.push(r.role as BookableStaffRole);
+      serviceRoles[r.service_id as string] = list;
+    }
+  }
+
+  return { services, staff, serviceRoles };
 }
 
 export default async function BookPage() {
-  const { services, barbers } = await getServicesAndBarbers();
+  const { services, staff, serviceRoles } = await getServicesAndStaff();
 
   return (
     <main
@@ -85,7 +111,7 @@ export default async function BookPage() {
             No services available right now. Please call us to book.
           </p>
         ) : (
-          <BookingFlow services={services} barbers={barbers} />
+          <BookingFlow services={services} staff={staff} serviceRoles={serviceRoles} />
         )}
       </div>
 
