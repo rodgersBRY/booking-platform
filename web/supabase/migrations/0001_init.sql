@@ -52,6 +52,7 @@ create table staff (
 create table services (
   id               uuid primary key default gen_random_uuid(),
   name             text not null,
+  category         text,
   description      text,
   duration_minutes int  not null check (duration_minutes > 0),
   price            numeric(10,2) not null default 0,
