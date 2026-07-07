@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../routes/app_routes.dart';
 import '../../../theme/app_colors.dart';
 import '../booking_controller.dart';
 
@@ -25,7 +26,7 @@ class ConfirmationPage extends GetView<BookingController> {
 
     return Scaffold(
       appBar: AppBar(automaticallyImplyLeading: false, title: const Text('Booked!')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
@@ -56,7 +57,36 @@ class ConfirmationPage extends GetView<BookingController> {
                 ),
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFBF2),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.brassLight),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Get more from Barberia Cuts',
+                    style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Sign in to track your bookings, earn loyalty points, and book faster next time.',
+                    style: TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton(
+                    onPressed: () => Get.toNamed(AppRoutes.login),
+                    child: const Text('Sign in'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: controller.startOver,
               child: const Text('Book another appointment'),
