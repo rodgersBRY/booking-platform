@@ -17,6 +17,7 @@ interface Barber {
   id: string;
   name: string;
   role: StaffRole;
+  avatarUrl: string | null;
 }
 
 const ROLE_LABELS: Record<StaffRole, string> = {
@@ -51,6 +52,15 @@ type Step = 1 | 2 | 3 | 4;
 
 function formatPrice(price: number): string {
   return `KSh ${Math.round(price).toLocaleString()}`;
+}
+
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]!.toUpperCase())
+    .join("");
 }
 
 function formatDuration(minutes: number): string {
@@ -201,12 +211,18 @@ function BarberStep({
   selected: string | "any" | null;
   onSelect: (id: string | "any") => void;
 }) {
-  const options: Array<{ id: string | "any"; name: string; sub: string }> = [
-    { id: "any", name: anyOptionLabel, sub: "We'll pick whoever is free" },
+  const options: Array<{
+    id: string | "any";
+    name: string;
+    sub: string;
+    avatarUrl: string | null;
+  }> = [
+    { id: "any", name: anyOptionLabel, sub: "We'll pick whoever is free", avatarUrl: null },
     ...barbers.map((b) => ({
       id: b.id,
       name: b.name,
       sub: ROLE_LABELS[b.role][0].toUpperCase() + ROLE_LABELS[b.role].slice(1),
+      avatarUrl: b.avatarUrl,
     })),
   ];
 
@@ -234,11 +250,36 @@ function BarberStep({
                   : "0 1px 3px rgba(0,0,0,0.06)",
               }}
             >
-              <div className="font-medium" style={{ color: "var(--navy)" }}>
-                {o.name}
-              </div>
-              <div className="text-xs" style={{ color: "#9ca3af" }}>
-                {o.sub}
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-10 h-10 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-xs font-semibold"
+                  style={
+                    o.avatarUrl
+                      ? undefined
+                      : { background: "var(--navy)", color: "#fff" }
+                  }
+                >
+                  {o.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={o.avatarUrl}
+                      alt={o.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : o.id === "any" ? (
+                    "?"
+                  ) : (
+                    initials(o.name)
+                  )}
+                </div>
+                <div>
+                  <div className="font-medium" style={{ color: "var(--navy)" }}>
+                    {o.name}
+                  </div>
+                  <div className="text-xs" style={{ color: "#9ca3af" }}>
+                    {o.sub}
+                  </div>
+                </div>
               </div>
             </button>
           );

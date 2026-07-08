@@ -1,10 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { StaffListItem } from "@/lib/api/staff";
-import { fetchStaff, setStaffStatus } from "@/lib/api/staff";
+import { fetchStaff, setStaffStatus, uploadStaffAvatar } from "@/lib/api/staff";
 import AddStaffModal from "./AddStaffModal";
 import ResetPasswordModal from "./ResetPasswordModal";
+
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
+
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]!.toUpperCase())
+    .join("");
+}
 
 const POLL_INTERVAL_MS = 15_000;
 
@@ -34,6 +45,9 @@ export default function StaffBoard() {
   const [resetTarget, setResetTarget] = useState<StaffListItem | null>(null);
   const [refreshTick, setRefreshTick] = useState(0);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [avatarUploadingId, setAvatarUploadingId] = useState<string | null>(null);
+  const [avatarTargetId, setAvatarTargetId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function refresh() {
     setRefreshTick((t) => t + 1);
@@ -65,6 +79,31 @@ export default function StaffBoard() {
     };
   }, [refreshTick]);
 
+  function handleAvatarClick(id: string) {
+    setAvatarTargetId(id);
+    fileInputRef.current?.click();
+  }
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !avatarTargetId) return;
+    if (file.size > MAX_AVATAR_BYTES) {
+      alert("File too large — max 5MB.");
+      return;
+    }
+    setAvatarUploadingId(avatarTargetId);
+    try {
+      await uploadStaffAvatar(avatarTargetId, file);
+      refresh();
+    } catch (err) {
+      alert((err as Error).message);
+    } finally {
+      setAvatarUploadingId(null);
+      setAvatarTargetId(null);
+    }
+  }
+
   async function handleToggleStatus(member: StaffListItem) {
     const next = member.status === "active" ? "inactive" : "active";
     setBusyId(member.id);
@@ -91,6 +130,13 @@ export default function StaffBoard() {
 
   return (
     <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="hidden"
+        onChange={handleAvatarChange}
+      />
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setShowAdd(true)}
@@ -111,7 +157,7 @@ export default function StaffBoard() {
               className="text-left border-b"
               style={{ borderColor: "#f3f4f6" }}
             >
-              {["Name", "Role", "Email", "Status", "Actions"].map((h) => (
+              {["", "Name", "Role", "Email", "Status", "Actions"].map((h) => (
                 <th
                   key={h}
                   className="px-5 py-3 font-semibold opacity-60"
@@ -133,6 +179,33 @@ export default function StaffBoard() {
                   className="border-b last:border-0"
                   style={{ borderColor: "#f9fafb" }}
                 >
+                  <td className="px-5 py-4">
+                    <button
+                      type="button"
+                      onClick={() => handleAvatarClick(m.id)}
+                      disabled={avatarUploadingId === m.id}
+                      title="Change photo"
+                      className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-xs font-semibold shrink-0 transition-opacity hover:opacity-80 disabled:opacity-50"
+                      style={
+                        m.avatarUrl
+                          ? undefined
+                          : { background: "var(--navy)", color: "#fff" }
+                      }
+                    >
+                      {avatarUploadingId === m.id ? (
+                        "…"
+                      ) : m.avatarUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={m.avatarUrl}
+                          alt={m.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        initials(m.name)
+                      )}
+                    </button>
+                  </td>
                   <td
                     className="px-5 py-4 font-medium"
                     style={{ color: "var(--navy)" }}
@@ -192,7 +265,7 @@ export default function StaffBoard() {
             })}
             {staff.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-5 py-8 text-center opacity-40">
+                <td colSpan={6} className="px-5 py-8 text-center opacity-40">
                   No staff yet.
                 </td>
               </tr>

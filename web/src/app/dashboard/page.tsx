@@ -10,8 +10,10 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
       <NavHeader
+        staffId={staff.id}
         staffName={staff.name}
         staffRole={staff.role}
+        staffAvatarUrl={staff.avatar_url}
         section="Dashboard"
         links={[
           { href: "/dashboard", label: "Dashboard" },

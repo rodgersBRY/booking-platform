@@ -24,7 +24,7 @@ async function getServicesAndStaff() {
       .order("name"),
     admin
       .from("staff")
-      .select("id, name, role")
+      .select("id, name, role, avatar_url")
       .in("role", BOOKABLE_ROLES)
       .eq("status", "active")
       .order("name"),
@@ -47,10 +47,11 @@ async function getServicesAndStaff() {
   );
 
   const staff = (staffRaw ?? []).map(
-    (s: { id: string; name: string; role: string }) => ({
+    (s: { id: string; name: string; role: string; avatar_url: string | null }) => ({
       id: s.id,
       name: s.name,
       role: s.role as BookableStaffRole,
+      avatarUrl: s.avatar_url,
     }),
   );
 

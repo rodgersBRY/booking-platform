@@ -11,8 +11,10 @@ export default async function ConsolePage() {
   return (
     <div className="min-h-screen" style={{ background: "var(--canvas)" }}>
       <NavHeader
+        staffId={staff.id}
         staffName={staff.name}
         staffRole={staff.role}
+        staffAvatarUrl={staff.avatar_url}
         section="Reception"
         links={[{ href: "/console", label: "Reception" }]}
       />

@@ -9,8 +9,10 @@ export default async function StaffPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
       <NavHeader
+        staffId={staff.id}
         staffName={staff.name}
         staffRole={staff.role}
+        staffAvatarUrl={staff.avatar_url}
         section="Staff"
         links={[
           { href: "/dashboard", label: "Dashboard" },

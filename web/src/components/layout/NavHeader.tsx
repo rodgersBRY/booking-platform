@@ -1,4 +1,5 @@
 import { signOut } from "@/app/login/actions";
+import { HeaderAvatar } from "@/components/layout/HeaderAvatar";
 import { HeaderClock } from "@/components/layout/HeaderClock";
 import type { StaffRole } from "@/lib/db/types";
 import Link from "next/link";
@@ -9,8 +10,10 @@ type NavLink = {
 };
 
 type NavHeaderProps = {
+  staffId: string;
   staffName: string;
   staffRole: StaffRole;
+  staffAvatarUrl: string | null;
   section: string;
   links?: NavLink[];
 };
@@ -31,8 +34,10 @@ function roleLabel(role: StaffRole): string {
 }
 
 export function NavHeader({
+  staffId,
   staffName,
   staffRole,
+  staffAvatarUrl,
   section,
   links = [],
 }: NavHeaderProps) {
@@ -75,6 +80,8 @@ export function NavHeader({
             <p className="text-sm font-medium">{staffName}</p>
             <p className="text-xs capitalize opacity-60">{staffRole}</p>
           </div>
+
+          <HeaderAvatar staffId={staffId} name={staffName} avatarUrl={staffAvatarUrl} />
 
           <form action={signOut}>
             <button

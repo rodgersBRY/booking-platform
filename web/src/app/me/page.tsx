@@ -11,8 +11,10 @@ export default async function MePage() {
   return (
     <div className="min-h-screen bg-zinc-50">
       <NavHeader
+        staffId={staff.id}
         staffName={staff.name}
         staffRole={staff.role}
+        staffAvatarUrl={staff.avatar_url}
         section="My day"
         links={
           staff.role === "owner"
