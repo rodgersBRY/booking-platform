@@ -75,13 +75,13 @@ class ConfirmationPage extends GetView<BookingController> {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Sign in to track your bookings, earn loyalty points, and book faster next time.',
+                    'Create an account to track your bookings, earn loyalty points, and book faster next time.',
                     style: TextStyle(fontSize: 13, color: Colors.black54),
                   ),
                   const SizedBox(height: 10),
                   OutlinedButton(
-                    onPressed: () => Get.toNamed(AppRoutes.login),
-                    child: const Text('Sign in'),
+                    onPressed: () => Get.toNamed(AppRoutes.signup),
+                    child: const Text('Create account'),
                   ),
                 ],
               ),
