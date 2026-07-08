@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../theme/app_colors.dart';
 import 'login_controller.dart';
 
 class LoginPage extends GetView<LoginController> {
@@ -28,16 +29,22 @@ class LoginPage extends GetView<LoginController> {
               onChanged: (v) => controller.password.value = v,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: controller.submit,
-              child: const Text('Sign in'),
+            Obx(
+              () => ElevatedButton(
+                onPressed: controller.submitting.value ? null : controller.submit,
+                child: Text(controller.submitting.value ? 'Signing in…' : 'Sign in'),
+              ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Account sign-in is coming soon.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black45, fontSize: 12),
-            ),
+            Obx(() {
+              final error = controller.errorMessage.value;
+              if (error == null) return const SizedBox.shrink();
+              return Text(
+                error,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: AppColors.late, fontSize: 13),
+              );
+            }),
           ],
         ),
       ),
