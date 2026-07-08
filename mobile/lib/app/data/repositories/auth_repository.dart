@@ -39,6 +39,37 @@ class AuthRepository {
     }
   }
 
+  Future<AuthResult> signup({
+    required String name,
+    required String phone,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final res = await _dio.post(
+        '/account/signup',
+        data: {'name': name, 'phone': phone, 'email': email, 'password': password},
+      );
+      if (res.data['pendingConfirmation'] == true) {
+        return AuthResult.pendingConfirmation(res.data['message'] as String?);
+      }
+      final token = res.data['token'] as String;
+      await _storage.writeToken(token);
+      final client = ClientModel.fromJson(
+        res.data['client'] as Map<String, dynamic>,
+      );
+      return AuthResult.success(client);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final code = data is Map ? data['error'] as String? : null;
+      final message = data is Map ? data['message'] as String? : null;
+      return AuthResult.failure(
+        code,
+        message ?? 'Something went wrong. Please try again.',
+      );
+    }
+  }
+
   /// Resolves the current session's client profile, or null if there's no
   /// valid token (never signed in, or it expired/was revoked).
   Future<ClientModel?> fetchMe() async {

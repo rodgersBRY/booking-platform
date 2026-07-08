@@ -11,6 +11,8 @@ import '../modules/booking/pages/slot_page.dart';
 import '../modules/booking/pages/staff_list_page.dart';
 import '../modules/login/login_binding.dart';
 import '../modules/login/login_page.dart';
+import '../modules/signup/signup_binding.dart';
+import '../modules/signup/signup_page.dart';
 import '../modules/welcome/welcome_page.dart';
 import 'app_routes.dart';
 
@@ -21,6 +23,11 @@ class AppPages {
       name: AppRoutes.login,
       page: () => const LoginPage(),
       binding: LoginBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.signup,
+      page: () => const SignupPage(),
+      binding: SignupBinding(),
     ),
     GetPage(
       name: AppRoutes.account,

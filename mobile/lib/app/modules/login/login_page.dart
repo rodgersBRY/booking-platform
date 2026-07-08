@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../routes/app_routes.dart';
 import '../../theme/app_colors.dart';
 import 'login_controller.dart';
 
@@ -45,6 +46,11 @@ class LoginPage extends GetView<LoginController> {
                 style: const TextStyle(color: AppColors.late, fontSize: 13),
               );
             }),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () => Get.toNamed(AppRoutes.signup),
+              child: const Text('No account yet? Sign up'),
+            ),
           ],
         ),
       ),
