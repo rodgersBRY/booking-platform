@@ -7,6 +7,11 @@ import '../booking_controller.dart';
 
 String _capitalize(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
+String _initials(String name) {
+  final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+  return parts.take(2).map((p) => p[0].toUpperCase()).join();
+}
+
 class StaffListPage extends GetView<BookingController> {
   const StaffListPage({super.key});
 
@@ -54,6 +59,8 @@ class StaffListPage extends GetView<BookingController> {
                   child: _StaffTile(
                     name: _capitalize(controller.anyStaffLabel),
                     subtitle: "We'll pick whoever is free",
+                    avatarUrl: null,
+                    isAny: true,
                   ),
                 ),
               ),
@@ -68,6 +75,7 @@ class StaffListPage extends GetView<BookingController> {
                     child: _StaffTile(
                       name: member.name,
                       subtitle: _capitalize(member.role),
+                      avatarUrl: member.avatarUrl,
                     ),
                   ),
                 ),
@@ -83,17 +91,44 @@ class StaffListPage extends GetView<BookingController> {
 class _StaffTile extends StatelessWidget {
   final String name;
   final String subtitle;
+  final String? avatarUrl;
+  final bool isAny;
 
-  const _StaffTile({required this.name, required this.subtitle});
+  const _StaffTile({
+    required this.name,
+    required this.subtitle,
+    required this.avatarUrl,
+    this.isAny = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(name, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy)),
-        const SizedBox(height: 2),
-        Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.black45)),
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: AppColors.navy,
+          foregroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+          child: avatarUrl != null
+              ? null
+              : isAny
+                  ? const Icon(Icons.people_outline, color: Colors.white, size: 20)
+                  : Text(
+                      _initials(name),
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy)),
+              const SizedBox(height: 2),
+              Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.black45)),
+            ],
+          ),
+        ),
       ],
     );
   }
