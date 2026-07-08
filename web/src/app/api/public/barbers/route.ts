@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await admin
     .from("staff")
-    .select("id, name, role")
+    .select("id, name, role, avatar_url")
     .in("role", eligibleRoles)
     .eq("status", "active")
     .order("name");
@@ -29,5 +29,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ barbers: data ?? [] });
+  const barbers = (data ?? []).map((r) => ({
+    id: r.id,
+    name: r.name,
+    role: r.role,
+    avatarUrl: r.avatar_url,
+  }));
+
+  return NextResponse.json({ barbers });
 }

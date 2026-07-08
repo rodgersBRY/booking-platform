@@ -51,6 +51,7 @@ export interface Staff {
   telegram_chat_id: string | null;
   password_hash: string | null;
   auth_user_id: string | null;
+  avatar_url: string | null;
   status: ClientStatus;
   created_at: string;
 }

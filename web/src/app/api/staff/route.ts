@@ -13,7 +13,7 @@ export async function GET() {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("staff")
-    .select("id,name,role,email,phone,status,auth_user_id,created_at")
+    .select("id,name,role,email,phone,status,auth_user_id,avatar_url,created_at")
     .order("created_at");
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -26,6 +26,7 @@ export async function GET() {
     phone: r.phone,
     status: r.status,
     authUserId: r.auth_user_id,
+    avatarUrl: r.avatar_url,
     createdAt: r.created_at,
   }));
 
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
   const { data: row, error: insertErr } = await admin
     .from("staff")
     .insert({ name, role, email, phone: phone || null, auth_user_id: created.user.id, status: "active" })
-    .select("id,name,role,email,phone,status,auth_user_id,created_at")
+    .select("id,name,role,email,phone,status,auth_user_id,avatar_url,created_at")
     .single();
 
   if (insertErr || !row) {
@@ -94,6 +95,6 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({
-    staff: { id: r.id, name: r.name, role: r.role, email: r.email, phone: r.phone, status: r.status, authUserId: r.auth_user_id, createdAt: r.created_at }
+    staff: { id: r.id, name: r.name, role: r.role, email: r.email, phone: r.phone, status: r.status, authUserId: r.auth_user_id, avatarUrl: r.avatar_url, createdAt: r.created_at }
   }, { status: 201 });
 }

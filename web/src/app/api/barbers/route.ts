@@ -12,7 +12,7 @@ export async function GET() {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("staff")
-    .select("id, name, role")
+    .select("id, name, role, avatar_url")
     .in("role", BOOKABLE_ROLES)
     .eq("status", "active")
     .order("name");
@@ -21,5 +21,12 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ barbers: data });
+  const barbers = (data ?? []).map((r) => ({
+    id: r.id,
+    name: r.name,
+    role: r.role,
+    avatarUrl: r.avatar_url,
+  }));
+
+  return NextResponse.json({ barbers });
 }

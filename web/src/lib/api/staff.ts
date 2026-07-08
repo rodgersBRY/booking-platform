@@ -6,6 +6,7 @@ export interface StaffListItem {
   phone: string | null;
   status: "active" | "inactive" | "blocked";
   authUserId: string | null;
+  avatarUrl: string | null;
   createdAt: string;
 }
 
@@ -50,4 +51,14 @@ export async function resetStaffPassword(id: string, password: string): Promise<
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action: "resetPassword", password }),
   });
+}
+
+export async function uploadStaffAvatar(id: string, file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const data = await apiFetch<{ avatarUrl: string }>(`/api/staff/${id}/avatar`, {
+    method: "POST",
+    body: formData,
+  });
+  return data.avatarUrl;
 }
