@@ -75,7 +75,7 @@ class BookingRepository {
             .toList();
         return BookingSubmitResult.slotTaken(data['message'] as String?, slots);
       }
-      final message = data is Map ? data['error'] as String? : null;
+      final message = data is Map ? data['message'] as String? : null;
       return BookingSubmitResult.failure(
         'request_failed',
         message ?? 'Something went wrong. Please try again.',
