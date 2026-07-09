@@ -28,8 +28,9 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init);
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
+    const b = body as { error?: string; message?: string };
     const err = new Error(
-      (body as { error?: string }).error ?? `HTTP ${res.status}`
+      b.message ?? b.error ?? "Something went wrong. Please try again.",
     );
     (err as Error & { status: number }).status = res.status;
     throw err;
