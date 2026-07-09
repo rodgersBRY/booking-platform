@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/auth";
 import ServicesBoard from "@/components/dashboard/ServicesBoard";
 import { NavHeader } from "@/components/layout/NavHeader";
 
-export const metadata = { title: "Services — Barberia Cuts" };
+export const metadata = { title: "Services — Baberia Cuts" };
 
 export default async function ServicesPage() {
   const staff = await requireRole("owner");

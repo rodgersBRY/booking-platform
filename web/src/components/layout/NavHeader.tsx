@@ -49,7 +49,7 @@ export function NavHeader({
             href="/"
             className="text-xl font-semibold tracking-tight transition-opacity hover:opacity-85"
           >
-            Barberia Cuts
+            Baberia Cuts
           </Link>
           <span
             className="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold"

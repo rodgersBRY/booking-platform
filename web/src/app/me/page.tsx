@@ -3,7 +3,7 @@ import { BOOKABLE_ROLES } from "@/lib/staff/roles";
 import MyDayBoard from "@/components/me/MyDayBoard";
 import { NavHeader } from "@/components/layout/NavHeader";
 
-export const metadata = { title: "My day — Barberia Cuts" };
+export const metadata = { title: "My day — Baberia Cuts" };
 
 export default async function MePage() {
   const staff = await requireRole("owner", ...BOOKABLE_ROLES);

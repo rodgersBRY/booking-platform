@@ -21,7 +21,7 @@ class WelcomePage extends StatelessWidget {
               const Icon(Icons.content_cut, size: 48, color: AppColors.brass),
               const SizedBox(height: 12),
               Text(
-                'Barberia Cuts',
+                'Baberia Cuts',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),

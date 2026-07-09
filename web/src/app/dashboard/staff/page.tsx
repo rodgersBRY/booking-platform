@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/auth";
 import StaffBoard from "@/components/dashboard/StaffBoard";
 import { NavHeader } from "@/components/layout/NavHeader";
 
-export const metadata = { title: "Staff — Barberia Cuts" };
+export const metadata = { title: "Staff — Baberia Cuts" };
 
 export default async function StaffPage() {
   const staff = await requireRole("owner");

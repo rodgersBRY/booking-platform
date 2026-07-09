@@ -24,7 +24,7 @@ class BarberiaCutsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Barberia Cuts',
+      title: 'Baberia Cuts',
       theme: AppTheme.light,
       initialRoute: AppRoutes.welcome,
       getPages: AppPages.routes,

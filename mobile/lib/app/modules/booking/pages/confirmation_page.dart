@@ -70,7 +70,7 @@ class ConfirmationPage extends GetView<BookingController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Get more from Barberia Cuts',
+                    'Get more from Baberia Cuts',
                     style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
                   ),
                   const SizedBox(height: 4),

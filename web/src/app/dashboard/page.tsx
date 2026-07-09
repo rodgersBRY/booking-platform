@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/auth";
 import { DashboardBoard } from "@/components/dashboard/DashboardBoard";
 import { NavHeader } from "@/components/layout/NavHeader";
 
-export const metadata = { title: "Owner dashboard — Barberia Cuts" };
+export const metadata = { title: "Owner dashboard — Baberia Cuts" };
 
 export default async function DashboardPage() {
   const staff = await requireRole("owner");
