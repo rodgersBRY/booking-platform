@@ -108,7 +108,10 @@ export async function PATCH(
     .single();
 
   if (error)
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   if (!data)
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
 
@@ -119,7 +122,10 @@ export async function PATCH(
       .from("service_roles")
       .insert(body.roles.map((role) => ({ service_id: id, role })));
     if (rolesErr) {
-      return NextResponse.json({ error: rolesErr.message }, { status: 500 });
+      return NextResponse.json(
+        { error: "Something went wrong. Please try again." },
+        { status: 500 },
+      );
     }
     roles = body.roles;
   } else {

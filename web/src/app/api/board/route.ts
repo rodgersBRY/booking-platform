@@ -52,7 +52,10 @@ export async function GET() {
     .order("name");
 
   if (barberErr) {
-    return NextResponse.json({ error: barberErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   // ── In-chair bookings covering now ───────────────────────────────────────
@@ -121,7 +124,10 @@ export async function GET() {
     .order("joined_at");
 
   if (queueErr) {
-    return NextResponse.json({ error: queueErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   // For estimated wait: gather in_chair remaining minutes per barber.
@@ -203,7 +209,10 @@ export async function GET() {
     .order("scheduled_start");
 
   if (apptErr) {
-    return NextResponse.json({ error: apptErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   type ApptRow = {

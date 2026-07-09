@@ -16,7 +16,7 @@ export async function GET() {
     .select("id,name,role,email,phone,status,auth_user_id,avatar_url,created_at")
     .order("created_at");
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
 
   const staff = (data ?? []).map((r: Record<string, unknown>) => ({
     id: r.id,
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     if (msg.toLowerCase().includes("already") || (authErr as { status?: number })?.status === 422) {
       return NextResponse.json({ error: "A user with this email already exists" }, { status: 409 });
     }
-    return NextResponse.json({ error: msg || "Failed to create auth user" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 
   const { data: row, error: insertErr } = await admin
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
   if (insertErr || !row) {
     await admin.auth.admin.deleteUser(created.user.id);
-    return NextResponse.json({ error: insertErr?.message ?? "Failed to create staff" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 
   const r = row as Record<string, unknown>;
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       await admin.from("staff").delete().eq("id", r.id);
       await admin.auth.admin.deleteUser(created.user.id);
       return NextResponse.json(
-        { error: availabilityErr.message },
+        { error: "Something went wrong. Please try again." },
         { status: 500 },
       );
     }

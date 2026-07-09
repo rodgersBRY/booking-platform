@@ -87,7 +87,10 @@ export async function POST(
         { status: 409 },
       );
     }
-    return NextResponse.json({ error: updateErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ booking: updated });

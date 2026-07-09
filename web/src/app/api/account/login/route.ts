@@ -54,7 +54,10 @@ export async function POST(request: NextRequest) {
     .maybeSingle();
 
   if (clientErr) {
-    return NextResponse.json({ error: clientErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
   if (!clientRow) {
     return NextResponse.json(

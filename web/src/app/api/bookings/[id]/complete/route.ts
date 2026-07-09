@@ -65,7 +65,10 @@ export async function POST(
     .eq("id", id);
 
   if (updateErr) {
-    return NextResponse.json({ error: updateErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   // Insert visit row.
@@ -84,7 +87,10 @@ export async function POST(
     .single();
 
   if (visitErr) {
-    return NextResponse.json({ error: visitErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   // Bump client total_visits and last_visit_at.

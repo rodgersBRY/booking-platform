@@ -35,7 +35,10 @@ export async function POST(
     .eq("id", id);
 
   if (updateErr) {
-    return NextResponse.json({ error: updateErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   // TODO: n8n sends the actual WhatsApp ping via webhook after this response.

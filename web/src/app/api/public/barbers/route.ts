@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
       .select("role")
       .eq("service_id", serviceId);
     if (rolesErr) {
-      return NextResponse.json({ error: rolesErr.message }, { status: 500 });
+      return NextResponse.json(
+        { error: "Something went wrong. Please try again." },
+        { status: 500 },
+      );
     }
     eligibleRoles = (roleRows ?? []).map((r) => r.role as string);
   }
@@ -26,7 +29,10 @@ export async function GET(request: NextRequest) {
     .order("name");
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   const barbers = (data ?? []).map((r) => ({

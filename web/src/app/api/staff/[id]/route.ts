@@ -37,7 +37,7 @@ export async function PATCH(
       .select("id,name,role,email,phone,status,auth_user_id,created_at")
       .single();
 
-    if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 });
+    if (updateErr) return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
     const r = updated as Record<string, unknown>;
     return NextResponse.json({ staff: { id: r.id, name: r.name, role: r.role, email: r.email, phone: r.phone, status: r.status, authUserId: r.auth_user_id, createdAt: r.created_at } });
   }
@@ -47,7 +47,7 @@ export async function PATCH(
     if (!body.password) return NextResponse.json({ error: "password is required" }, { status: 400 });
 
     const { error: pwErr } = await admin.auth.admin.updateUserById(t.auth_user_id as string, { password: body.password });
-    if (pwErr) return NextResponse.json({ error: pwErr.message }, { status: 500 });
+    if (pwErr) return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
     return NextResponse.json({ ok: true });
   }
 

@@ -86,9 +86,7 @@ export async function createBooking(
         .single();
 
       if (clientErr || !newClient) {
-        return {
-          error: clientErr?.message ?? "Failed to create client",
-        };
+        return { error: "Something went wrong. Please try again." };
       }
       resolvedClientId = newClient.id as string;
     }
@@ -124,7 +122,7 @@ export async function createBooking(
       .select("role")
       .eq("service_id", serviceId);
     if (rolesErr) {
-      return { error: rolesErr.message };
+      return { error: "Something went wrong. Please try again." };
     }
     const eligibleRoles = (eligibleRows ?? []).map((r) => r.role as string);
     if (!eligibleRoles.includes(staffRow.role as string)) {
@@ -171,7 +169,7 @@ export async function createBooking(
         slots,
       };
     }
-    return { error: bookErr.message };
+    return { error: "Something went wrong. Please try again." };
   }
 
   return { booking: booking as Record<string, unknown> };

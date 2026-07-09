@@ -104,7 +104,10 @@ export async function GET() {
     .lte("completed_at", monthEnd);
 
   if (visitsErr)
-    return NextResponse.json({ error: visitsErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
 
   const visits = (monthVisits ?? []) as VisitRow[];
 

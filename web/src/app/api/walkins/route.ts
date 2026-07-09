@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
         .single();
       if (clientErr || !newClient) {
         return NextResponse.json(
-          { error: clientErr?.message ?? "Failed to create client" },
+          { error: "Something went wrong. Please try again." },
           { status: 500 },
         );
       }
@@ -119,7 +119,10 @@ export async function POST(request: NextRequest) {
     .select("role")
     .eq("service_id", serviceId);
   if (rolesErr) {
-    return NextResponse.json({ error: rolesErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
   const eligibleRoles = (eligibleRoleRows ?? []).map((r) => r.role as string);
 
@@ -206,7 +209,10 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (bookErr) {
-      return NextResponse.json({ error: bookErr.message }, { status: 500 });
+      return NextResponse.json(
+        { error: "Something went wrong. Please try again." },
+        { status: 500 },
+      );
     }
     return NextResponse.json({ seated: true, booking }, { status: 201 });
   }
@@ -224,7 +230,10 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (queueErr) {
-    return NextResponse.json({ error: queueErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
   return NextResponse.json({ seated: false, queueEntry }, { status: 201 });
 }

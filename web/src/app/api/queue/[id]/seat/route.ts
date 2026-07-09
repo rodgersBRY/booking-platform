@@ -113,7 +113,10 @@ export async function POST(
     .single();
 
   if (bookErr) {
-    return NextResponse.json({ error: bookErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   // Mark queue entry as served.

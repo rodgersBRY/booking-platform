@@ -44,7 +44,10 @@ export async function POST(request: NextRequest) {
     .maybeSingle();
 
   if (existingErr) {
-    return NextResponse.json({ error: existingErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
   if (existing?.auth_user_id) {
     return NextResponse.json(
@@ -75,7 +78,10 @@ export async function POST(request: NextRequest) {
       );
     }
     return NextResponse.json(
-      { error: "signup_failed", message: msg || "Failed to create your account." },
+      {
+        error: "signup_failed",
+        message: "Something went wrong. Please try again.",
+      },
       { status: 500 },
     );
   }
@@ -92,7 +98,7 @@ export async function POST(request: NextRequest) {
       .single();
     if (updateErr || !updated) {
       return NextResponse.json(
-        { error: updateErr?.message ?? "Failed to link account" },
+        { error: "Something went wrong. Please try again." },
         { status: 500 },
       );
     }
@@ -105,7 +111,7 @@ export async function POST(request: NextRequest) {
       .single();
     if (insertErr || !inserted) {
       return NextResponse.json(
-        { error: insertErr?.message ?? "Failed to create client" },
+        { error: "Something went wrong. Please try again." },
         { status: 500 },
       );
     }

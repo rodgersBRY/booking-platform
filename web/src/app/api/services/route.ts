@@ -49,7 +49,10 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await query;
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   const rows = (data ?? []) as ServiceRow[];
@@ -61,7 +64,10 @@ export async function GET(request: NextRequest) {
       .select("service_id, role")
       .in("service_id", ids);
     if (rolesErr) {
-      return NextResponse.json({ error: rolesErr.message }, { status: 500 });
+      return NextResponse.json(
+        { error: "Something went wrong. Please try again." },
+        { status: 500 },
+      );
     }
     for (const r of roleRows ?? []) {
       const list = rolesByService.get(r.service_id as string) ?? [];
@@ -138,14 +144,20 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error)
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
 
   const { error: rolesErr } = await admin
     .from("service_roles")
     .insert(finalRoles.map((role) => ({ service_id: data.id, role })));
   if (rolesErr) {
     await admin.from("services").delete().eq("id", data.id);
-    return NextResponse.json({ error: rolesErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json(
