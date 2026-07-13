@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
   const { data: completedBookings, error } = await admin
     .from("bookings")
     .select(
-      "id, client_id, clients(name, phone), staff!barber_id(name), services(name)",
+      "id, client_id, clients(name, phone), staff!staff_id(name), services(name)",
     )
     .eq("status", "completed")
     .gte("updated_at", start)
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
       clientId: b.client_id,
       clientName: client?.name ?? "Unknown",
       clientPhone: client?.phone ?? null,
-      barberName: barber?.name ?? null,
+      staffName: barber?.name ?? null,
       serviceName: service?.name ?? null,
       followupSent: sentSet.has(b.id),
     };

@@ -18,7 +18,7 @@ export interface NextClientItem {
 }
 
 export interface MyDayData {
-  barberId: string;
+  staffId: string;
   nextClient: NextClientItem | null;
   schedule: ScheduleItem[];
   queueWaitingCount: number;

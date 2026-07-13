@@ -36,11 +36,11 @@ interface Slot {
   start: string;
   end: string;
   label: string;
-  barberId: string;
+  staffId: string;
 }
 
 interface BookingConfirmation {
-  barberName: string;
+  staffName: string;
   serviceName: string;
   date: string;
   timeLabel: string;
@@ -99,7 +99,7 @@ function friendlyDate(dateStr: string): string {
 // ── Step indicator ────────────────────────────────────────────────────────
 
 function StepIndicator({ current }: { current: Step }) {
-  const steps = ["Service", "Barber", "Date & time", "Your details"];
+  const steps = ["Service", "Specialist", "Date & time", "Your details"];
   return (
     <div className="flex items-center gap-1 mb-8">
       {steps.map((label, i) => {
@@ -200,7 +200,7 @@ function ServiceStep({
 
 // ── Step 2: Pick barber ────────────────────────────────────────────────────
 
-function BarberStep({
+function StaffStep({
   barbers,
   anyOptionLabel,
   selected,
@@ -232,7 +232,7 @@ function BarberStep({
         Who would you like?
       </h2>
       <p className="text-sm mb-5" style={{ color: "#6b7280" }}>
-        Pick a barber or let us choose for you.
+        Pick a specialist or let us choose for you.
       </p>
       <div className="flex flex-col gap-3">
         {options.map((o) => {
@@ -293,12 +293,12 @@ function BarberStep({
 
 function DateSlotStep({
   serviceId,
-  barberId,
+  staffId,
   selectedSlot,
   onSelect,
 }: {
   serviceId: string;
-  barberId: string | "any";
+  staffId: string | "any";
   selectedSlot: Slot | null;
   onSelect: (slot: Slot) => void;
 }) {
@@ -315,7 +315,7 @@ function DateSlotStep({
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/public/availability?barber=${encodeURIComponent(barberId)}&service=${encodeURIComponent(serviceId)}&date=${date}`,
+        `/api/public/availability?staff=${encodeURIComponent(staffId)}&service=${encodeURIComponent(serviceId)}&date=${date}`,
       );
       if (!res.ok) {
         setError("Couldn't load times. Please try again.");
@@ -519,7 +519,7 @@ function ConfirmationScreen({ confirmation }: { confirmation: BookingConfirmatio
             With
           </span>
           <span className="text-sm font-medium" style={{ color: "var(--navy)" }}>
-            {confirmation.barberName}
+            {confirmation.staffName}
           </span>
         </div>
         <div className="flex justify-between">
@@ -559,7 +559,7 @@ export default function BookingFlow({
 }: BookingFlowProps) {
   const [step, setStep] = useState<Step>(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [selectedBarberId, setSelectedBarberId] = useState<string | "any" | null>(null);
+  const [selectedStaffId, setSelectedStaffId] = useState<string | "any" | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -575,20 +575,20 @@ export default function BookingFlow({
 
   function canAdvance(): boolean {
     if (step === 1) return selectedService !== null;
-    if (step === 2) return selectedBarberId !== null;
+    if (step === 2) return selectedStaffId !== null;
     if (step === 3) return selectedSlot !== null;
     if (step === 4) return name.trim().length > 0 && phone.trim().length > 0;
     return false;
   }
 
   async function handleSubmit() {
-    if (!selectedService || !selectedBarberId || !selectedSlot) return;
+    if (!selectedService || !selectedStaffId || !selectedSlot) return;
     setSubmitting(true);
     setSubmitError(null);
     setSlotTakenSlots(null);
 
-    // The slot always carries a concrete barberId (even in "any" mode).
-    const concreteBarberId = selectedSlot.barberId;
+    // The slot always carries a concrete staffId (even in "any" mode).
+    const concreteStaffId = selectedSlot.staffId;
 
     try {
       const res = await fetch("/api/public/bookings", {
@@ -596,7 +596,7 @@ export default function BookingFlow({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           client: { name: name.trim(), phone: phone.trim() },
-          barberId: concreteBarberId,
+          staffId: concreteStaffId,
           serviceId: selectedService.id,
           scheduledStart: selectedSlot.start,
         }),
@@ -618,11 +618,11 @@ export default function BookingFlow({
       }
 
       // Success — find the staff name for the confirmation screen.
-      const barberName =
-        staff.find((b) => b.id === concreteBarberId)?.name ?? "Your barber";
+      const staffName =
+        staff.find((b) => b.id === concreteStaffId)?.name ?? "Your barber";
 
       setConfirmation({
-        barberName,
+        staffName,
         serviceName: selectedService.name,
         date: friendlyDate(selectedSlot.start.slice(0, 10)),
         timeLabel: selectedSlot.label,
@@ -648,24 +648,24 @@ export default function BookingFlow({
           selected={selectedService}
           onSelect={(s) => {
             setSelectedService(s);
-            setSelectedBarberId(null);
+            setSelectedStaffId(null);
           }}
         />
       )}
 
       {step === 2 && (
-        <BarberStep
+        <StaffStep
           barbers={eligibleStaff}
           anyOptionLabel={anyLabel(eligibleRoles)}
-          selected={selectedBarberId}
-          onSelect={(id) => setSelectedBarberId(id)}
+          selected={selectedStaffId}
+          onSelect={(id) => setSelectedStaffId(id)}
         />
       )}
 
-      {step === 3 && selectedService && selectedBarberId && (
+      {step === 3 && selectedService && selectedStaffId && (
         <DateSlotStep
           serviceId={selectedService.id}
-          barberId={selectedBarberId}
+          staffId={selectedStaffId}
           selectedSlot={selectedSlot}
           onSelect={(slot) => {
             setSelectedSlot(slot);

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { fetchDashboardStats, type DashboardStats } from "@/lib/api/dashboard";
 import { KpiCard } from "./KpiCard";
-import { BarberTable } from "./BarberTable";
+import { StaffTable } from "./StaffTable";
 import { TopServices } from "./TopServices";
 import { ChannelMix } from "./ChannelMix";
 
@@ -104,7 +104,7 @@ export function DashboardBoard() {
           <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-400 mb-4">
             Barbers this week
           </h2>
-          <BarberTable rows={data.week.perBarber} />
+          <StaffTable rows={data.week.perStaff} />
         </div>
 
         {/* Top services */}

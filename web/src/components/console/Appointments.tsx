@@ -121,7 +121,7 @@ function AppointmentRow({ item, onArrive, onSeat, onCancel }: RowProps) {
           )}
         </div>
         <p className="text-sm opacity-60 truncate">
-          {item.barberName ?? "Any barber"}
+          {item.staffName ?? "Any barber"}
           {item.serviceName && <> &middot; {item.serviceName}</>}
         </p>
         {seatError && (

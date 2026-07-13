@@ -3,7 +3,7 @@ import { defaultAvailabilityForBarber } from "./availability";
 const rows = defaultAvailabilityForBarber("barber-1");
 
 const first: {
-  barber_id: string;
+  staff_id: string;
   weekday: number;
   start_time: string;
   end_time: string;

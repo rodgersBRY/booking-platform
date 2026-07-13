@@ -6,8 +6,8 @@ export interface ClientSearchResult {
   id: string;
   name: string;
   phone: string;
-  preferredBarberId: string | null;
-  preferredBarberName: string | null;
+  preferredStaffId: string | null;
+  preferredStaffName: string | null;
   totalVisits: number;
   lastVisitAt: string | null;
   isRegular: boolean;
@@ -36,12 +36,12 @@ export async function GET(request: NextRequest) {
   const [byPhone, byName] = await Promise.all([
     admin
       .from("clients")
-      .select("id, name, phone, preferred_barber_id, total_visits, last_visit_at")
+      .select("id, name, phone, preferred_staff_id, total_visits, last_visit_at")
       .ilike("phone", `${q}%`)
       .limit(8),
     admin
       .from("clients")
-      .select("id, name, phone, preferred_barber_id, total_visits, last_visit_at")
+      .select("id, name, phone, preferred_staff_id, total_visits, last_visit_at")
       .ilike("name", `%${q}%`)
       .limit(8),
   ]);
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     id: string;
     name: string;
     phone: string;
-    preferred_barber_id: string | null;
+    preferred_staff_id: string | null;
     total_visits: number;
     last_visit_at: string | null;
   }[] = [];
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
       id,
       name: row.name as string,
       phone: row.phone as string,
-      preferred_barber_id: row.preferred_barber_id as string | null,
+      preferred_staff_id: row.preferred_staff_id as string | null,
       total_visits: (row.total_visits as number) ?? 0,
       last_visit_at: row.last_visit_at as string | null,
     });
@@ -74,15 +74,15 @@ export async function GET(request: NextRequest) {
   }
 
   // Resolve preferred barber names in one query.
-  const barberIds = [...new Set(rows.map((r) => r.preferred_barber_id).filter(Boolean))] as string[];
-  const barberMap = new Map<string, string>();
-  if (barberIds.length > 0) {
+  const staffIds = [...new Set(rows.map((r) => r.preferred_staff_id).filter(Boolean))] as string[];
+  const staffMap = new Map<string, string>();
+  if (staffIds.length > 0) {
     const { data: barbers } = await admin
       .from("staff")
       .select("id, name")
-      .in("id", barberIds);
+      .in("id", staffIds);
     for (const b of barbers ?? []) {
-      barberMap.set(b.id as string, b.name as string);
+      staffMap.set(b.id as string, b.name as string);
     }
   }
 
@@ -90,8 +90,8 @@ export async function GET(request: NextRequest) {
     id: r.id,
     name: r.name,
     phone: r.phone,
-    preferredBarberId: r.preferred_barber_id,
-    preferredBarberName: r.preferred_barber_id ? (barberMap.get(r.preferred_barber_id) ?? null) : null,
+    preferredStaffId: r.preferred_staff_id,
+    preferredStaffName: r.preferred_staff_id ? (staffMap.get(r.preferred_staff_id) ?? null) : null,
     totalVisits: r.total_visits,
     lastVisitAt: r.last_visit_at,
     isRegular: r.total_visits >= 5,

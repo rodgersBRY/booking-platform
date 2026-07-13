@@ -16,7 +16,7 @@ export interface DashboardStats {
     atRiskClients: number;
   };
   week: {
-    perBarber: { barberId: string; barberName: string; visits: number; revenue: number }[];
+    perStaff: { staffId: string; staffName: string; visits: number; revenue: number }[];
     topServices: { serviceId: string; serviceName: string; count: number; revenue: number }[];
     channelMix: { channel: string; count: number }[];
     noShowRate: number;

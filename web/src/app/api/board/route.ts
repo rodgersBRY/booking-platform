@@ -44,14 +44,14 @@ export async function GET() {
   const { start: todayStart, end: todayEnd } = eatTodayBounds();
 
   // ── Active bookable staff (barbers, beauticians, masseuses) ────────────────
-  const { data: barbers, error: barberErr } = await admin
+  const { data: barbers, error: staffErr } = await admin
     .from("staff")
     .select("id, name")
     .in("role", BOOKABLE_ROLES)
     .eq("status", "active")
     .order("name");
 
-  if (barberErr) {
+  if (staffErr) {
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 },
@@ -62,13 +62,13 @@ export async function GET() {
   const { data: inChairBookings } = await admin
     .from("bookings")
     .select(
-      "id, barber_id, scheduled_end, clients(name), services(name, price)",
+      "id, staff_id, scheduled_end, clients(name), services(name, price)",
     )
     .eq("status", "in_chair")
     .lte("scheduled_start", nowIso)
     .gte("scheduled_end", nowIso);
 
-  // Index by barber_id for O(1) lookup.
+  // Index by staff_id for O(1) lookup.
   const inChairByBarber = new Map<
     string,
     {
@@ -85,7 +85,7 @@ export async function GET() {
     const minutesLeft = Math.max(0, Math.round((endMs - now.getTime()) / 60000));
     const client = firstRel<{ name: string }>(b.clients);
     const service = firstRel<{ name: string; price: number }>(b.services);
-    inChairByBarber.set(b.barber_id as string, {
+    inChairByBarber.set(b.staff_id as string, {
       bookingId: b.id as string,
       clientName: client?.name ?? "Unknown",
       serviceName: service?.name ?? "Unknown",
@@ -100,8 +100,8 @@ export async function GET() {
       const active = inChairByBarber.get(barber.id);
       if (active) {
         return {
-          barberId: barber.id,
-          barberName: barber.name,
+          staffId: barber.id,
+          staffName: barber.name,
           status: "in_chair",
           bookingId: active.bookingId,
           currentClientName: active.clientName,
@@ -110,7 +110,7 @@ export async function GET() {
           minutesLeft: active.minutesLeft,
         };
       }
-      return { barberId: barber.id, barberName: barber.name, status: "free" };
+      return { staffId: barber.id, staffName: barber.name, status: "free" };
     },
   );
 
@@ -118,7 +118,7 @@ export async function GET() {
   const { data: queueRows, error: queueErr } = await admin
     .from("queue_entries")
     .select(
-      "id, client_id, barber_id, joined_at, choice, status, clients(name, total_visits), staff(name)",
+      "id, client_id, staff_id, joined_at, choice, status, clients(name, total_visits), staff(name)",
     )
     .in("status", ["waiting", "notified"])
     .order("joined_at");
@@ -135,7 +135,7 @@ export async function GET() {
   type QueueRow = {
     id: unknown;
     client_id: unknown;
-    barber_id: unknown;
+    staff_id: unknown;
     joined_at: unknown;
     choice: unknown;
     status: unknown;
@@ -148,22 +148,22 @@ export async function GET() {
     const staffRel = firstRel<{ name: string }>(q.staff);
     const clientName = client?.name ?? "Unknown";
     const totalVisits = client?.total_visits ?? 0;
-    const preferredBarberName = staffRel?.name ?? null;
-    const barberId = q.barber_id as string | null;
+    const preferredStaffName = staffRel?.name ?? null;
+    const staffId = q.staff_id as string | null;
     const waitedMinutes = Math.round(
       (now.getTime() - new Date(q.joined_at as string).getTime()) / 60000,
     );
     // Estimated wait: remaining time for the preferred barber's current client.
     let estimatedWaitMinutes: number | null = null;
-    if (barberId) {
-      const current = inChairByBarber.get(barberId);
+    if (staffId) {
+      const current = inChairByBarber.get(staffId);
       estimatedWaitMinutes = current ? current.minutesLeft : 0;
     }
     return {
       id: q.id as string,
       clientName,
-      preferredBarberId: barberId,
-      preferredBarberName,
+      preferredStaffId: staffId,
+      preferredStaffName,
       choice: q.choice as string,
       status: q.status as string,
       waitedMinutes,
@@ -201,7 +201,7 @@ export async function GET() {
   const { data: apptRows, error: apptErr } = await admin
     .from("bookings")
     .select(
-      "id, barber_id, service_id, scheduled_start, status, channel, clients(name, total_visits), staff!barber_id(name), services(name)",
+      "id, staff_id, service_id, scheduled_start, status, channel, clients(name, total_visits), staff!staff_id(name), services(name)",
     )
     .in("status", ["booked", "arrived"])
     .gte("scheduled_start", todayStart)
@@ -217,7 +217,7 @@ export async function GET() {
 
   type ApptRow = {
     id: unknown;
-    barber_id: unknown;
+    staff_id: unknown;
     service_id: unknown;
     scheduled_start: unknown;
     status: unknown;
@@ -235,8 +235,8 @@ export async function GET() {
     return {
       id: a.id as string,
       clientName: client?.name ?? "Unknown",
-      barberId: (a.barber_id as string | null) ?? null,
-      barberName: barber?.name ?? null,
+      staffId: (a.staff_id as string | null) ?? null,
+      staffName: barber?.name ?? null,
       serviceName: service?.name ?? null,
       serviceId: (a.service_id as string | null) ?? null,
       scheduledStart: a.scheduled_start as string,

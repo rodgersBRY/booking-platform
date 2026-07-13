@@ -53,7 +53,7 @@ export default function AddWalkinModal({
   const [acquisitionSource, setAcquisitionSource] = useState('');
 
   // Shared fields
-  const [preferredBarberId, setPreferredBarberId] = useState('');
+  const [preferredStaffId, setPreferredStaffId] = useState('');
   const [serviceId, setServiceId] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +94,7 @@ export default function AddWalkinModal({
   function selectClient(client: ClientSearchResult) {
     setSelectedClient(client);
     setForceNew(false);
-    setPreferredBarberId(client.preferredBarberId ?? '');
+    setPreferredStaffId(client.preferredStaffId ?? '');
     setSearchResults([]);
   }
 
@@ -129,14 +129,14 @@ export default function AddWalkinModal({
       if (selectedClient) {
         result = await addWalkin({
           clientId: selectedClient.id,
-          preferredBarberId: preferredBarberId || undefined,
+          preferredStaffId: preferredStaffId || undefined,
           serviceId,
         });
       } else {
         result = await addWalkin({
           name: name.trim(),
           phone: phone.trim(),
-          preferredBarberId: preferredBarberId || undefined,
+          preferredStaffId: preferredStaffId || undefined,
           serviceId,
           acquisitionSource: acquisitionSource || undefined,
         });
@@ -235,8 +235,8 @@ export default function AddWalkinModal({
                         </div>
                         <p className="text-xs opacity-60 truncate mt-0.5">
                           {client.phone}
-                          {client.preferredBarberName && (
-                            <> &middot; Prefers {client.preferredBarberName}</>
+                          {client.preferredStaffName && (
+                            <> &middot; Prefers {client.preferredStaffName}</>
                           )}
                           {' '}&middot; {client.totalVisits} visit{client.totalVisits !== 1 ? 's' : ''} &middot; last seen {relativeDate(client.lastVisitAt)}
                         </p>
@@ -299,8 +299,8 @@ export default function AddWalkinModal({
               </div>
               <p className="text-sm opacity-60">
                 {selectedClient.phone}
-                {selectedClient.preferredBarberName && (
-                  <> &middot; Prefers {selectedClient.preferredBarberName}</>
+                {selectedClient.preferredStaffName && (
+                  <> &middot; Prefers {selectedClient.preferredStaffName}</>
                 )}
               </p>
               <p className="text-sm opacity-60">
@@ -313,7 +313,7 @@ export default function AddWalkinModal({
                 setSelectedClient(null);
                 setForceNew(false);
                 setSearchQuery('');
-                setPreferredBarberId('');
+                setPreferredStaffId('');
               }}
               className="text-xs opacity-50 hover:opacity-80 transition-opacity shrink-0 mt-0.5"
             >
@@ -393,7 +393,7 @@ export default function AddWalkinModal({
                 value={serviceId}
                 onChange={(e) => {
                   setServiceId(e.target.value);
-                  setPreferredBarberId('');
+                  setPreferredStaffId('');
                 }}
                 className={inputClass}
                 style={inputStyle}
@@ -413,8 +413,8 @@ export default function AddWalkinModal({
               </label>
               <select
                 id="wk-barber"
-                value={preferredBarberId}
-                onChange={(e) => setPreferredBarberId(e.target.value)}
+                value={preferredStaffId}
+                onChange={(e) => setPreferredStaffId(e.target.value)}
                 className={inputClass}
                 style={inputStyle}
               >

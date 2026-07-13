@@ -62,7 +62,7 @@ function toEatIso(d: Date): string {
 }
 
 interface GetAvailabilityParams {
-  barberId: string | "any";
+  staffId: string | "any";
   serviceId: string;
   date: string; // YYYY-MM-DD
 }
@@ -71,16 +71,16 @@ interface GetAvailabilityParams {
  * Returns available 15-minute-grid slots for a given barber (or "any") on a date.
  *
  * Rules:
- *  - Working window from barber_availability for that EAT weekday.
- *  - Subtract barber_time_off blocks.
+ *  - Working window from staff_availability for that EAT weekday.
+ *  - Subtract staff_time_off blocks.
  *  - Subtract bookings with status in (booked, arrived, in_chair).
  *  - 15-min start grid, slot length = service.duration_minutes, no buffer.
  *  - For today: drop slots starting before now + 30 min (EAT lead time).
  *  - "any": compute per active barber; return a slot if ANY barber is free;
- *    include the chosen barberId on each returned slot.
+ *    include the chosen staffId on each returned slot.
  */
 export async function getAvailability({
-  barberId,
+  staffId,
   serviceId,
   date,
 }: GetAvailabilityParams): Promise<Slot[]> {
@@ -99,8 +99,8 @@ export async function getAvailability({
   const weekday = eatWeekday(date);
 
   // Resolve barber list.
-  let barberIds: string[];
-  if (barberId === "any") {
+  let staffIds: string[];
+  if (staffId === "any") {
     // Only staff whose role is eligible for this service.
     const { data: eligibleRoleRows, error: rolesErr } = await admin
       .from("service_roles")
@@ -118,9 +118,9 @@ export async function getAvailability({
 
     if (bErr || !barbers) return [];
 
-    barberIds = barbers.map((b: { id: string }) => b.id);
+    staffIds = barbers.map((b: { id: string }) => b.id);
   } else {
-    barberIds = [barberId];
+    staffIds = [staffId];
   }
 
   // Day boundaries in UTC for DB queries (EAT date = UTC date + offsets).
@@ -139,12 +139,12 @@ export async function getAvailability({
   // Collect slots across all candidate barbers, deduplicated by start time if "any".
   const slotMap = new Map<string, Slot>(); // key = ISO start
 
-  for (const bid of barberIds) {
+  for (const bid of staffIds) {
     // 1. Get availability window for this barber+weekday.
     const { data: avails } = await admin
-      .from("barber_availability")
+      .from("staff_availability")
       .select("start_time, end_time")
-      .eq("barber_id", bid)
+      .eq("staff_id", bid)
       .eq("weekday", weekday);
     if (!avails || avails.length === 0) continue;
 
@@ -161,9 +161,9 @@ export async function getAvailability({
 
       // 2. Get time-off blocks for this barber that overlap the day.
       const { data: timeOffs } = await admin
-        .from("barber_time_off")
+        .from("staff_time_off")
         .select("start_at, end_at")
-        .eq("barber_id", bid)
+        .eq("staff_id", bid)
         .lt("start_at", dayEndUtc.toISOString())
         .gt("end_at", dayStartUtc.toISOString());
 
@@ -178,7 +178,7 @@ export async function getAvailability({
       const { data: bookings } = await admin
         .from("bookings")
         .select("scheduled_start, scheduled_end")
-        .eq("barber_id", bid)
+        .eq("staff_id", bid)
         .in("status", ["booked", "arrived", "in_chair"])
         .lt("scheduled_start", dayEndUtc.toISOString())
         .gt("scheduled_end", dayStartUtc.toISOString());
@@ -218,7 +218,7 @@ export async function getAvailability({
                 start: isoStart,
                 end: toEatIso(slotEnd),
                 label: toLabel(cursor),
-                barberId: bid,
+                staffId: bid,
               });
             }
           }

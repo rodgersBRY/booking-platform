@@ -25,7 +25,7 @@ export async function POST(
 
   const { data: booking, error: bookErr } = await admin
     .from("bookings")
-    .select("id, status, barber_id")
+    .select("id, status, staff_id")
     .eq("id", id)
     .single();
 
@@ -34,7 +34,7 @@ export async function POST(
   }
 
   // Bookable staff (barber/beautician/masseuse) may only mark arrived on their own bookings.
-  if (isBookableRole(staff.role) && booking.barber_id !== staff.id) {
+  if (isBookableRole(staff.role) && booking.staff_id !== staff.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

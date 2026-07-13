@@ -41,7 +41,7 @@ export async function GET() {
   const { data: bookingRows, error: bookErr } = await admin
     .from("bookings")
     .select("id, scheduled_start, status, clients(name), services(name)")
-    .eq("barber_id", staff.id)
+    .eq("staff_id", staff.id)
     .in("status", ["booked", "arrived", "in_chair", "late"])
     .gte("scheduled_start", todayStart)
     .lte("scheduled_start", todayEnd)
@@ -83,11 +83,11 @@ export async function GET() {
   const { count: queueWaitingCount } = await admin
     .from("queue_entries")
     .select("id", { count: "exact", head: true })
-    .eq("barber_id", staff.id)
+    .eq("staff_id", staff.id)
     .eq("status", "waiting");
 
   return NextResponse.json({
-    barberId: staff.id,
+    staffId: staff.id,
     nextClient,
     schedule,
     queueWaitingCount: queueWaitingCount ?? 0,

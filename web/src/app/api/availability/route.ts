@@ -9,13 +9,13 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = request.nextUrl;
-  const barber = searchParams.get("barber");
+  const barber = searchParams.get("staff");
   const service = searchParams.get("service");
   const date = searchParams.get("date");
 
   if (!barber || !service || !date) {
     return NextResponse.json(
-      { error: "Missing required query params: barber, service, date" },
+      { error: "Missing required query params: staff, service, date" },
       { status: 400 },
     );
   }
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
   }
 
   const slots = await getAvailability({
-    barberId: barber,
+    staffId: barber,
     serviceId: service,
     date,
   });

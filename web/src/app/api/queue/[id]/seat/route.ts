@@ -22,7 +22,7 @@ export async function POST(
   // Fetch the queue entry.
   const { data: entry, error: entryErr } = await admin
     .from("queue_entries")
-    .select("id, client_id, barber_id, status")
+    .select("id, client_id, staff_id, status")
     .eq("id", id)
     .single();
 
@@ -41,14 +41,14 @@ export async function POST(
   const nowIso = now.toISOString();
 
   // Determine barber: preferred first, then any free active barber.
-  let seatBarberId: string | null = null;
-  const preferredBarberId = entry.barber_id as string | null;
+  let seatStaffId: string | null = null;
+  const preferredStaffId = entry.staff_id as string | null;
 
-  const isFree = async (barberId: string): Promise<boolean> => {
+  const isFree = async (staffId: string): Promise<boolean> => {
     const { data } = await admin
       .from("bookings")
       .select("id")
-      .eq("barber_id", barberId)
+      .eq("staff_id", staffId)
       .in("status", ["booked", "arrived", "in_chair"])
       .lte("scheduled_start", nowIso)
       .gte("scheduled_end", nowIso)
@@ -56,8 +56,8 @@ export async function POST(
     return !data || data.length === 0;
   };
 
-  if (preferredBarberId && (await isFree(preferredBarberId))) {
-    seatBarberId = preferredBarberId;
+  if (preferredStaffId && (await isFree(preferredStaffId))) {
+    seatStaffId = preferredStaffId;
   } else {
     // Try any active barber.
     const { data: barbers } = await admin
@@ -68,15 +68,15 @@ export async function POST(
 
     for (const b of barbers ?? []) {
       if (await isFree(b.id as string)) {
-        seatBarberId = b.id as string;
+        seatStaffId = b.id as string;
         break;
       }
     }
   }
 
-  if (!seatBarberId) {
+  if (!seatStaffId) {
     return NextResponse.json(
-      { error: "no_barber_free", message: "No barber is currently free." },
+      { error: "no_staff_free", message: "No barber is currently free." },
       { status: 409 },
     );
   }
@@ -101,7 +101,7 @@ export async function POST(
     .from("bookings")
     .insert({
       client_id: entry.client_id as string,
-      barber_id: seatBarberId,
+      staff_id: seatStaffId,
       service_id: serviceId ?? null,
       scheduled_start: nowIso,
       scheduled_end: scheduledEnd.toISOString(),

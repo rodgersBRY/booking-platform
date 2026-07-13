@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await admin
     .from("clients")
-    .select("id, name, phone, total_visits, last_visit_at, preferred_barber_id")
+    .select("id, name, phone, total_visits, last_visit_at, preferred_staff_id")
     .eq("phone", phone)
     .maybeSingle();
 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     phone: string;
     total_visits: number | null;
     last_visit_at: string | null;
-    preferred_barber_id: string | null;
+    preferred_staff_id: string | null;
   };
   const row = data as Row;
 
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       phone: row.phone,
       totalVisits: row.total_visits ?? 0,
       lastVisitAt: row.last_visit_at,
-      preferredBarberId: row.preferred_barber_id,
+      preferredStaffId: row.preferred_staff_id,
     },
   });
 }

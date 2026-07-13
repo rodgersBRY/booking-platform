@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   let body: {
     clientId?: string;
     client?: { name: string; phone: string; acquisitionSource?: string };
-    barberId?: string | null;
+    staffId?: string | null;
     serviceId: string;
     scheduledStart: string;
     channel: string;
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { clientId, client, barberId, serviceId, scheduledStart, channel } =
+  const { clientId, client, staffId, serviceId, scheduledStart, channel } =
     body;
 
   if (!serviceId || !scheduledStart || !channel) {
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   const result = await createBooking({
     clientId,
     client,
-    barberId: barberId ?? null,
+    staffId: staffId ?? null,
     serviceId,
     scheduledStart,
     channel,

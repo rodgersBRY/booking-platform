@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     clientId?: string;
     name?: string;
     phone?: string;
-    preferredBarberId?: string;
+    preferredStaffId?: string;
     serviceId: string;
     acquisitionSource?: string;
   };
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { clientId: bodyClientId, name, phone, preferredBarberId, serviceId, acquisitionSource } = body;
+  const { clientId: bodyClientId, name, phone, preferredStaffId, serviceId, acquisitionSource } = body;
 
   if (!serviceId) {
     return NextResponse.json(
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
           name,
           phone,
           acquisition_source: acquisitionSource ?? null,
-          preferred_barber_id: preferredBarberId ?? null,
+          preferred_staff_id: preferredStaffId ?? null,
         })
         .select("id")
         .single();
@@ -94,12 +94,12 @@ export async function POST(request: NextRequest) {
 
   // Learn the client's preferred barber: if a specific barber was chosen and the
   // client doesn't have one recorded yet, set it (best-effort — never blocks the walk-in).
-  if (preferredBarberId) {
+  if (preferredStaffId) {
     await admin
       .from("clients")
-      .update({ preferred_barber_id: preferredBarberId })
+      .update({ preferred_staff_id: preferredStaffId })
       .eq("id", clientId)
-      .is("preferred_barber_id", null);
+      .is("preferred_staff_id", null);
   }
 
   // Fetch service duration.
@@ -126,11 +126,11 @@ export async function POST(request: NextRequest) {
   }
   const eligibleRoles = (eligibleRoleRows ?? []).map((r) => r.role as string);
 
-  if (preferredBarberId) {
+  if (preferredStaffId) {
     const { data: preferredStaff, error: preferredErr } = await admin
       .from("staff")
       .select("role")
-      .eq("id", preferredBarberId)
+      .eq("id", preferredStaffId)
       .single();
     if (preferredErr || !preferredStaff) {
       return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
@@ -147,23 +147,23 @@ export async function POST(request: NextRequest) {
   const nowIso = now.toISOString();
 
   // Determine which barber to try seating.
-  // If preferredBarberId given, check if that barber is free now.
+  // If preferredStaffId given, check if that barber is free now.
   // Otherwise try any active barber.
-  let seatBarberId: string | null = null;
+  let seatStaffId: string | null = null;
 
-  if (preferredBarberId) {
+  if (preferredStaffId) {
     // Check if preferred barber has an active booking covering now.
     const { data: active } = await admin
       .from("bookings")
       .select("id")
-      .eq("barber_id", preferredBarberId)
+      .eq("staff_id", preferredStaffId)
       .in("status", ["booked", "arrived", "in_chair"])
       .lte("scheduled_start", nowIso)
       .gte("scheduled_end", nowIso)
       .limit(1);
 
     if (!active || active.length === 0) {
-      seatBarberId = preferredBarberId;
+      seatStaffId = preferredStaffId;
     }
   } else {
     // Find any free active staff member eligible for this service.
@@ -177,27 +177,27 @@ export async function POST(request: NextRequest) {
       const { data: active } = await admin
         .from("bookings")
         .select("id")
-        .eq("barber_id", b.id)
+        .eq("staff_id", b.id)
         .in("status", ["booked", "arrived", "in_chair"])
         .lte("scheduled_start", nowIso)
         .gte("scheduled_end", nowIso)
         .limit(1);
 
       if (!active || active.length === 0) {
-        seatBarberId = b.id as string;
+        seatStaffId = b.id as string;
         break;
       }
     }
   }
 
-  if (seatBarberId) {
+  if (seatStaffId) {
     // Seat the client immediately.
     const scheduledEnd = new Date(now.getTime() + duration * 60 * 1000);
     const { data: booking, error: bookErr } = await admin
       .from("bookings")
       .insert({
         client_id: clientId,
-        barber_id: seatBarberId,
+        staff_id: seatStaffId,
         service_id: serviceId,
         scheduled_start: nowIso,
         scheduled_end: scheduledEnd.toISOString(),
@@ -235,7 +235,7 @@ export async function POST(request: NextRequest) {
     .from("queue_entries")
     .insert({
       client_id: clientId,
-      barber_id: preferredBarberId ?? null,
+      staff_id: preferredStaffId ?? null,
       choice: "waiting",
       status: "waiting",
     })

@@ -25,7 +25,7 @@ export async function POST(
   // Fetch booking with service for duration.
   const { data: booking, error: bookErr } = await admin
     .from("bookings")
-    .select("id, status, barber_id, service_id, services(duration_minutes)")
+    .select("id, status, staff_id, service_id, services(duration_minutes)")
     .eq("id", id)
     .single();
 
@@ -34,7 +34,7 @@ export async function POST(
   }
 
   // Bookable staff may only seat their own bookings.
-  if (isBookableRole(staff.role) && booking.barber_id !== staff.id) {
+  if (isBookableRole(staff.role) && booking.staff_id !== staff.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -83,7 +83,7 @@ export async function POST(
     // Postgres exclusion constraint violation — barber already in a booking.
     if (updateErr.code === "23P01") {
       return NextResponse.json(
-        { error: "barber_busy", message: "That barber is busy right now." },
+        { error: "staff_busy", message: "That barber is busy right now." },
         { status: 409 },
       );
     }

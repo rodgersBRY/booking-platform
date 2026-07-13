@@ -87,7 +87,7 @@ export async function GET() {
   // ── 1. Visits for the month window (one query, bucket in JS) ───────────────
   type VisitRow = {
     id: string;
-    barber_id: string | null;
+    staff_id: string | null;
     service_id: string | null;
     amount_charged: number | null;
     completed_at: string;
@@ -98,7 +98,7 @@ export async function GET() {
   const { data: monthVisits, error: visitsErr } = await admin
     .from("visits")
     .select(
-      "id, barber_id, service_id, amount_charged, completed_at, clients(id, created_at), services(name)",
+      "id, staff_id, service_id, amount_charged, completed_at, clients(id, created_at), services(name)",
     )
     .gte("completed_at", monthStart)
     .lte("completed_at", monthEnd);
@@ -175,14 +175,14 @@ export async function GET() {
   }
 
   // ── 3. Active bookable staff for name lookup ───────────────────────────────
-  const { data: barberRows } = await admin
+  const { data: staffRows } = await admin
     .from("staff")
     .select("id, name")
     .in("role", BOOKABLE_ROLES)
     .eq("status", "active");
 
-  const barberMap = new Map<string, string>(
-    (barberRows ?? []).map((b: { id: string; name: string }) => [b.id, b.name]),
+  const staffMap = new Map<string, string>(
+    (staffRows ?? []).map((b: { id: string; name: string }) => [b.id, b.name]),
   );
 
   // ── 4. Per-barber week stats (from visits already fetched) ─────────────────
@@ -190,18 +190,18 @@ export async function GET() {
     inRange(v.completed_at, weekStart, weekEnd),
   );
 
-  const barberStats = new Map<string, { visits: number; revenue: number }>();
+  const staffStats = new Map<string, { visits: number; revenue: number }>();
   for (const v of weekVisits) {
-    if (!v.barber_id) continue;
-    const cur = barberStats.get(v.barber_id) ?? { visits: 0, revenue: 0 };
+    if (!v.staff_id) continue;
+    const cur = staffStats.get(v.staff_id) ?? { visits: 0, revenue: 0 };
     cur.visits++;
     cur.revenue += v.amount_charged ?? 0;
-    barberStats.set(v.barber_id, cur);
+    staffStats.set(v.staff_id, cur);
   }
 
-  const perBarber = Array.from(barberStats.entries()).map(([barberId, s]) => ({
-    barberId,
-    barberName: barberMap.get(barberId) ?? "Unknown",
+  const perStaff = Array.from(staffStats.entries()).map(([staffId, s]) => ({
+    staffId,
+    staffName: staffMap.get(staffId) ?? "Unknown",
     visits: s.visits,
     revenue: s.revenue,
   }));
@@ -280,7 +280,7 @@ export async function GET() {
       atRiskClients: atRiskCount,
     },
     week: {
-      perBarber,
+      perStaff,
       topServices,
       channelMix,
       noShowRate,

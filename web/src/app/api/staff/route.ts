@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
   const r = row as Record<string, unknown>;
   if (isBookableRole(role as StaffRole)) {
     const { error: availabilityErr } = await admin
-      .from("barber_availability")
+      .from("staff_availability")
       .insert(defaultAvailabilityForBarber(String(r.id)));
 
     if (availabilityErr) {

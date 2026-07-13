@@ -1,5 +1,5 @@
 export type AvailabilityInsertRow = {
-  barber_id: string;
+  staff_id: string;
   weekday: number;
   start_time: string;
   end_time: string;
@@ -16,10 +16,10 @@ const DEFAULT_WEEKLY_HOURS = [
 ] as const;
 
 export function defaultAvailabilityForBarber(
-  barberId: string,
+  staffId: string,
 ): AvailabilityInsertRow[] {
   return DEFAULT_WEEKLY_HOURS.map((hours) => ({
-    barber_id: barberId,
+    staff_id: staffId,
     ...hours,
   }));
 }

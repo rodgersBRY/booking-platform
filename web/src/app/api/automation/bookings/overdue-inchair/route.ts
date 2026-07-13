@@ -19,10 +19,10 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await admin
     .from("bookings")
-    .select("id, scheduled_end, clients(name), services(name), staff!barber_id(name, phone)")
+    .select("id, scheduled_end, clients(name), services(name), staff!staff_id(name, phone)")
     .eq("status", "in_chair")
     .lt("scheduled_end", now.toISOString())
-    .not("barber_id", "is", null);
+    .not("staff_id", "is", null);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
@@ -42,8 +42,8 @@ export async function GET(request: NextRequest) {
         minutesOverdue,
         clientName: client?.name ?? "Unknown",
         serviceName: service?.name ?? null,
-        barberName: barber.name,
-        barberPhone: barber.phone,
+        staffName: barber.name,
+        staffPhone: barber.phone,
       };
     })
     .filter(Boolean);

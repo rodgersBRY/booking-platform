@@ -38,8 +38,8 @@ export interface ClientSearchResult {
   id: string;
   name: string;
   phone: string;
-  preferredBarberId: string | null;
-  preferredBarberName: string | null;
+  preferredStaffId: string | null;
+  preferredStaffName: string | null;
   totalVisits: number;
   lastVisitAt: string | null;
   isRegular: boolean;
@@ -52,7 +52,7 @@ export interface WalkinPayload {
   name?: string;
   /** Required when clientId is absent. */
   phone?: string;
-  preferredBarberId?: string;
+  preferredStaffId?: string;
   serviceId: string;
   acquisitionSource?: string;
 }

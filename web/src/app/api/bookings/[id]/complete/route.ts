@@ -39,7 +39,7 @@ export async function POST(
   // Fetch booking.
   const { data: booking, error: bookErr } = await admin
     .from("bookings")
-    .select("id, client_id, barber_id, service_id, status")
+    .select("id, client_id, staff_id, service_id, status")
     .eq("id", id)
     .single();
 
@@ -48,7 +48,7 @@ export async function POST(
   }
 
   // Bookable staff may only complete their own bookings.
-  if (isBookableRole(staff.role) && booking.barber_id !== staff.id) {
+  if (isBookableRole(staff.role) && booking.staff_id !== staff.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -77,7 +77,7 @@ export async function POST(
     .insert({
       booking_id: id,
       client_id: booking.client_id as string,
-      barber_id: booking.barber_id as string | null,
+      staff_id: booking.staff_id as string | null,
       service_id: booking.service_id as string,
       completed_at: now,
       amount_charged: amountCharged,

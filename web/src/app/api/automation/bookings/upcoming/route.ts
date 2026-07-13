@@ -20,11 +20,11 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await admin
     .from("bookings")
-    .select("id, scheduled_start, client_id, clients(name, phone), services(name), staff!barber_id(name, phone)")
+    .select("id, scheduled_start, client_id, clients(name, phone), services(name), staff!staff_id(name, phone)")
     .in("status", ["booked", "arrived"])
     .gte("scheduled_start", now)
     .lte("scheduled_start", in24h)
-    .not("barber_id", "is", null);
+    .not("staff_id", "is", null);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
@@ -45,8 +45,8 @@ export async function GET(request: NextRequest) {
         clientName: client?.name ?? "Unknown",
         clientPhone: client?.phone ?? null,
         serviceName: service?.name ?? null,
-        barberName: barber.name,
-        barberPhone: barber.phone,
+        staffName: barber.name,
+        staffPhone: barber.phone,
         appLink,
       };
     })

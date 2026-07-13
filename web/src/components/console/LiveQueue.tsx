@@ -75,8 +75,8 @@ function QueueRow({ item, onSeat, onNotify }: RowProps) {
           {item.clientName}
         </p>
         <p className="text-sm opacity-60 truncate">
-          {item.preferredBarberName
-            ? `Prefers ${item.preferredBarberName}`
+          {item.preferredStaffName
+            ? `Prefers ${item.preferredStaffName}`
             : "Any barber"}
           {item.estimatedWaitMinutes != null && (
             <> &middot; ~{Math.round(item.estimatedWaitMinutes)} min wait</>

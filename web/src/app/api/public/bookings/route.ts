@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   let body: {
     client?: { name: string; phone: string };
-    barberId?: string;
+    staffId?: string;
     serviceId?: string;
     scheduledStart?: string;
   };
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { client, barberId, serviceId, scheduledStart } = body;
+  const { client, staffId, serviceId, scheduledStart } = body;
 
   // Validate required fields.
   if (!client?.name || !client?.phone) {
@@ -41,11 +41,11 @@ export async function POST(request: NextRequest) {
   }
 
   // Online bookings require a concrete barber (from slot selection).
-  if (!barberId) {
+  if (!staffId) {
     return NextResponse.json(
       {
         error:
-          "barberId is required for online bookings — select a slot to get a concrete barber",
+          "staffId is required for online bookings — select a slot to get a concrete barber",
       },
       { status: 400 },
     );
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       phone: client.phone,
       acquisitionSource: "website",
     },
-    barberId,
+    staffId,
     serviceId,
     scheduledStart,
     channel: "online",

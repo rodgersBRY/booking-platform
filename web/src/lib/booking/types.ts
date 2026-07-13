@@ -7,12 +7,12 @@ export interface Slot {
   /** Formatted label for display, e.g. "9:00 AM" */
   label: string;
   /** The barber who is free for this slot */
-  barberId: string;
+  staffId: string;
 }
 
 export interface ChairStatus {
-  barberId: string;
-  barberName: string;
+  staffId: string;
+  staffName: string;
   status: "in_chair" | "free";
   /** Present when status === "in_chair" */
   bookingId?: string;
@@ -25,8 +25,8 @@ export interface ChairStatus {
 export interface QueueItem {
   id: string;
   clientName: string;
-  preferredBarberId: string | null;
-  preferredBarberName: string | null;
+  preferredStaffId: string | null;
+  preferredStaffName: string | null;
   choice: string;
   status: string;
   waitedMinutes: number;
@@ -43,8 +43,8 @@ export interface BoardStats {
 export interface Appointment {
   id: string;
   clientName: string;
-  barberId: string | null;
-  barberName: string | null;
+  staffId: string | null;
+  staffName: string | null;
   serviceName: string | null;
   serviceId: string | null;
   scheduledStart: string;

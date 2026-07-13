@@ -7,7 +7,7 @@ export interface CreateBookingParams {
   clientId?: string;
   client?: { name: string; phone: string; acquisitionSource?: string };
   /** Concrete barber UUID, or null to let the DB assign (walk-in). */
-  barberId: string | null;
+  staffId: string | null;
   serviceId: string;
   /** ISO 8601 string for the booking start time. */
   scheduledStart: string;
@@ -32,7 +32,7 @@ export type CreateBookingResult =
  * Caller is responsible for auth / channel enforcement BEFORE calling this.
  * This helper:
  *   1. Resolves or creates the client by id or phone (find-or-create).
- *   2. Persists preferred_barber_id when the client has none and a barber is chosen.
+ *   2. Persists preferred_staff_id when the client has none and a barber is chosen.
  *   3. Fetches service duration.
  *   4. Inserts the booking with status "booked".
  *   5. On Postgres exclusion violation (23P01) returns { error: "slot_taken", slots }.
@@ -43,7 +43,7 @@ export async function createBooking(
   const {
     clientId,
     client,
-    barberId,
+    staffId,
     serviceId,
     scheduledStart,
     channel,
@@ -60,7 +60,7 @@ export async function createBooking(
   } else if (client?.phone) {
     const { data: existing } = await admin
       .from("clients")
-      .select("id, preferred_barber_id")
+      .select("id, preferred_staff_id")
       .eq("phone", client.phone)
       .maybeSingle();
 
@@ -68,10 +68,10 @@ export async function createBooking(
       resolvedClientId = existing.id as string;
 
       // Persist preferred barber if the client hasn't had one recorded yet.
-      if (barberId && !existing.preferred_barber_id) {
+      if (staffId && !existing.preferred_staff_id) {
         await admin
           .from("clients")
-          .update({ preferred_barber_id: barberId })
+          .update({ preferred_staff_id: staffId })
           .eq("id", resolvedClientId);
       }
     } else {
@@ -108,11 +108,11 @@ export async function createBooking(
   // ── Defensive role-eligibility check ────────────────────────────────────────
   // Authoritative guard: even if every UI upstream already filters staff by
   // service eligibility, this is the one place every booking path funnels through.
-  if (barberId) {
+  if (staffId) {
     const { data: staffRow, error: staffErr } = await admin
       .from("staff")
       .select("role")
-      .eq("id", barberId)
+      .eq("id", staffId)
       .single();
     if (staffErr || !staffRow) {
       return { error: "Staff member not found" };
@@ -143,7 +143,7 @@ export async function createBooking(
     .from("bookings")
     .insert({
       client_id: resolvedClientId,
-      barber_id: barberId ?? null,
+      staff_id: staffId ?? null,
       service_id: serviceId,
       scheduled_start: startDate.toISOString(),
       scheduled_end: endDate.toISOString(),
@@ -158,9 +158,9 @@ export async function createBooking(
     // Postgres exclusion constraint violation — slot is taken.
     if (bookErr.code === "23P01") {
       const date = scheduledStart.slice(0, 10);
-      const slots = barberId
-        ? await getAvailability({ barberId, serviceId, date })
-        : await getAvailability({ barberId: "any", serviceId, date });
+      const slots = staffId
+        ? await getAvailability({ staffId, serviceId, date })
+        : await getAvailability({ staffId: "any", serviceId, date });
 
       return {
         error: "slot_taken",

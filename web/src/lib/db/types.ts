@@ -77,7 +77,7 @@ export interface Client {
   name: string;
   phone: string;
   email: string | null;
-  preferred_barber_id: string | null;
+  preferred_staff_id: string | null;
   acquisition_source: AcquisitionSource | null;
   referred_by_client_id: string | null;
   loyalty_points: number;
@@ -90,7 +90,7 @@ export interface Client {
 export interface Booking {
   id: string;
   client_id: string;
-  barber_id: string | null;
+  staff_id: string | null;
   service_id: string;
   scheduled_start: string;
   scheduled_end: string;
@@ -105,7 +105,7 @@ export interface Booking {
 export interface QueueEntry {
   id: string;
   client_id: string;
-  barber_id: string | null;
+  staff_id: string | null;
   booking_id: string | null;
   joined_at: string;
   estimated_wait_minutes: number | null;
@@ -118,7 +118,7 @@ export interface Visit {
   id: string;
   booking_id: string | null;
   client_id: string;
-  barber_id: string | null;
+  staff_id: string | null;
   service_id: string | null;
   completed_at: string;
   amount_charged: number;

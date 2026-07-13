@@ -1,17 +1,17 @@
 "use client";
 
-interface BarberRow {
-  barberId: string;
-  barberName: string;
+interface StaffRow {
+  staffId: string;
+  staffName: string;
   visits: number;
   revenue: number;
 }
 
-interface BarberTableProps {
-  rows: BarberRow[];
+interface StaffTableProps {
+  rows: StaffRow[];
 }
 
-export function BarberTable({ rows }: BarberTableProps) {
+export function StaffTable({ rows }: StaffTableProps) {
   if (rows.length === 0) {
     return <p className="text-sm text-zinc-400">No visits this week yet.</p>;
   }
@@ -27,8 +27,8 @@ export function BarberTable({ rows }: BarberTableProps) {
       </thead>
       <tbody>
         {rows.map((row) => (
-          <tr key={row.barberId} className="border-b border-zinc-50 last:border-0">
-            <td className="py-2 font-medium text-[var(--navy)]">{row.barberName}</td>
+          <tr key={row.staffId} className="border-b border-zinc-50 last:border-0">
+            <td className="py-2 font-medium text-(--navy)">{row.staffName}</td>
             <td className="py-2 text-right text-zinc-700">{row.visits}</td>
             <td className="py-2 text-right text-zinc-700">{row.revenue.toLocaleString()}</td>
           </tr>

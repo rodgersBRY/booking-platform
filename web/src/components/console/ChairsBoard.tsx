@@ -51,7 +51,7 @@ function ChairCard({ chair, onDoneClick }: ChairCardProps) {
           className="font-semibold text-base"
           style={{ color: "var(--navy)" }}
         >
-          {chair.barberName}
+          {chair.staffName}
         </h3>
         <span
           className="text-xs font-semibold px-2.5 py-1 rounded-full"
@@ -117,7 +117,7 @@ export default function ChairsBoard({ chairs, onRefresh }: Props) {
       >
         {chairs.map((chair) => (
           <ChairCard
-            key={chair.barberId}
+            key={chair.staffId}
             chair={chair}
             onDoneClick={() => setCompletingChair(chair)}
           />
