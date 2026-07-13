@@ -181,6 +181,19 @@ export async function POST(request: NextRequest) {
     if (bookErr) {
       return NextResponse.json({ error: bookErr.message }, { status: 500 });
     }
+
+    // Mirror the primary service into booking_services (full service list).
+    const { error: bsErr } = await admin
+      .from("booking_services")
+      .insert({ booking_id: booking.id, service_id: serviceId });
+    if (bsErr) {
+      await admin.from("bookings").delete().eq("id", booking.id);
+      return NextResponse.json(
+        { error: "Something went wrong. Please try again." },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json({ seated: true, booking }, { status: 201 });
   }
 

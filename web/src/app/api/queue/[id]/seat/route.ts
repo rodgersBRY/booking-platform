@@ -116,6 +116,20 @@ export async function POST(
     return NextResponse.json({ error: bookErr.message }, { status: 500 });
   }
 
+  // Mirror the primary service into booking_services (full service list).
+  if (serviceId) {
+    const { error: bsErr } = await admin
+      .from("booking_services")
+      .insert({ booking_id: booking.id, service_id: serviceId });
+    if (bsErr) {
+      await admin.from("bookings").delete().eq("id", booking.id);
+      return NextResponse.json(
+        { error: "Something went wrong. Please try again." },
+        { status: 500 },
+      );
+    }
+  }
+
   // Mark queue entry as served.
   await admin
     .from("queue_entries")

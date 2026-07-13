@@ -145,5 +145,20 @@ export async function createBooking(
     return { error: bookErr.message };
   }
 
+  // ── 4. Mirror the primary service into booking_services ────────────────────
+  // booking_services is the full service list for the appointment; every
+  // booking starts with its primary service. Additional services are appended
+  // later (e.g. in-chair upsell) via /api/bookings/[id]/add-service.
+  const bookingRow = booking as { id: string };
+  const { error: bsErr } = await admin
+    .from("booking_services")
+    .insert({ booking_id: bookingRow.id, service_id: serviceId });
+
+  if (bsErr) {
+    // Roll back the orphaned booking so the two never diverge.
+    await admin.from("bookings").delete().eq("id", bookingRow.id);
+    return { error: "Something went wrong. Please try again." };
+  }
+
   return { booking: booking as Record<string, unknown> };
 }
