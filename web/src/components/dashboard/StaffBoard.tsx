@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { StaffListItem } from "@/lib/api/staff";
 import { fetchStaff, setStaffStatus, uploadStaffAvatar } from "@/lib/api/staff";
+import { Pencil } from "lucide-react";
 import AddStaffModal from "./AddStaffModal";
 import ResetPasswordModal from "./ResetPasswordModal";
 
@@ -185,7 +186,7 @@ export default function StaffBoard() {
                       onClick={() => handleAvatarClick(m.id)}
                       disabled={avatarUploadingId === m.id}
                       title="Change photo"
-                      className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-xs font-semibold shrink-0 transition-opacity hover:opacity-80 disabled:opacity-50"
+                      className="group relative w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-xs font-semibold shrink-0 disabled:opacity-50"
                       style={
                         m.avatarUrl
                           ? undefined
@@ -203,6 +204,14 @@ export default function StaffBoard() {
                         />
                       ) : (
                         initials(m.name)
+                      )}
+                      {avatarUploadingId !== m.id && (
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 transition-opacity group-hover:opacity-100"
+                        >
+                          <Pencil className="w-4 h-4 text-white" />
+                        </span>
                       )}
                     </button>
                   </td>
