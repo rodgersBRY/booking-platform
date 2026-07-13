@@ -4,6 +4,7 @@
 
 # Claude tooling
 .claude/
+AGENTS.md
 
 # Node / Next (also covered by web/.gitignore, kept here for safety)
 **/node_modules/
