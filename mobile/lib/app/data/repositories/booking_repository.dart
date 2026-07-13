@@ -13,7 +13,7 @@ class BookingRepository {
   Dio get _dio => Get.find<ApiService>().dio;
 
   Future<List<ServiceModel>> fetchServices() async {
-    final res = await _dio.get('/public/services');
+    final res = await _dio.get('/v1/public/services');
     final list = res.data['services'] as List;
     return list
         .map((e) => ServiceModel.fromJson(e as Map<String, dynamic>))
@@ -25,7 +25,7 @@ class BookingRepository {
   /// eligible for that service — omit it to get everyone.
   Future<List<StaffModel>> fetchStaff({String? serviceId}) async {
     final res = await _dio.get(
-      '/public/barbers',
+      '/v1/public/barbers',
       queryParameters: serviceId != null ? {'serviceId': serviceId} : null,
     );
     final list = res.data['barbers'] as List;
@@ -40,7 +40,7 @@ class BookingRepository {
     required String date,
   }) async {
     final res = await _dio.get(
-      '/public/availability',
+      '/v1/public/availability',
       queryParameters: {'barber': staffId, 'service': serviceId, 'date': date},
     );
     final list = res.data['slots'] as List;
@@ -58,7 +58,7 @@ class BookingRepository {
   }) async {
     try {
       final res = await _dio.post(
-        '/public/bookings',
+        '/v1/public/bookings',
         data: {
           'client': {'name': name, 'phone': phone},
           'barberId': staffId,

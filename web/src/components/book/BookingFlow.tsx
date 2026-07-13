@@ -315,7 +315,7 @@ function DateSlotStep({
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/public/availability?staff=${encodeURIComponent(staffId)}&service=${encodeURIComponent(serviceId)}&date=${date}`,
+        `/api/v1/public/availability?staff=${encodeURIComponent(staffId)}&service=${encodeURIComponent(serviceId)}&date=${date}`,
       );
       if (!res.ok) {
         setError("Couldn't load times. Please try again.");
@@ -591,7 +591,7 @@ export default function BookingFlow({
     const concreteStaffId = selectedSlot.staffId;
 
     try {
-      const res = await fetch("/api/public/bookings", {
+      const res = await fetch("/api/v1/public/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

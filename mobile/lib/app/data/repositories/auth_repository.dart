@@ -19,7 +19,7 @@ class AuthRepository {
   }) async {
     try {
       final res = await _dio.post(
-        '/account/login',
+        '/v1/account/login',
         data: {'email': email, 'password': password},
       );
       final token = res.data['token'] as String;
@@ -47,7 +47,7 @@ class AuthRepository {
   }) async {
     try {
       final res = await _dio.post(
-        '/account/signup',
+        '/v1/account/signup',
         data: {'name': name, 'phone': phone, 'email': email, 'password': password},
       );
       if (res.data['pendingConfirmation'] == true) {
@@ -76,7 +76,7 @@ class AuthRepository {
     final token = await _storage.readToken();
     if (token == null) return null;
     try {
-      final res = await _dio.get('/account/me');
+      final res = await _dio.get('/v1/account/me');
       return ClientModel.fromJson(res.data['client'] as Map<String, dynamic>);
     } on DioException {
       return null;
