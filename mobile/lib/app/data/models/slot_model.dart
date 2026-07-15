@@ -3,8 +3,6 @@ class SlotModel {
   final String end;
   final String label;
 
-  /// The staff member free for this slot. Wire key is still "barberId" —
-  /// the backend only has a barber role today.
   final String staffId;
 
   SlotModel({
@@ -19,7 +17,7 @@ class SlotModel {
       start: json['start'] as String,
       end: json['end'] as String,
       label: json['label'] as String,
-      staffId: json['barberId'] as String,
+      staffId: json['staffId'] as String,
     );
   }
 }

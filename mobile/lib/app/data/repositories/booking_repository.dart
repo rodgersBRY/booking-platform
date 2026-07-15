@@ -41,7 +41,7 @@ class BookingRepository {
   }) async {
     final res = await _dio.get(
       '/v1/public/availability',
-      queryParameters: {'barber': staffId, 'service': serviceId, 'date': date},
+      queryParameters: {'staff': staffId, 'service': serviceId, 'date': date},
     );
     final list = res.data['slots'] as List;
     return list
@@ -61,7 +61,7 @@ class BookingRepository {
         '/v1/public/bookings',
         data: {
           'client': {'name': name, 'phone': phone},
-          'barberId': staffId,
+          'staffId': staffId,
           'serviceId': serviceId,
           'scheduledStart': scheduledStart,
         },
