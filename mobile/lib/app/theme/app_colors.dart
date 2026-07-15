@@ -21,4 +21,10 @@ abstract class AppColors {
   static const inChairBg = Color(0xFFDBEAFE);
   static const late = Color(0xFFDC2626);
   static const lateBg = Color(0xFFFEE2E2);
+
+  // Dark-mode surfaces — brightness-dependent, not a simple opacity shift
+  // of the light tokens above.
+  static const canvasDark = Color(0xFF10131F);
+  static const cardDark = Color(0xFF1C2136);
+  static const borderDark = Color(0xFF323A57);
 }

@@ -26,6 +26,8 @@ class BarberiaCutsApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Baberia Cuts',
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
       initialRoute: AppRoutes.welcome,
       getPages: AppPages.routes,
     );

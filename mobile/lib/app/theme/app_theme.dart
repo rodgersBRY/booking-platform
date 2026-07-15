@@ -1,21 +1,51 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'app_text_styles.dart';
 
 abstract class AppTheme {
-  static ThemeData get light {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.navy,
-      brightness: Brightness.light,
-      primary: AppColors.navy,
-      secondary: AppColors.brass,
-      surface: AppColors.card,
-    );
+  static ThemeData get light => _build(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.navy,
+          brightness: Brightness.light,
+          primary: AppColors.navy,
+          secondary: AppColors.brass,
+          surface: AppColors.card,
+        ),
+        background: AppColors.canvas,
+        cardColor: AppColors.card,
+        borderColor: const Color(0xFFE5E7EB),
+        textColor: AppColors.navy,
+        mutedTextColor: Colors.black54,
+      );
 
+  static ThemeData get dark => _build(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.brassLight,
+          brightness: Brightness.dark,
+          primary: AppColors.brassLight,
+          secondary: AppColors.brass,
+          surface: AppColors.cardDark,
+        ),
+        background: AppColors.canvasDark,
+        cardColor: AppColors.cardDark,
+        borderColor: AppColors.borderDark,
+        textColor: Colors.white,
+        mutedTextColor: Colors.white70,
+      );
+
+  static ThemeData _build({
+    required ColorScheme colorScheme,
+    required Color background,
+    required Color cardColor,
+    required Color borderColor,
+    required Color textColor,
+    required Color mutedTextColor,
+  }) {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: AppColors.canvas,
+      scaffoldBackgroundColor: background,
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.navy,
         foregroundColor: Colors.white,
@@ -23,7 +53,7 @@ abstract class AppTheme {
         centerTitle: false,
       ),
       cardTheme: CardThemeData(
-        color: AppColors.card,
+        color: cardColor,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: EdgeInsets.zero,
@@ -39,22 +69,22 @@ abstract class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.navy,
-          side: const BorderSide(color: Color(0xFFE5E7EB), width: 1.5),
+          foregroundColor: textColor,
+          side: BorderSide(color: borderColor, width: 1.5),
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.card,
+        fillColor: cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB), width: 1.5),
+          borderSide: BorderSide(color: borderColor, width: 1.5),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB), width: 1.5),
+          borderSide: BorderSide(color: borderColor, width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
@@ -62,10 +92,14 @@ abstract class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
-      textTheme: const TextTheme(
-        headlineSmall: TextStyle(fontWeight: FontWeight.w700, color: AppColors.navy),
-        titleLarge: TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
-        bodyMedium: TextStyle(color: AppColors.navy),
+      textTheme: TextTheme(
+        headlineSmall: TextStyle(fontWeight: FontWeight.w700, color: textColor),
+        titleLarge: TextStyle(fontWeight: FontWeight.w600, color: textColor),
+        bodyMedium: TextStyle(color: textColor),
+        displaySmall: AppTextStyles.displaySmall.copyWith(color: textColor),
+        titleMedium: AppTextStyles.titleMedium.copyWith(color: textColor),
+        labelLarge: AppTextStyles.labelLarge.copyWith(color: textColor),
+        bodySmall: AppTextStyles.bodySmall.copyWith(color: mutedTextColor),
       ),
     );
   }
