@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../theme/app_colors.dart';
+import '../../../widgets/booking_progress_indicator.dart';
+import '../../../widgets/empty_state.dart';
+import '../../../widgets/skeleton_loader.dart';
 import '../booking_controller.dart';
 
 class SlotPage extends GetView<BookingController> {
@@ -16,6 +19,7 @@ class SlotPage extends GetView<BookingController> {
       appBar: AppBar(title: const Text('Pick a date and time')),
       body: Column(
         children: [
+          const BookingProgressIndicator(current: BookingStep.time),
           SizedBox(
             height: 72,
             child: Obx(() {
@@ -78,22 +82,26 @@ class SlotPage extends GetView<BookingController> {
           Expanded(
             child: Obx(() {
               if (controller.slotsLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: SkeletonList(count: 4, itemHeight: 48),
+                );
               }
               if (controller.slotsError.value != null) {
-                return Center(
-                  child: Text(
-                    controller.slotsError.value!,
-                    style: const TextStyle(color: AppColors.late),
-                  ),
+                final date = controller.activeDate.value;
+                return EmptyState(
+                  icon: Icons.cloud_off,
+                  title: "Couldn't load times",
+                  subtitle: controller.slotsError.value!,
+                  actionLabel: 'Retry',
+                  onAction: () => controller.loadSlots(date),
                 );
               }
               if (controller.slots.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'No times left on that day — try another date.',
-                    style: TextStyle(color: Colors.black45),
-                  ),
+                return const EmptyState(
+                  icon: Icons.event_busy,
+                  title: 'Fully booked that day',
+                  subtitle: 'Try another date — mornings usually open up first.',
                 );
               }
               final selectedStart = controller.selectedSlot.value?.start;

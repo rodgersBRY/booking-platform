@@ -12,10 +12,26 @@ class ShellPage extends GetView<ShellController> {
 
   static const _tabs = [
     _ShellTab(icon: Icons.home_outlined, activeIcon: Icons.home, label: 'Home'),
-    _ShellTab(icon: Icons.calendar_month_outlined, activeIcon: Icons.calendar_month, label: 'Book'),
-    _ShellTab(icon: Icons.event_note_outlined, activeIcon: Icons.event_note, label: 'Appointments'),
-    _ShellTab(icon: Icons.explore_outlined, activeIcon: Icons.explore, label: 'Explore'),
-    _ShellTab(icon: Icons.person_outline, activeIcon: Icons.person, label: 'Profile'),
+    _ShellTab(
+      icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month,
+      label: 'Book',
+    ),
+    _ShellTab(
+      icon: Icons.event_note_outlined,
+      activeIcon: Icons.event_note,
+      label: 'Appointments',
+    ),
+    _ShellTab(
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore,
+      label: 'Explore',
+    ),
+    _ShellTab(
+      icon: Icons.person_outline,
+      activeIcon: Icons.person,
+      label: 'Profile',
+    ),
   ];
 
   @override
@@ -57,12 +73,13 @@ class _ShellTab {
   final IconData activeIcon;
   final String label;
 
-  const _ShellTab({required this.icon, required this.activeIcon, required this.label});
+  const _ShellTab({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+  });
 }
 
-/// Deliberately not a stock BottomNavigationBar/NavigationBar — a rounded,
-/// floating pill bar with a highlighted active item, per the design brief's
-/// instruction to look distinct from the platform default.
 class _ShellBottomBar extends StatelessWidget {
   final List<_ShellTab> tabs;
   final ShellController controller;
@@ -113,7 +130,11 @@ class _ShellNavButton extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _ShellNavButton({required this.tab, required this.selected, required this.onTap});
+  const _ShellNavButton({
+    required this.tab,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +143,10 @@ class _ShellNavButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
