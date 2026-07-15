@@ -33,7 +33,7 @@ class WelcomePage extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () => Get.toNamed(AppRoutes.bookCategory),
+                onPressed: () => Get.offAllNamed(AppRoutes.shell),
                 child: const Text('Continue as guest'),
               ),
               const SizedBox(height: 12),

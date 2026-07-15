@@ -28,7 +28,7 @@ class LoginController extends GetxController {
     submitting.value = false;
 
     if (result.success) {
-      Get.offAllNamed(AppRoutes.account);
+      Get.offAllNamed(AppRoutes.shell);
       return;
     }
 

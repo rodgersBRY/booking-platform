@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../routes/app_routes.dart';
 import '../../../theme/app_colors.dart';
+import '../../shell/shell_controller.dart';
 import '../booking_controller.dart';
 
 class ConfirmationPage extends GetView<BookingController> {
@@ -88,6 +89,14 @@ class ConfirmationPage extends GetView<BookingController> {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
+              onPressed: () => Get.offAllNamed(
+                AppRoutes.shell,
+                arguments: {'initialTab': appointmentsTabIndex},
+              ),
+              child: const Text('Done'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton(
               onPressed: controller.startOver,
               child: const Text('Book another appointment'),
             ),

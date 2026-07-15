@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
 
-import '../modules/account/account_binding.dart';
-import '../modules/account/account_page.dart';
 import '../modules/booking/booking_binding.dart';
 import '../modules/booking/pages/category_list_page.dart';
 import '../modules/booking/pages/confirmation_page.dart';
@@ -11,6 +9,8 @@ import '../modules/booking/pages/slot_page.dart';
 import '../modules/booking/pages/staff_list_page.dart';
 import '../modules/login/login_binding.dart';
 import '../modules/login/login_page.dart';
+import '../modules/shell/shell_binding.dart';
+import '../modules/shell/shell_page.dart';
 import '../modules/signup/signup_binding.dart';
 import '../modules/signup/signup_page.dart';
 import '../modules/welcome/welcome_page.dart';
@@ -30,9 +30,9 @@ class AppPages {
       binding: SignupBinding(),
     ),
     GetPage(
-      name: AppRoutes.account,
-      page: () => const AccountPage(),
-      binding: AccountBinding(),
+      name: AppRoutes.shell,
+      page: () => const ShellPage(),
+      binding: ShellBinding(),
     ),
     GetPage(
       name: AppRoutes.bookCategory,
