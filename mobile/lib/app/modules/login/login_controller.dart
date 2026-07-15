@@ -32,6 +32,7 @@ class LoginController extends GetxController {
       return;
     }
 
-    errorMessage.value = result.message ?? 'Something went wrong. Please try again.';
+    errorMessage.value =
+        result.message ?? 'Something went wrong. Please try again.';
   }
 }

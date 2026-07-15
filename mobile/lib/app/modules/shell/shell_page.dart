@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../routes/app_routes.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/coming_soon_page.dart';
 import 'shell_controller.dart';
 
 class ShellPage extends GetView<ShellController> {
@@ -33,9 +34,11 @@ class ShellPage extends GetView<ShellController> {
               title: 'Appointments',
               subtitle: 'View, reschedule, and cancel your bookings here soon.',
             ),
-            _PlaceholderTab(
+            ComingSoonPage(
+              icon: Icons.explore_outlined,
               title: 'Explore',
-              subtitle: 'Discover professionals, styles, and inspiration — coming soon.',
+              subtitle:
+                  'Discover professionals, trending services, and style inspiration. Coming soon.',
             ),
             _PlaceholderTab(
               title: 'Profile',

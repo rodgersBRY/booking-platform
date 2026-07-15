@@ -15,6 +15,7 @@ class ShellController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     final args = Get.arguments;
     if (args is Map && args['initialTab'] is int) {
       currentTab.value = args['initialTab'] as int;
