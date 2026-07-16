@@ -301,7 +301,8 @@ class _ProfileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = destructive ? AppColors.late : AppColors.navy;
+    final theme = Theme.of(context);
+    final color = destructive ? AppColors.late : theme.textTheme.bodyMedium?.color;
     return Column(
       children: [
         ListTile(
@@ -309,7 +310,7 @@ class _ProfileTile extends StatelessWidget {
           title: Text(label, style: TextStyle(color: color, fontWeight: FontWeight.w500)),
           trailing: destructive
               ? null
-              : const Icon(Icons.chevron_right, color: Colors.black26),
+              : Icon(Icons.chevron_right, color: theme.textTheme.bodySmall?.color),
           onTap: onTap,
         ),
         if (!isLast) const Divider(height: 1, indent: 56),
