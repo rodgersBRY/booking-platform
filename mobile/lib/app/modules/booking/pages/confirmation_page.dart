@@ -66,24 +66,24 @@ class ConfirmationPage extends GetView<BookingController> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFFBF2),
+                  color: AppColors.brass.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: AppColors.brassLight),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Get more from Baberia Cuts',
-                      style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
+                      style: theme.textTheme.titleMedium,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       'Create an account to track your bookings, earn loyalty points, and book faster next time.',
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                      style: theme.textTheme.bodySmall,
                     ),
                     const SizedBox(height: 10),
-                    OutlinedButton(
+                    ElevatedButton(
                       onPressed: () => Get.toNamed(AppRoutes.signup),
                       child: const Text('Create account'),
                     ),
