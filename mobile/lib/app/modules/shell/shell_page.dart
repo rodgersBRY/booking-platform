@@ -6,6 +6,7 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/coming_soon_page.dart';
 import '../home/home_page.dart';
+import '../profile/profile_page.dart';
 import 'shell_controller.dart';
 
 class ShellPage extends GetView<ShellController> {
@@ -54,10 +55,7 @@ class ShellPage extends GetView<ShellController> {
               subtitle:
                   'Discover professionals, trending services, and style inspiration. Coming soon.',
             ),
-            _PlaceholderTab(
-              title: 'Profile',
-              subtitle: 'Your profile is on the way.',
-            ),
+            ProfilePage(),
           ],
         ),
       ),
