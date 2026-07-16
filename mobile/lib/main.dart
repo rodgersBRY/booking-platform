@@ -6,6 +6,7 @@ import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/services/api_service.dart';
 import 'app/services/storage_service.dart';
+import 'app/services/theme_controller.dart';
 import 'app/theme/app_theme.dart';
 
 Future<void> main() async {
@@ -13,12 +14,15 @@ Future<void> main() async {
 
   await Get.putAsync(() => StorageService().init());
   await Get.putAsync(() => ApiService().init());
+  final themeController = await Get.putAsync(() => ThemeController().init());
 
-  runApp(const BarberiaCutsApp());
+  runApp(BarberiaCutsApp(initialThemeMode: themeController.mode.value));
 }
 
 class BarberiaCutsApp extends StatelessWidget {
-  const BarberiaCutsApp({super.key});
+  final ThemeMode initialThemeMode;
+
+  const BarberiaCutsApp({super.key, required this.initialThemeMode});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,9 @@ class BarberiaCutsApp extends StatelessWidget {
       title: 'Baberia Cuts',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      // Seeds GetX's live theme-mode notifier — ThemeController.setMode()
+      // updates it afterwards via Get.changeThemeMode().
+      themeMode: initialThemeMode,
       initialRoute: AppRoutes.welcome,
       getPages: AppPages.routes,
     );

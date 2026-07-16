@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../routes/app_routes.dart';
+import '../../services/theme_controller.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/coming_soon_page.dart';
@@ -22,62 +23,71 @@ class ProfilePage extends GetView<ProfileController> {
           return const SkeletonList(count: 4, itemHeight: 56);
         }
         final client = controller.client.value;
-        if (client == null) {
-          return EmptyState(
-            icon: Icons.person_outline,
-            title: 'Sign in to your account',
-            subtitle: 'Track your bookings and manage your profile.',
-            actionLabel: 'Sign in',
-            onAction: () => Get.toNamed(AppRoutes.login),
-          );
-        }
 
         return ListView(
           padding: const EdgeInsets.all(AppSpacing.md),
           children: [
-            _ProfileHeader(name: client.name, phone: client.phone, email: client.email),
-            const SizedBox(height: AppSpacing.lg),
-            _SectionCard(
-              children: [
-                _ProfileTile(
-                  icon: Icons.event_note_outlined,
-                  label: 'My Appointments',
-                  onTap: () => Get.find<ShellController>()
-                      .changeTab(appointmentsTabIndex),
-                ),
-                _ProfileTile(
-                  icon: Icons.favorite_border,
-                  label: 'Favorite Professionals',
-                  onTap: () => _openComingSoon(
-                    context,
+            if (client != null) ...[
+              _ProfileHeader(name: client.name, phone: client.phone, email: client.email),
+              const SizedBox(height: AppSpacing.lg),
+              _SectionCard(
+                children: [
+                  _ProfileTile(
+                    icon: Icons.event_note_outlined,
+                    label: 'My Appointments',
+                    onTap: () => Get.find<ShellController>()
+                        .changeTab(appointmentsTabIndex),
+                  ),
+                  _ProfileTile(
                     icon: Icons.favorite_border,
-                    title: 'Favorite Professionals',
+                    label: 'Favorite Professionals',
+                    onTap: () => _openComingSoon(
+                      context,
+                      icon: Icons.favorite_border,
+                      title: 'Favorite Professionals',
+                    ),
                   ),
-                ),
-                _ProfileTile(
-                  icon: Icons.content_cut,
-                  label: 'Favorite Services',
-                  onTap: () => _openComingSoon(
-                    context,
+                  _ProfileTile(
                     icon: Icons.content_cut,
-                    title: 'Favorite Services',
+                    label: 'Favorite Services',
+                    onTap: () => _openComingSoon(
+                      context,
+                      icon: Icons.content_cut,
+                      title: 'Favorite Services',
+                    ),
                   ),
-                ),
-                _ProfileTile(
-                  icon: Icons.auto_awesome_outlined,
-                  label: 'Saved Inspiration',
-                  isLast: true,
-                  onTap: () => _openComingSoon(
-                    context,
+                  _ProfileTile(
                     icon: Icons.auto_awesome_outlined,
-                    title: 'Saved Inspiration',
+                    label: 'Saved Inspiration',
+                    isLast: true,
+                    onTap: () => _openComingSoon(
+                      context,
+                      icon: Icons.auto_awesome_outlined,
+                      title: 'Saved Inspiration',
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ] else ...[
+              EmptyState(
+                icon: Icons.person_outline,
+                title: 'Sign in to your account',
+                subtitle: 'Track your bookings and manage your profile.',
+                actionLabel: 'Sign in',
+                onAction: () => Get.toNamed(AppRoutes.login),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+            // App-level settings — not account data, so available whether
+            // or not the client is signed in.
             _SectionCard(
               children: [
+                _ProfileTile(
+                  icon: Icons.dark_mode_outlined,
+                  label: 'Appearance',
+                  onTap: () => _showAppearancePicker(context),
+                ),
                 _ProfileTile(
                   icon: Icons.support_agent_outlined,
                   label: 'Help & Support',
@@ -91,18 +101,20 @@ class ProfilePage extends GetView<ProfileController> {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
-            _SectionCard(
-              children: [
-                _ProfileTile(
-                  icon: Icons.logout,
-                  label: 'Logout',
-                  isLast: true,
-                  destructive: true,
-                  onTap: () => _confirmSignOut(context),
-                ),
-              ],
-            ),
+            if (client != null) ...[
+              const SizedBox(height: AppSpacing.md),
+              _SectionCard(
+                children: [
+                  _ProfileTile(
+                    icon: Icons.logout,
+                    label: 'Logout',
+                    isLast: true,
+                    destructive: true,
+                    onTap: () => _confirmSignOut(context),
+                  ),
+                ],
+              ),
+            ],
           ],
         );
       }),
@@ -120,6 +132,38 @@ class ProfilePage extends GetView<ProfileController> {
           subtitle: 'Coming soon.',
           withAppBar: true,
         ));
+  }
+
+  void _showAppearancePicker(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+    showDialog(
+      context: context,
+      builder: (context) => Obx(
+        () => SimpleDialog(
+          title: const Text('Appearance'),
+          children: [
+            _AppearanceOption(
+              label: 'System',
+              value: ThemeMode.system,
+              groupValue: themeController.mode.value,
+              onChanged: themeController.setMode,
+            ),
+            _AppearanceOption(
+              label: 'Light',
+              value: ThemeMode.light,
+              groupValue: themeController.mode.value,
+              onChanged: themeController.setMode,
+            ),
+            _AppearanceOption(
+              label: 'Dark',
+              value: ThemeMode.dark,
+              groupValue: themeController.mode.value,
+              onChanged: themeController.setMode,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showHelpSheet(BuildContext context) {
@@ -270,6 +314,30 @@ class _ProfileTile extends StatelessWidget {
         ),
         if (!isLast) const Divider(height: 1, indent: 56),
       ],
+    );
+  }
+}
+
+class _AppearanceOption extends StatelessWidget {
+  final String label;
+  final ThemeMode value;
+  final ThemeMode groupValue;
+  final ValueChanged<ThemeMode> onChanged;
+
+  const _AppearanceOption({
+    required this.label,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RadioListTile<ThemeMode>(
+      title: Text(label),
+      value: value,
+      groupValue: groupValue,
+      onChanged: (m) => onChanged(m!),
     );
   }
 }
