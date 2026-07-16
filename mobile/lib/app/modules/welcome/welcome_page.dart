@@ -38,11 +38,35 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget build(BuildContext context) => const WelcomeSplashContent();
 }
 
-/// The splash's static visuals, kept separate from [WelcomePage] so they
-/// can be rendered/tested without triggering the session check or the
-/// navigation timer.
-class WelcomeSplashContent extends StatelessWidget {
+/// The splash's visuals, kept separate from [WelcomePage] so they can be
+/// rendered/tested without triggering the session check or the navigation
+/// timer. The logo pulses gently on a loop — that's the loading indicator,
+/// so there's no separate spinner.
+class WelcomeSplashContent extends StatefulWidget {
   const WelcomeSplashContent({super.key});
+
+  @override
+  State<WelcomeSplashContent> createState() => _WelcomeSplashContentState();
+}
+
+class _WelcomeSplashContentState extends State<WelcomeSplashContent>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat(reverse: true);
+
+  late final Animation<double> _scale = Tween<double>(begin: 0.92, end: 1.0)
+      .animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
+
+  late final Animation<double> _opacity = Tween<double>(begin: 0.6, end: 1.0)
+      .animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +76,14 @@ class WelcomeSplashContent extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('assets/images/logo.png', width: 88, height: 88),
+            AnimatedBuilder(
+              animation: _pulse,
+              builder: (context, child) => Opacity(
+                opacity: _opacity.value,
+                child: Transform.scale(scale: _scale.value, child: child),
+              ),
+              child: Image.asset('assets/images/logo.png', width: 88, height: 88),
+            ),
             const SizedBox(height: 12),
             const Text(
               'Baberia Cuts',
@@ -61,12 +92,6 @@ class WelcomeSplashContent extends StatelessWidget {
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
-            ),
-            const SizedBox(height: 32),
-            const SizedBox(
-              width: 22,
-              height: 22,
-              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white70),
             ),
           ],
         ),
