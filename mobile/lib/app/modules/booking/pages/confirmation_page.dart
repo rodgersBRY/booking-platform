@@ -12,6 +12,8 @@ class ConfirmationPage extends GetView<BookingController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isSignedIn = controller.signedInClient.value != null;
     final service = controller.selectedService.value;
     final slot = controller.selectedSlot.value;
     final staffId = controller.selectedStaffId.value;
@@ -34,15 +36,15 @@ class ConfirmationPage extends GetView<BookingController> {
             const SizedBox(height: 24),
             const Icon(Icons.check_circle, color: AppColors.free, size: 64),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               "You're booked!",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.navy),
+              style: theme.textTheme.headlineSmall?.copyWith(fontSize: 22),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               "We'll send a reminder before your appointment.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54),
+              style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: 24),
             Card(
@@ -58,35 +60,37 @@ class ConfirmationPage extends GetView<BookingController> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFBF2),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.brassLight),
+            if (!isSignedIn) ...[
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFFBF2),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.brassLight),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Get more from Baberia Cuts',
+                      style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Create an account to track your bookings, earn loyalty points, and book faster next time.',
+                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 10),
+                    OutlinedButton(
+                      onPressed: () => Get.toNamed(AppRoutes.signup),
+                      child: const Text('Create account'),
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Get more from Baberia Cuts',
-                    style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Create an account to track your bookings, earn loyalty points, and book faster next time.',
-                    style: TextStyle(fontSize: 13, color: Colors.black54),
-                  ),
-                  const SizedBox(height: 10),
-                  OutlinedButton(
-                    onPressed: () => Get.toNamed(AppRoutes.signup),
-                    child: const Text('Create account'),
-                  ),
-                ],
-              ),
-            ),
+            ],
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Get.offAllNamed(
@@ -115,13 +119,14 @@ class _SummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: Colors.black54)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.navy)),
+          Text(label, style: theme.textTheme.bodySmall),
+          Text(value, style: theme.textTheme.titleMedium?.copyWith(fontSize: 14)),
         ],
       ),
     );
