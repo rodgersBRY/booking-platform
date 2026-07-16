@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../theme/app_colors.dart';
+import '../../widgets/password_field.dart';
 import 'signup_controller.dart';
 
 class SignupPage extends GetView<SignupController> {
@@ -37,15 +38,13 @@ class SignupPage extends GetView<SignupController> {
               onChanged: (v) => controller.email.value = v,
             ),
             const SizedBox(height: 16),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
+            PasswordField(
+              label: 'Password',
               onChanged: (v) => controller.password.value = v,
             ),
             const SizedBox(height: 16),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Confirm password'),
-              obscureText: true,
+            PasswordField(
+              label: 'Confirm password',
               onChanged: (v) => controller.confirmPassword.value = v,
             ),
             const SizedBox(height: 24),

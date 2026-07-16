@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../routes/app_routes.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/password_field.dart';
 import 'login_controller.dart';
 
 class LoginPage extends GetView<LoginController> {
@@ -24,9 +25,8 @@ class LoginPage extends GetView<LoginController> {
               onChanged: (v) => controller.email.value = v,
             ),
             const SizedBox(height: 16),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
+            PasswordField(
+              label: 'Password',
               onChanged: (v) => controller.password.value = v,
             ),
             const SizedBox(height: 24),
