@@ -18,6 +18,10 @@ class SignupPage extends GetView<SignupController> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 12),
+            Center(
+              child: Image.asset('assets/images/logo.png', width: 56, height: 56),
+            ),
+            const SizedBox(height: 20),
             TextField(
               decoration: const InputDecoration(labelText: 'Full name'),
               onChanged: (v) => controller.name.value = v,

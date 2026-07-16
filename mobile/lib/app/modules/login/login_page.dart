@@ -19,6 +19,10 @@ class LoginPage extends GetView<LoginController> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 12),
+            Center(
+              child: Image.asset('assets/images/logo.png', width: 56, height: 56),
+            ),
+            const SizedBox(height: 20),
             TextField(
               decoration: const InputDecoration(labelText: 'Email'),
               keyboardType: TextInputType.emailAddress,

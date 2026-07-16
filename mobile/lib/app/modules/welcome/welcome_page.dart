@@ -52,7 +52,7 @@ class WelcomeSplashContent extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.content_cut, size: 48, color: AppColors.brassLight),
+            Image.asset('assets/images/logo.png', width: 88, height: 88),
             const SizedBox(height: 12),
             const Text(
               'Baberia Cuts',

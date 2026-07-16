@@ -2,6 +2,7 @@ import { signOut } from "@/app/login/actions";
 import { HeaderAvatar } from "@/components/layout/HeaderAvatar";
 import { HeaderClock } from "@/components/layout/HeaderClock";
 import type { StaffRole } from "@/lib/db/types";
+import Image from "next/image";
 import Link from "next/link";
 
 type NavLink = {
@@ -47,8 +48,15 @@ export function NavHeader({
         <div className="flex min-w-0 items-center gap-3">
           <Link
             href="/"
-            className="text-xl font-semibold tracking-tight transition-opacity hover:opacity-85"
+            className="flex items-center gap-2 text-xl font-semibold tracking-tight transition-opacity hover:opacity-85"
           >
+            <Image
+              src="/baberia-cuts-logo.png"
+              alt=""
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
             Baberia Cuts
           </Link>
           <span
