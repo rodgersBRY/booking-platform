@@ -5,6 +5,7 @@ import '../../routes/app_routes.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/coming_soon_page.dart';
+import '../home/home_page.dart';
 import 'shell_controller.dart';
 
 class ShellPage extends GetView<ShellController> {
@@ -41,10 +42,7 @@ class ShellPage extends GetView<ShellController> {
         () => IndexedStack(
           index: controller.currentTab.value,
           children: const [
-            _PlaceholderTab(
-              title: 'Home',
-              subtitle: 'Your personalized dashboard is on the way.',
-            ),
+            HomePage(),
             _BookTab(),
             _PlaceholderTab(
               title: 'Appointments',
