@@ -182,10 +182,10 @@ class _BookTab extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: AppSpacing.sm),
-            const Text(
+            Text(
               "Pick a service, choose your favorite professional, and grab a time that works for you.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: AppSpacing.lg),
             ElevatedButton(
