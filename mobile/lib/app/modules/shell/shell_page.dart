@@ -5,6 +5,7 @@ import '../../routes/app_routes.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/coming_soon_page.dart';
+import '../appointments/appointments_page.dart';
 import '../home/home_page.dart';
 import '../profile/profile_page.dart';
 import 'shell_controller.dart';
@@ -45,10 +46,7 @@ class ShellPage extends GetView<ShellController> {
           children: const [
             HomePage(),
             _BookTab(),
-            _PlaceholderTab(
-              title: 'Appointments',
-              subtitle: 'View, reschedule, and cancel your bookings here soon.',
-            ),
+            AppointmentsPage(),
             ComingSoonPage(
               icon: Icons.explore_outlined,
               title: 'Explore',
@@ -157,40 +155,6 @@ class _ShellNavButton extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Standing in for Home/Appointments/Explore/Profile until each lands its
-/// own module — removed as each tab gets its real page.
-class _PlaceholderTab extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _PlaceholderTab({required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.hourglass_top, size: 40, color: AppColors.brass),
-              const SizedBox(height: AppSpacing.sm),
-              Text(title, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
         ),
       ),
     );
