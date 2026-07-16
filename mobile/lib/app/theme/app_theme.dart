@@ -52,6 +52,14 @@ abstract class AppTheme {
         elevation: 0,
         centerTitle: false,
       ),
+      // TabBar always lives inside the (always-navy) AppBar, so its label
+      // colors are fixed too — not colorScheme.primary, which is navy in
+      // light mode and would render invisible against the navy bar.
+      tabBarTheme: const TabBarThemeData(
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white70,
+        indicatorColor: AppColors.brassLight,
+      ),
       cardTheme: CardThemeData(
         color: cardColor,
         elevation: 0,
