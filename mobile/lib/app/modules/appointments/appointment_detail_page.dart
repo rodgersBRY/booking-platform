@@ -9,6 +9,8 @@ import '../../theme/app_spacing.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/secondary_button.dart';
 import '../../widgets/status_chip.dart';
+import '../booking/booking_binding.dart';
+import '../booking/booking_controller.dart';
 import 'appointments_controller.dart';
 import 'reschedule_page.dart';
 
@@ -68,10 +70,21 @@ class _AppointmentDetailPageState extends State<AppointmentDetailPage> {
     );
   }
 
+  void _bookAgain() {
+    final service = widget.booking.service;
+    if (service == null) return;
+    if (!Get.isRegistered<BookingController>()) {
+      BookingBinding().dependencies();
+    }
+    Get.find<BookingController>().bookAgain(service);
+  }
+
   @override
   Widget build(BuildContext context) {
     final booking = widget.booking;
     final start = DateTime.parse(booking.scheduledStart).toLocal();
+    final canBookAgain =
+        !booking.canCancel && !booking.canReschedule && booking.service != null;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Appointment')),
@@ -120,6 +133,8 @@ class _AppointmentDetailPageState extends State<AppointmentDetailPage> {
                 busy: _cancelling,
                 onPressed: _confirmCancel,
               ),
+            if (canBookAgain)
+              PrimaryButton(label: 'Book again', onPressed: _bookAgain),
           ],
         ),
       ),

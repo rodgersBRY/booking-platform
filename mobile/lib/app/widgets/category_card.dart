@@ -52,21 +52,27 @@ class CategoryCard extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.sm + 4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm + 2),
+              padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 color: AppColors.brass.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: Icon(icon, color: AppColors.brass, size: 24),
+              child: Icon(icon, color: AppColors.brass, size: 20),
             ),
-            const SizedBox(height: AppSpacing.sm + 4),
-            Text(label, style: theme.textTheme.titleMedium),
+            const SizedBox(height: AppSpacing.xs + 2),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleMedium,
+            ),
           ],
         ),
       ),

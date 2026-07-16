@@ -47,7 +47,7 @@ class CategoryListPage extends GetView<BookingController> {
                   crossAxisCount: 2,
                   mainAxisSpacing: AppSpacing.sm + 4,
                   crossAxisSpacing: AppSpacing.sm + 4,
-                  childAspectRatio: 1.35,
+                  childAspectRatio: 1.1,
                 ),
                 itemCount: categories.length,
                 itemBuilder: (context, i) {

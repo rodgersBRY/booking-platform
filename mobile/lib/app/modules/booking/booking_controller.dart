@@ -123,6 +123,14 @@ class BookingController extends GetxController {
     loadStaffForSelectedService();
   }
 
+  /// "Book Again" from a past appointment — seeds the category/service the
+  /// client already had and jumps straight to picking a professional,
+  /// skipping the category/service steps.
+  void bookAgain(ServiceModel service) {
+    selectedCategory.value = service.category;
+    selectService(service);
+  }
+
   void selectStaff(String staffId) {
     selectedStaffId.value = staffId;
     selectedSlot.value = null;
