@@ -59,19 +59,48 @@ class DetailsPage extends GetView<BookingController> {
                 );
               }),
               const SizedBox(height: AppSpacing.lg),
-              Text('Your details', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: AppSpacing.sm + 4),
-              TextField(
-                decoration: const InputDecoration(labelText: 'First name'),
-                textCapitalization: TextCapitalization.words,
-                onChanged: (v) => controller.name.value = v,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Phone number'),
-                keyboardType: TextInputType.phone,
-                onChanged: (v) => controller.phone.value = v,
-              ),
+              Obx(() {
+                final client = controller.signedInClient.value;
+                if (client != null) {
+                  return Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardTheme.color,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.person_outline, color: AppColors.brass),
+                        const SizedBox(width: AppSpacing.sm + 4),
+                        Expanded(
+                          child: Text(
+                            'Booking as ${client.name} · ${client.phone}',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('Your details', style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: AppSpacing.sm + 4),
+                    TextField(
+                      decoration: const InputDecoration(labelText: 'First name'),
+                      textCapitalization: TextCapitalization.words,
+                      onChanged: (v) => controller.name.value = v,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    TextField(
+                      decoration: const InputDecoration(labelText: 'Phone number'),
+                      keyboardType: TextInputType.phone,
+                      onChanged: (v) => controller.phone.value = v,
+                    ),
+                  ],
+                );
+              }),
               const SizedBox(height: AppSpacing.lg),
               Obx(
                 () => PrimaryButton(

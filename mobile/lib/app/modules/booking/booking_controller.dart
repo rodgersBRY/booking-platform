@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 
+import '../../data/models/client_model.dart';
 import '../../data/models/service_model.dart';
 import '../../data/models/slot_model.dart';
 import '../../data/models/staff_model.dart';
+import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/booking_repository.dart';
 import '../../routes/app_routes.dart';
 
@@ -13,6 +15,12 @@ const otherCategoryKey = '_other';
 
 class BookingController extends GetxController {
   final BookingRepository _repo = BookingRepository();
+  final AuthRepository _authRepo = AuthRepository();
+
+  // ── Signed-in client (if any) — pre-fills and skips the details step's
+  // name/phone fields, and routes submission through the account endpoint
+  // so the booking is guaranteed to link to their own client record.
+  final Rxn<ClientModel> signedInClient = Rxn<ClientModel>();
 
   // ── Step 1: category, then service ──────────────────────────────────────
   final services = <ServiceModel>[].obs;
@@ -81,6 +89,16 @@ class BookingController extends GetxController {
   void onInit() {
     super.onInit();
     loadServices();
+    _loadSignedInClient();
+  }
+
+  Future<void> _loadSignedInClient() async {
+    final client = await _authRepo.fetchMe();
+    signedInClient.value = client;
+    if (client != null) {
+      name.value = client.name;
+      phone.value = client.phone;
+    }
   }
 
   Future<void> loadServices() async {
@@ -185,7 +203,8 @@ class BookingController extends GetxController {
 
   Future<void> submit() async {
     if (selectedService.value == null || selectedSlot.value == null) return;
-    if (name.value.trim().isEmpty || phone.value.trim().isEmpty) {
+    final isSignedIn = signedInClient.value != null;
+    if (!isSignedIn && (name.value.trim().isEmpty || phone.value.trim().isEmpty)) {
       submitError.value = 'Please enter your name and phone number.';
       return;
     }
@@ -194,13 +213,19 @@ class BookingController extends GetxController {
     submitError.value = null;
     slotTakenSlots.value = null;
 
-    final result = await _repo.createBooking(
-      name: name.value.trim(),
-      phone: phone.value.trim(),
-      staffId: selectedSlot.value!.staffId,
-      serviceId: selectedService.value!.id,
-      scheduledStart: selectedSlot.value!.start,
-    );
+    final result = isSignedIn
+        ? await _repo.createBookingForAccount(
+            staffId: selectedSlot.value!.staffId,
+            serviceId: selectedService.value!.id,
+            scheduledStart: selectedSlot.value!.start,
+          )
+        : await _repo.createBooking(
+            name: name.value.trim(),
+            phone: phone.value.trim(),
+            staffId: selectedSlot.value!.staffId,
+            serviceId: selectedService.value!.id,
+            scheduledStart: selectedSlot.value!.start,
+          );
 
     submitting.value = false;
 

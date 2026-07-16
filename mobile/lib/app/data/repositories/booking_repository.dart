@@ -68,18 +68,46 @@ class BookingRepository {
       );
       return BookingSubmitResult.success(res.data['booking'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      final data = e.response?.data;
-      if (e.response?.statusCode == 409 && data is Map && data['error'] == 'slot_taken') {
-        final slots = (data['slots'] as List)
-            .map((s) => SlotModel.fromJson(s as Map<String, dynamic>))
-            .toList();
-        return BookingSubmitResult.slotTaken(data['message'] as String?, slots);
-      }
-      final message = data is Map ? data['message'] as String? : null;
-      return BookingSubmitResult.failure(
-        'request_failed',
-        message ?? 'Something went wrong. Please try again.',
-      );
+      return _handleBookingError(e);
     }
+  }
+
+  /// Same as [createBooking], but for a signed-in client — creates the
+  /// booking directly against their account instead of finding-or-creating
+  /// a guest client by phone, so it's guaranteed to show up in their own
+  /// Appointments list.
+  Future<BookingSubmitResult> createBookingForAccount({
+    required String staffId,
+    required String serviceId,
+    required String scheduledStart,
+  }) async {
+    try {
+      final res = await _dio.post(
+        '/v1/account/bookings',
+        data: {
+          'staffId': staffId,
+          'serviceId': serviceId,
+          'scheduledStart': scheduledStart,
+        },
+      );
+      return BookingSubmitResult.success(res.data['booking'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      return _handleBookingError(e);
+    }
+  }
+
+  BookingSubmitResult _handleBookingError(DioException e) {
+    final data = e.response?.data;
+    if (e.response?.statusCode == 409 && data is Map && data['error'] == 'slot_taken') {
+      final slots = (data['slots'] as List)
+          .map((s) => SlotModel.fromJson(s as Map<String, dynamic>))
+          .toList();
+      return BookingSubmitResult.slotTaken(data['message'] as String?, slots);
+    }
+    final message = data is Map ? data['message'] as String? : null;
+    return BookingSubmitResult.failure(
+      'request_failed',
+      message ?? 'Something went wrong. Please try again.',
+    );
   }
 }
