@@ -7,16 +7,24 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   const caller = await getCurrentStaff();
-  if (!caller) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (caller.role !== "owner") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!caller)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (caller.role !== "owner")
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("staff")
-    .select("id,name,role,email,phone,status,auth_user_id,avatar_url,created_at")
+    .select(
+      "id,name,role,email,phone,status,auth_user_id,avatar_url,created_at",
+    )
     .order("created_at");
 
-  if (error) return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  if (error)
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
 
   const staff = (data ?? []).map((r: Record<string, unknown>) => ({
     id: r.id,
@@ -35,15 +43,35 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const caller = await getCurrentStaff();
-  if (!caller) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (caller.role !== "owner") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!caller)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (caller.role !== "owner")
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  let body: { name?: string; role?: string; email?: string; phone?: string; password?: string };
-  try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
+  let body: {
+    name?: string;
+    role?: string;
+    email?: string;
+    phone?: string;
+    password?: string;
+  };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
 
   const { name, role, email, phone, password } = body;
-  if (!name || !email || !password) return NextResponse.json({ error: "name, email, and password are required" }, { status: 400 });
-  if (!phone) return NextResponse.json({ error: "phone is required for WhatsApp notifications" }, { status: 400 });
+  if (!name || !email || !password)
+    return NextResponse.json(
+      { error: "name, email, and password are required" },
+      { status: 400 },
+    );
+  if (!phone)
+    return NextResponse.json(
+      { error: "phone is required for WhatsApp notifications" },
+      { status: 400 },
+    );
   if (!CREATABLE_ROLES.includes(role as StaffRole)) {
     return NextResponse.json(
       { error: `Role must be one of: ${CREATABLE_ROLES.join(", ")}` },
@@ -61,21 +89,42 @@ export async function POST(request: NextRequest) {
 
   if (authErr || !created?.user) {
     const msg = authErr?.message ?? "";
-    if (msg.toLowerCase().includes("already") || (authErr as { status?: number })?.status === 422) {
-      return NextResponse.json({ error: "A user with this email already exists" }, { status: 409 });
+    if (
+      msg.toLowerCase().includes("already") ||
+      (authErr as { status?: number })?.status === 422
+    ) {
+      return NextResponse.json(
+        { error: "A user with this email already exists" },
+        { status: 409 },
+      );
     }
-    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   const { data: row, error: insertErr } = await admin
     .from("staff")
-    .insert({ name, role, email, phone: phone || null, auth_user_id: created.user.id, status: "active" })
-    .select("id,name,role,email,phone,status,auth_user_id,avatar_url,created_at")
+    .insert({
+      name,
+      role,
+      email,
+      phone: phone || null,
+      auth_user_id: created.user.id,
+      status: "active",
+    })
+    .select(
+      "id,name,role,email,phone,status,auth_user_id,avatar_url,created_at",
+    )
     .single();
 
   if (insertErr || !row) {
     await admin.auth.admin.deleteUser(created.user.id);
-    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
+    );
   }
 
   const r = row as Record<string, unknown>;
@@ -94,7 +143,20 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({
-    staff: { id: r.id, name: r.name, role: r.role, email: r.email, phone: r.phone, status: r.status, authUserId: r.auth_user_id, avatarUrl: r.avatar_url, createdAt: r.created_at }
-  }, { status: 201 });
+  return NextResponse.json(
+    {
+      staff: {
+        id: r.id,
+        name: r.name,
+        role: r.role,
+        email: r.email,
+        phone: r.phone,
+        status: r.status,
+        authUserId: r.auth_user_id,
+        avatarUrl: r.avatar_url,
+        createdAt: r.created_at,
+      },
+    },
+    { status: 201 },
+  );
 }

@@ -97,6 +97,7 @@ export async function POST(request: NextRequest) {
     active?: boolean;
     roles?: StaffRole[];
   };
+
   try {
     body = await request.json();
   } catch {
@@ -107,18 +108,21 @@ export async function POST(request: NextRequest) {
   if (!name || !name.trim()) {
     return NextResponse.json({ error: "name is required" }, { status: 400 });
   }
+
   if (typeof durationMinutes !== "number" || durationMinutes <= 0) {
     return NextResponse.json(
       { error: "durationMinutes must be a positive number" },
       { status: 400 },
     );
   }
+
   if (typeof price !== "number" || price < 0) {
     return NextResponse.json(
       { error: "price must be zero or a positive number" },
       { status: 400 },
     );
   }
+
   if (roles !== undefined && roles.length === 0) {
     return NextResponse.json(
       { error: "roles cannot be empty — use active:false to disable a service instead" },
@@ -154,6 +158,7 @@ export async function POST(request: NextRequest) {
     .insert(finalRoles.map((role) => ({ service_id: data.id, role })));
   if (rolesErr) {
     await admin.from("services").delete().eq("id", data.id);
+    
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 },

@@ -24,11 +24,11 @@ export async function GET() {
     );
   }
 
-  const barbers = (data ?? []).map((r) => ({
-    id: r.id,
-    name: r.name,
-    role: r.role,
-    avatarUrl: r.avatar_url,
+  const barbers = (data ?? []).map((staff) => ({
+    id: staff.id,
+    name: staff.name,
+    role: staff.role,
+    avatarUrl: staff.avatar_url,
   }));
 
   return NextResponse.json({ barbers });

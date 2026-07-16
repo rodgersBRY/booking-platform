@@ -46,6 +46,7 @@ export async function PATCH(
     active?: boolean;
     roles?: StaffRole[];
   };
+
   try {
     body = await request.json();
   } catch {
@@ -54,7 +55,10 @@ export async function PATCH(
 
   if (body.roles !== undefined && body.roles.length === 0) {
     return NextResponse.json(
-      { error: "roles cannot be empty — use active:false to disable a service instead" },
+      {
+        error:
+          "roles cannot be empty — use active:false to disable a service instead",
+      },
       { status: 400 },
     );
   }
@@ -67,37 +71,40 @@ export async function PATCH(
         { error: "name cannot be empty" },
         { status: 400 },
       );
+
     update.name = body.name.trim();
   }
-  if (body.description !== undefined) {
+
+  if (body.description !== undefined)
     update.description = body.description?.trim() || null;
-  }
-  if (body.category !== undefined) {
+
+  if (body.category !== undefined)
     update.category = body.category?.trim() || null;
-  }
+
   if (body.durationMinutes !== undefined) {
     if (typeof body.durationMinutes !== "number" || body.durationMinutes <= 0)
       return NextResponse.json(
         { error: "durationMinutes must be a positive number" },
         { status: 400 },
       );
+
     update.duration_minutes = body.durationMinutes;
   }
+
   if (body.price !== undefined) {
     if (typeof body.price !== "number" || body.price < 0)
       return NextResponse.json(
         { error: "price must be zero or a positive number" },
         { status: 400 },
       );
+
     update.price = body.price;
   }
-  if (body.active !== undefined) {
-    update.active = body.active;
-  }
 
-  if (Object.keys(update).length === 0) {
+  if (body.active !== undefined) update.active = body.active;
+
+  if (Object.keys(update).length === 0)
     return NextResponse.json({ error: "No fields to update" }, { status: 400 });
-  }
 
   const admin = createAdminClient();
   const { data, error } = await admin
@@ -112,12 +119,14 @@ export async function PATCH(
       { error: "Something went wrong. Please try again." },
       { status: 500 },
     );
+  
   if (!data)
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
 
   let roles: StaffRole[];
   if (body.roles !== undefined) {
     await admin.from("service_roles").delete().eq("service_id", id);
+
     const { error: rolesErr } = await admin
       .from("service_roles")
       .insert(body.roles.map((role) => ({ service_id: id, role })));
@@ -127,6 +136,7 @@ export async function PATCH(
         { status: 500 },
       );
     }
+    
     roles = body.roles;
   } else {
     const { data: roleRows } = await admin

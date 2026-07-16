@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
   const supabase = createClient(url, anonKey, {
     auth: { persistSession: false },
   });
+  
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
