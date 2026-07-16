@@ -56,20 +56,20 @@ src/app/               routes, API handlers, UI
 
 ## Status
 
-| Feature                  | Status                                                       |
-| ------------------------ | ------------------------------------------------------------ |
-| DB schema (init)         | ✅ Done — `0001_init.sql`                                    |
-| Auth + role-based access | ✅ Done — `0002_auth.sql`, `src/proxy.ts`, `src/lib/auth.ts` |
-| Seed data                | ✅ Done — `0003_seed.sql` (3 barbers, 6 services, 3 clients) |
-| Booking / availability engine | ✅ Done — `src/lib/booking/availability.ts`, `src/lib/booking/types.ts` |
-| Console API endpoints    | ✅ Done — `GET /api/barbers`, `GET /api/services`, `GET /api/availability`, `POST /api/bookings`, `GET /api/board`, `POST /api/walkins`, `POST /api/queue/{id}/seat`, `POST /api/queue/{id}/notify`, `POST /api/bookings/{id}/complete` |
-| Owner dashboard          | ✅ Done — `GET /api/dashboard/stats`, `src/components/dashboard/` |
-| Receptionist console     | 🔲 Stub only                                                 |
-| Barber "My day" view     | ✅ Done — `/me`, `/api/me/day`, `src/components/me/`         |
-| Staff management         | ✅ Done — /dashboard/staff, GET/POST /api/staff, PATCH /api/staff/[id] |
-| Public booking page      | 🔲 Not started                                               |
-| 15-min grace job         | ✅ Done — GET /api/cron/grace (header-auth)                  |
-| Automation endpoints     | ✅ Done — GET /api/automation/bookings/new, /upcoming, /overdue-inchair; GET /api/automation/owner/digest |
+| Feature                       | Status                                                                                                                                                                                                                                  |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DB schema (init)              | ✅ Done — `0001_init.sql`                                                                                                                                                                                                               |
+| Auth + role-based access      | ✅ Done — `0002_auth.sql`, `src/proxy.ts`, `src/lib/auth.ts`                                                                                                                                                                            |
+| Seed data                     | ✅ Done — `0003_seed.sql` (3 barbers, 6 services, 3 clients)                                                                                                                                                                            |
+| Booking / availability engine | ✅ Done — `src/lib/booking/availability.ts`, `src/lib/booking/types.ts`                                                                                                                                                                 |
+| Console API endpoints         | ✅ Done — `GET /api/barbers`, `GET /api/services`, `GET /api/availability`, `POST /api/bookings`, `GET /api/board`, `POST /api/walkins`, `POST /api/queue/{id}/seat`, `POST /api/queue/{id}/notify`, `POST /api/bookings/{id}/complete` |
+| Owner dashboard               | ✅ Done — `GET /api/dashboard/stats`, `src/components/dashboard/`                                                                                                                                                                       |
+| Receptionist console          | 🔲 Stub only                                                                                                                                                                                                                            |
+| Barber "My day" view          | ✅ Done — `/me`, `/api/me/day`, `src/components/me/`                                                                                                                                                                                    |
+| Staff management              | ✅ Done — /dashboard/staff, GET/POST /api/staff, PATCH /api/staff/[id]                                                                                                                                                                  |
+| Public booking page           | 🔲 Not started                                                                                                                                                                                                                          |
+| 15-min grace job              | ✅ Done — GET /api/cron/grace (header-auth)                                                                                                                                                                                             |
+| Automation endpoints          | ✅ Done — GET /api/automation/bookings/new, /upcoming, /overdue-inchair; GET /api/automation/owner/digest                                                                                                                               |
 
 See `docs/auth.md` for the auth model, role→route map, and first-owner-user setup steps.
 
