@@ -1,4 +1,5 @@
 import { getCurrentStaff } from "@/lib/auth";
+import { createNotification } from "@/lib/notifications/createNotification";
 import { isBookableRole } from "@/lib/staff/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
@@ -107,6 +108,14 @@ export async function POST(
       last_visit_at: now,
     })
     .eq("id", booking.client_id as string);
+
+  await createNotification({
+    clientId: booking.client_id as string,
+    type: "booking_completed",
+    title: "Visit complete",
+    body: "Thanks for visiting Baberia Cuts! We hope you loved the result.",
+    bookingId: id,
+  });
 
   return NextResponse.json({ visit });
 }

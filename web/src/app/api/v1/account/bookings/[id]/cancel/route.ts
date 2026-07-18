@@ -1,4 +1,5 @@
 import { getClientFromRequest } from "@/lib/clientAuth";
+import { createNotification } from "@/lib/notifications/createNotification";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -50,6 +51,14 @@ export async function POST(
       { status: 500 },
     );
   }
+
+  await createNotification({
+    clientId: client.id,
+    type: "booking_cancelled",
+    title: "Appointment cancelled",
+    body: "Your appointment has been cancelled.",
+    bookingId: id,
+  });
 
   return NextResponse.json({ ok: true });
 }

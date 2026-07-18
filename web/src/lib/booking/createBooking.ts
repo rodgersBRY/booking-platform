@@ -1,7 +1,17 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAvailability } from "@/lib/booking/availability";
+import { createNotification } from "@/lib/notifications/createNotification";
 import type { Slot } from "@/lib/booking/types";
+
+const NAIROBI_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
+  timeZone: "Africa/Nairobi",
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+});
 
 export interface CreateBookingParams {
   clientId?: string;
@@ -97,7 +107,7 @@ export async function createBooking(
   // ── 2. Fetch service duration ──────────────────────────────────────────────
   const { data: service, error: svcErr } = await admin
     .from("services")
-    .select("duration_minutes")
+    .select("name, duration_minutes")
     .eq("id", serviceId)
     .single();
 
@@ -186,6 +196,15 @@ export async function createBooking(
     await admin.from("bookings").delete().eq("id", bookingRow.id);
     return { error: "Something went wrong. Please try again." };
   }
+
+  // Best-effort — never fail the booking itself over a notification write.
+  await createNotification({
+    clientId: resolvedClientId,
+    type: "booking_confirmed",
+    title: "Appointment confirmed",
+    body: `Your ${service.name as string} appointment is confirmed for ${NAIROBI_DATE_FORMAT.format(startDate)}.`,
+    bookingId: bookingRow.id,
+  });
 
   return { booking: booking as Record<string, unknown> };
 }

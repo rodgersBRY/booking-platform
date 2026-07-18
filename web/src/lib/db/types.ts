@@ -41,6 +41,14 @@ export type MessageType =
   | "queue_notify"
   | "owner_alert";
 export type MessageStatus = "sent" | "failed";
+export type NotificationType =
+  | "booking_confirmed"
+  | "booking_cancelled"
+  | "booking_completed"
+  | "appointment_reminder"
+  | "promotion"
+  | "new_service"
+  | "loyalty_reward";
 
 export interface Staff {
   id: string;
@@ -112,6 +120,17 @@ export interface QueueEntry {
   choice: QueueChoice;
   status: QueueStatus;
   notified_at: string | null;
+}
+
+export interface Notification {
+  id: string;
+  client_id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  booking_id: string | null;
+  read: boolean;
+  created_at: string;
 }
 
 export interface Visit {
