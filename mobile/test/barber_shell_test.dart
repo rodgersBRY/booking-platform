@@ -13,11 +13,19 @@ import 'support/fake_services.dart';
 void main() {
   setUp(() {
     Get.testMode = true;
-    // The Profile tab is a real GetView, so IndexedStack building it
-    // eagerly (it builds every tab, not just the visible one) resolves
-    // BarberProfileController, which reaches for these. No token means
-    // fetchMe() short-circuits before touching the adapter.
-    Get.put<ApiService>(FakeApiService(NoRequestsExpectedAdapter()));
+    // The Dashboard and Profile tabs are real GetViews, so IndexedStack
+    // building every tab eagerly (not just the visible one) resolves
+    // both BarberDashboardController and BarberProfileController.
+    // Dashboard's controller always fetches /v1/staff/day regardless of
+    // auth state, so it needs a scripted response; no token means
+    // BarberProfileController/fetchMe() short-circuits before touching
+    // the adapter, so /v1/staff/me deliberately has no script — a stray
+    // call to it would still fail loudly.
+    Get.put<ApiService>(
+      FakeApiService(
+        ScriptedAdapter({'/v1/staff/day': (status: 200, body: sampleStaffDayJson())}),
+      ),
+    );
     Get.put<StorageService>(FakeStorageService());
   });
 
@@ -28,7 +36,14 @@ void main() {
     final controller = Get.find<BarberShellController>();
 
     await tester.pumpWidget(GetMaterialApp(home: const BarberShellPage()));
-    await tester.pump();
+    // Dashboard's initial load() (and, later, its tab-focus refresh) fire
+    // a real async Dio call against the fake adapter — pumpAndSettle
+    // flushes it instead of leaving a Dio-internal timer pending past the
+    // end of the test. Safe here because the resulting shimmer/skeleton
+    // is only mounted for the instant it takes the fake adapter to
+    // resolve, so it doesn't spin forever the way a bare pump() sequence
+    // would need to race it.
+    await tester.pumpAndSettle();
 
     expect(controller.currentTab.value, barberDashboardTabIndex);
     expect(
@@ -43,7 +58,7 @@ void main() {
           matching: find.text(label),
         ),
       );
-      await tester.pump();
+      await tester.pumpAndSettle();
       expect(controller.currentTab.value, expectedIndex);
       expect(
         tester.widget<IndexedStack>(find.byType(IndexedStack)).index,
