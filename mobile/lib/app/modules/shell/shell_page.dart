@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../routes/app_routes.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/app_bottom_nav_bar.dart';
 import '../../widgets/coming_soon_page.dart';
 import '../appointments/appointments_page.dart';
 import '../home/home_page.dart';
@@ -14,23 +15,23 @@ class ShellPage extends GetView<ShellController> {
   const ShellPage({super.key});
 
   static const _tabs = [
-    _ShellTab(icon: Icons.home_outlined, activeIcon: Icons.home, label: 'Home'),
-    _ShellTab(
+    AppBottomNavTab(icon: Icons.home_outlined, activeIcon: Icons.home, label: 'Home'),
+    AppBottomNavTab(
       icon: Icons.calendar_month_outlined,
       activeIcon: Icons.calendar_month,
       label: 'Book',
     ),
-    _ShellTab(
+    AppBottomNavTab(
       icon: Icons.event_note_outlined,
       activeIcon: Icons.event_note,
       label: 'Appointments',
     ),
-    _ShellTab(
+    AppBottomNavTab(
       icon: Icons.explore_outlined,
       activeIcon: Icons.explore,
       label: 'Explore',
     ),
-    _ShellTab(
+    AppBottomNavTab(
       icon: Icons.person_outline,
       activeIcon: Icons.person,
       label: 'Profile',
@@ -57,104 +58,11 @@ class ShellPage extends GetView<ShellController> {
           ],
         ),
       ),
-      bottomNavigationBar: _ShellBottomBar(tabs: _tabs, controller: controller),
-    );
-  }
-}
-
-class _ShellTab {
-  final IconData icon;
-  final IconData activeIcon;
-  final String label;
-
-  const _ShellTab({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-  });
-}
-
-class _ShellBottomBar extends StatelessWidget {
-  final List<_ShellTab> tabs;
-  final ShellController controller;
-
-  const _ShellBottomBar({required this.tabs, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      final active = controller.currentTab.value;
-      return Container(
-        decoration: BoxDecoration(
-          color: AppColors.navy,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(AppSpacing.radiusLg),
-            topRight: Radius.circular(AppSpacing.radiusLg),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.18),
-              blurRadius: 16,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-        child: SafeArea(
-          top: false,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              for (var i = 0; i < tabs.length; i++)
-                _ShellNavButton(
-                  tab: tabs[i],
-                  selected: i == active,
-                  onTap: () => controller.changeTab(i),
-                ),
-            ],
-          ),
-        ),
-      );
-    });
-  }
-}
-
-class _ShellNavButton extends StatelessWidget {
-  final _ShellTab tab;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _ShellNavButton({
-    required this.tab,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected ? AppColors.brassLight : Colors.white70;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(selected ? tab.activeIcon : tab.icon, color: color, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              tab.label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                color: color,
-              ),
-            ),
-          ],
+      bottomNavigationBar: Obx(
+        () => AppBottomNavBar(
+          tabs: _tabs,
+          currentIndex: controller.currentTab.value,
+          onTap: controller.changeTab,
         ),
       ),
     );

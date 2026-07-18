@@ -28,7 +28,7 @@ class LoginController extends GetxController {
     submitting.value = false;
 
     if (result.success) {
-      Get.offAllNamed(AppRoutes.shell);
+      Get.offAllNamed(result.isStaff ? AppRoutes.barberShell : AppRoutes.shell);
       return;
     }
 

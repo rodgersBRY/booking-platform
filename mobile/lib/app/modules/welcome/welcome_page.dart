@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../data/repositories/auth_repository.dart';
+import '../../data/repositories/staff_auth_repository.dart';
 import '../../routes/app_routes.dart';
+import '../../services/storage_service.dart';
 import '../../theme/app_colors.dart';
 
-/// Splash screen — checks for a valid stored session, then always lands in
-/// the shell. The shell's tabs already handle guest vs signed-in state on
-/// their own (sign-in prompts on Appointments/Profile, greeting on Home),
-/// so there's nothing else to branch on here.
+/// Splash screen — checks for a valid stored session, then routes to the
+/// right workspace.
+///
+/// The stored `accountType` (StorageService) says which `/me` endpoint to
+/// call. Client sessions always land in the customer shell — its tabs
+/// already handle guest vs signed-in state on their own (sign-in prompts
+/// on Appointments/Profile, greeting on Home), so an expired/missing
+/// token is fine to fall through to. Staff sessions have no such guest
+/// mode: a missing or expired token routes back to login instead of
+/// opening an empty barber shell.
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
@@ -24,9 +32,23 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future<void> _checkSessionAndRoute() async {
-    // Keep the splash on screen briefly even when the session check is
-    // instant, so it reads as an intentional splash rather than a flash.
-    await Future.wait([
+    final accountType = await Get.find<StorageService>().readAccountType();
+
+    if (accountType == 'staff') {
+      final results = await Future.wait<Object?>([
+        StaffAuthRepository().fetchMe(),
+        // Keep the splash on screen briefly even when the session check
+        // is instant, so it reads as an intentional splash rather than a
+        // flash.
+        Future.delayed(const Duration(milliseconds: 500)),
+      ]);
+      if (!mounted) return;
+      final staff = results[0];
+      Get.offAllNamed(staff != null ? AppRoutes.barberShell : AppRoutes.login);
+      return;
+    }
+
+    await Future.wait<Object?>([
       AuthRepository().fetchMe(),
       Future.delayed(const Duration(milliseconds: 500)),
     ]);
