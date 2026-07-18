@@ -93,6 +93,11 @@ class _Header extends GetView<HomeController> {
               ],
             ),
           ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: 'Search',
+            onPressed: () => Get.toNamed(AppRoutes.search),
+          ),
           if (client == null)
             TextButton(
               onPressed: () => Get.toNamed(AppRoutes.login),
