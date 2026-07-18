@@ -1,19 +1,25 @@
 import 'package:get/get.dart';
 
+import '../../data/models/booking_model.dart';
 import '../../data/models/client_model.dart';
 import '../../data/models/service_model.dart';
 import '../../data/models/staff_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/booking_repository.dart';
+import '../../data/repositories/bookings_repository.dart';
 import '../booking/booking_binding.dart';
 import '../booking/booking_controller.dart';
 
 class HomeController extends GetxController {
   final AuthRepository _authRepo = AuthRepository();
   final BookingRepository _bookingRepo = BookingRepository();
+  final BookingsRepository _bookingsRepo = BookingsRepository();
 
   /// Null while loading or when browsing as a guest.
   final client = Rxn<ClientModel>();
+
+  /// The client's next upcoming booking, if any — null for guests too.
+  final upcomingBooking = Rxn<BookingModel>();
 
   final services = <ServiceModel>[].obs;
   final staff = <StaffModel>[].obs;
@@ -63,6 +69,18 @@ class HomeController extends GetxController {
     }
     // Guest-safe: null just means nobody is signed in.
     client.value = await _authRepo.fetchMe();
+
+    if (client.value != null) {
+      try {
+        final bookings = await _bookingsRepo.fetchMyBookings();
+        upcomingBooking.value = bookings['upcoming']?.firstOrNull;
+      } catch (_) {
+        // Non-critical for this screen — Appointments tab is the source
+        // of truth and has its own error handling.
+      }
+    } else {
+      upcomingBooking.value = null;
+    }
   }
 
   /// Ensures the booking wizard's controller exists (its route binding
