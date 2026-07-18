@@ -20,6 +20,8 @@ const activeBookableStaff: StaffWithAuthId = {
   auth_user_id: "auth-user-1",
   avatar_url: "https://example.com/avatar.png",
   status: "active",
+  presence: "off_duty",
+  presence_updated_at: null,
   created_at: "2026-01-01T00:00:00.000Z",
 };
 
