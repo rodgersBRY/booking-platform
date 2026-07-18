@@ -98,6 +98,18 @@ class _Header extends GetView<HomeController> {
             tooltip: 'Search',
             onPressed: () => Get.toNamed(AppRoutes.search),
           ),
+          Obx(() {
+            final unread = controller.unreadNotifications.value;
+            return IconButton(
+              icon: Badge(
+                label: Text('$unread'),
+                isLabelVisible: unread > 0,
+                child: const Icon(Icons.notifications_outlined),
+              ),
+              tooltip: 'Notifications',
+              onPressed: () => Get.toNamed(AppRoutes.notifications),
+            );
+          }),
           if (client == null)
             TextButton(
               onPressed: () => Get.toNamed(AppRoutes.login),

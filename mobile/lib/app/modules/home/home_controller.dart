@@ -7,6 +7,7 @@ import '../../data/models/staff_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/booking_repository.dart';
 import '../../data/repositories/bookings_repository.dart';
+import '../../data/repositories/notifications_repository.dart';
 import '../booking/booking_binding.dart';
 import '../booking/booking_controller.dart';
 
@@ -14,12 +15,15 @@ class HomeController extends GetxController {
   final AuthRepository _authRepo = AuthRepository();
   final BookingRepository _bookingRepo = BookingRepository();
   final BookingsRepository _bookingsRepo = BookingsRepository();
+  final NotificationsRepository _notificationsRepo = NotificationsRepository();
 
   /// Null while loading or when browsing as a guest.
   final client = Rxn<ClientModel>();
 
   /// The client's next upcoming booking, if any — null for guests too.
   final upcomingBooking = Rxn<BookingModel>();
+
+  final unreadNotifications = 0.obs;
 
   final services = <ServiceModel>[].obs;
   final staff = <StaffModel>[].obs;
@@ -78,8 +82,15 @@ class HomeController extends GetxController {
         // Non-critical for this screen — Appointments tab is the source
         // of truth and has its own error handling.
       }
+      try {
+        final result = await _notificationsRepo.fetchNotifications();
+        unreadNotifications.value = result.unreadCount;
+      } catch (_) {
+        // Non-critical — the bell badge just won't update this refresh.
+      }
     } else {
       upcomingBooking.value = null;
+      unreadNotifications.value = 0;
     }
   }
 

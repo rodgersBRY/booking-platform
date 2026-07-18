@@ -9,6 +9,8 @@ import '../modules/booking/pages/slot_page.dart';
 import '../modules/booking/pages/staff_list_page.dart';
 import '../modules/login/login_binding.dart';
 import '../modules/login/login_page.dart';
+import '../modules/notifications/notifications_binding.dart';
+import '../modules/notifications/notifications_page.dart';
 import '../modules/search/search_binding.dart';
 import '../modules/search/search_page.dart';
 import '../modules/shell/shell_binding.dart';
@@ -40,6 +42,11 @@ class AppPages {
       name: AppRoutes.search,
       page: () => const SearchPage(),
       binding: SearchBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.notifications,
+      page: () => const NotificationsPage(),
+      binding: NotificationsBinding(),
     ),
     GetPage(
       name: AppRoutes.bookCategory,
