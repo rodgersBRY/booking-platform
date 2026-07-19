@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
-import '../../services/api_service.dart';
+import '../../../services/api_service.dart';
 import '../models/booking_submit_result.dart';
 import '../models/service_model.dart';
 import '../models/slot_model.dart';

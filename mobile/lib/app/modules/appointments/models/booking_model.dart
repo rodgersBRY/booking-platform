@@ -1,5 +1,5 @@
-import 'service_model.dart';
-import 'staff_model.dart';
+import '../../booking/models/service_model.dart';
+import '../../booking/models/staff_model.dart';
 
 class BookingModel {
   final String id;

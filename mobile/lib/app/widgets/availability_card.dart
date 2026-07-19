@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../data/models/staff_presence.dart';
+import '../modules/barber/models/staff_presence.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 

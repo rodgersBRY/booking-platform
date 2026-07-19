@@ -1,4 +1,4 @@
-import 'package:barberia_cuts/app/data/repositories/auth_repository.dart';
+import 'package:barberia_cuts/app/modules/login/repositories/auth_repository.dart';
 import 'package:barberia_cuts/app/services/api_service.dart';
 import 'package:barberia_cuts/app/services/storage_service.dart';
 import 'package:flutter_test/flutter_test.dart';

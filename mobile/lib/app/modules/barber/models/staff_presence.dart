@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_colors.dart';
+import '../../../theme/app_colors.dart';
 
 /// The barber's live on/off status — distinct from a booking's status
 /// (see status_chip.dart). Backed by `staff.presence` /

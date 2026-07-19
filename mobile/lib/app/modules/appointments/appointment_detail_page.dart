@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../data/models/booking_model.dart';
-import '../../data/repositories/bookings_repository.dart';
+import 'models/booking_model.dart';
+import 'repositories/bookings_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/primary_button.dart';

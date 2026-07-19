@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../../data/repositories/auth_repository.dart';
+import 'repositories/auth_repository.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/app_toast.dart';
 

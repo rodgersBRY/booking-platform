@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
-import '../../services/api_service.dart';
+import '../../../services/api_service.dart';
 import '../models/presence_update_result.dart';
 import '../models/staff_day_model.dart';
 import '../models/staff_day_result.dart';

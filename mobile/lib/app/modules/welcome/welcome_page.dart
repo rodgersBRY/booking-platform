@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/staff_auth_repository.dart';
+import '../login/repositories/auth_repository.dart';
+import '../barber/repositories/staff_auth_repository.dart';
 import '../../routes/app_routes.dart';
 import '../../services/storage_service.dart';
 import '../../theme/app_colors.dart';

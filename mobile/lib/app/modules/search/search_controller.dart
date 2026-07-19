@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/service_model.dart';
-import '../../data/models/staff_model.dart';
-import '../../data/repositories/booking_repository.dart';
+import '../booking/models/service_model.dart';
+import '../booking/models/staff_model.dart';
+import '../booking/repositories/booking_repository.dart';
 import '../../routes/app_routes.dart';
 import '../booking/booking_binding.dart';
 import '../booking/booking_controller.dart';

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
-import '../../data/models/notification_model.dart';
-import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/notifications_repository.dart';
+import 'models/notification_model.dart';
+import '../login/repositories/auth_repository.dart';
+import 'repositories/notifications_repository.dart';
 
 class NotificationsController extends GetxController {
   final NotificationsRepository _repo = NotificationsRepository();

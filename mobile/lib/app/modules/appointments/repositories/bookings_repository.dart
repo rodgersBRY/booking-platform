@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
-import '../../services/api_service.dart';
+import '../../../services/api_service.dart';
 import '../models/booking_action_result.dart';
 import '../models/booking_model.dart';
-import '../models/slot_model.dart';
+import '../../booking/models/slot_model.dart';
 
 /// The signed-in client's own bookings — /api/v1/account/bookings* on the
 /// same backend. Distinct from booking_repository.dart, which stays scoped
@@ -14,6 +14,7 @@ class BookingsRepository {
 
   Future<Map<String, List<BookingModel>>> fetchMyBookings() async {
     final res = await _dio.get('/v1/account/bookings');
+    
     List<BookingModel> bucket(String key) {
       final list = res.data[key] as List;
       return list
