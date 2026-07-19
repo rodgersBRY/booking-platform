@@ -1,20 +1,22 @@
 import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'working_hours_model.g.dart';
 
 /// The staff member's working hours for the requested day, sourced from
 /// `staff_availability` server-side. Null on the day payload means no
 /// schedule is configured for that day.
+@JsonSerializable()
 class WorkingHoursModel {
   final String start;
   final String end;
 
-  WorkingHoursModel({required this.start, required this.end});
+  const WorkingHoursModel({required this.start, required this.end});
 
-  factory WorkingHoursModel.fromJson(Map<String, dynamic> json) {
-    return WorkingHoursModel(
-      start: json['start'] as String,
-      end: json['end'] as String,
-    );
-  }
+  factory WorkingHoursModel.fromJson(Map<String, dynamic> json) =>
+      _$WorkingHoursModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WorkingHoursModelToJson(this);
 
   /// "09:00" -> "9:00 AM". Falls back to the raw string if it isn't a
   /// parseable HH:mm — defensive only, the backend always sends HH:mm.

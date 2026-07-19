@@ -1,4 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'booking_client_info.dart';
+
+part 'booking_detail_model.g.dart';
 
 /// GET /v1/staff/bookings/[id] — the barber's working screen for one
 /// appointment. Richer than [StaffAppointmentModel] (customer contact
@@ -9,6 +13,7 @@ import 'booking_client_info.dart';
 /// Also reused for the `booking` object POST /v1/staff/bookings/[id]/start
 /// returns — the backend contract describes it as "the updated booking",
 /// same shape as this detail response, just with a fresh scheduledStart.
+@JsonSerializable()
 class BookingDetailModel {
   final String bookingId;
   final String status;
@@ -23,10 +28,12 @@ class BookingDetailModel {
   /// customer). See [BookingClientInfo.customerNotes] for the
   /// customer-visible counterpart.
   final String? staffNotes;
+  @JsonKey(defaultValue: false)
   final bool canStart;
+  @JsonKey(defaultValue: false)
   final bool canComplete;
 
-  BookingDetailModel({
+  const BookingDetailModel({
     required this.bookingId,
     required this.status,
     required this.channel,
@@ -40,23 +47,10 @@ class BookingDetailModel {
     required this.canComplete,
   });
 
-  factory BookingDetailModel.fromJson(Map<String, dynamic> json) {
-    return BookingDetailModel(
-      bookingId: json['bookingId'] as String,
-      status: json['status'] as String,
-      channel: json['channel'] as String,
-      scheduledStart: json['scheduledStart'] as String,
-      scheduledEnd: json['scheduledEnd'] as String,
-      durationMinutes: json['durationMinutes'] as int,
-      services: (json['services'] as List).map((e) => e as String).toList(),
-      client: BookingClientInfo.fromJson(
-        json['client'] as Map<String, dynamic>,
-      ),
-      staffNotes: json['staffNotes'] as String?,
-      canStart: json['canStart'] as bool? ?? false,
-      canComplete: json['canComplete'] as bool? ?? false,
-    );
-  }
+  factory BookingDetailModel.fromJson(Map<String, dynamic> json) =>
+      _$BookingDetailModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BookingDetailModelToJson(this);
 
   String get servicesLabel => services.join(' + ');
 

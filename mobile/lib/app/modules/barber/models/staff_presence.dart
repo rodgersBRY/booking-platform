@@ -22,6 +22,11 @@ enum StaffPresence {
     };
   }
 
+  /// Tear-off target for `@JsonKey(toJson: StaffPresence.toJsonValue)` on
+  /// fields of this type — json_serializable needs a function reference,
+  /// not the [value] getter, to generate the field's toJson call.
+  static String toJsonValue(StaffPresence presence) => presence.value;
+
   String get value => switch (this) {
     StaffPresence.available => 'available',
     StaffPresence.busy => 'busy',

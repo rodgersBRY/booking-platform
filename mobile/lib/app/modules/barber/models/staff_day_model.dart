@@ -1,13 +1,20 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'day_summary_model.dart';
 import 'staff_appointment_model.dart';
 import 'staff_presence.dart';
 import 'working_hours_model.dart';
 
+part 'staff_day_model.g.dart';
+
 /// GET /v1/staff/day — the signed-in barber's "today" view: presence,
 /// today's working hours, appointment counts, the next appointment, and
 /// the full day's schedule (which still includes the next appointment).
+@JsonSerializable()
 class StaffDayModel {
   final String staffId;
+
+  @JsonKey(fromJson: StaffPresence.fromJson, toJson: StaffPresence.toJsonValue)
   final StaffPresence presence;
   final String? presenceUpdatedAt;
   final WorkingHoursModel? workingHours;
@@ -15,7 +22,7 @@ class StaffDayModel {
   final StaffAppointmentModel? nextAppointment;
   final List<StaffAppointmentModel> schedule;
 
-  StaffDayModel({
+  const StaffDayModel({
     required this.staffId,
     required this.presence,
     required this.presenceUpdatedAt,
@@ -25,35 +32,10 @@ class StaffDayModel {
     required this.schedule,
   });
 
-  factory StaffDayModel.fromJson(Map<String, dynamic> json) {
-    return StaffDayModel(
-      staffId: json['staffId'] as String,
-      presence: StaffPresence.fromJson(json['presence'] as String),
-      presenceUpdatedAt: json['presenceUpdatedAt'] as String?,
-      workingHours:
-          json['workingHours'] != null
-              ? WorkingHoursModel.fromJson(
-                json['workingHours'] as Map<String, dynamic>,
-              )
-              : null,
-      summary: DaySummaryModel.fromJson(
-        json['summary'] as Map<String, dynamic>,
-      ),
-      nextAppointment:
-          json['nextAppointment'] != null
-              ? StaffAppointmentModel.fromJson(
-                json['nextAppointment'] as Map<String, dynamic>,
-              )
-              : null,
-      schedule:
-          (json['schedule'] as List)
-              .map(
-                (e) =>
-                    StaffAppointmentModel.fromJson(e as Map<String, dynamic>),
-              )
-              .toList(),
-    );
-  }
+  factory StaffDayModel.fromJson(Map<String, dynamic> json) =>
+      _$StaffDayModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StaffDayModelToJson(this);
 
   /// Backs the optimistic presence update in
   /// BarberDashboardController.changePresence — swaps presence in place

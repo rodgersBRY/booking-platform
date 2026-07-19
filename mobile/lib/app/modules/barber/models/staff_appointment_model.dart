@@ -1,6 +1,11 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'staff_appointment_model.g.dart';
+
 /// One appointment entry from GET /v1/staff/day — used for both
 /// `nextAppointment` and each row in `schedule` (the same shape appears
 /// in both places; `nextAppointment` is also present inside `schedule`).
+@JsonSerializable()
 class StaffAppointmentModel {
   final String bookingId;
   final String clientName;
@@ -11,7 +16,7 @@ class StaffAppointmentModel {
   final String status;
   final String channel;
 
-  StaffAppointmentModel({
+  const StaffAppointmentModel({
     required this.bookingId,
     required this.clientName,
     required this.services,
@@ -22,18 +27,10 @@ class StaffAppointmentModel {
     required this.channel,
   });
 
-  factory StaffAppointmentModel.fromJson(Map<String, dynamic> json) {
-    return StaffAppointmentModel(
-      bookingId: json['bookingId'] as String,
-      clientName: json['clientName'] as String,
-      services: (json['services'] as List).map((e) => e as String).toList(),
-      scheduledStart: json['scheduledStart'] as String,
-      scheduledEnd: json['scheduledEnd'] as String,
-      durationMinutes: json['durationMinutes'] as int,
-      status: json['status'] as String,
-      channel: json['channel'] as String,
-    );
-  }
+  factory StaffAppointmentModel.fromJson(Map<String, dynamic> json) =>
+      _$StaffAppointmentModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StaffAppointmentModelToJson(this);
 
   /// "Haircut" + "Beard Trim" -> "Haircut + Beard Trim", matching
   /// BARBER-APP.md's next-appointment example.

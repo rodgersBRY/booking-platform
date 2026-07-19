@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'service_model.g.dart';
+
+@JsonSerializable()
 class ServiceModel {
   final String id;
   final String name;
@@ -5,7 +10,7 @@ class ServiceModel {
   final int durationMinutes;
   final num price;
 
-  ServiceModel({
+  const ServiceModel({
     required this.id,
     required this.name,
     required this.category,
@@ -13,15 +18,10 @@ class ServiceModel {
     required this.price,
   });
 
-  factory ServiceModel.fromJson(Map<String, dynamic> json) {
-    return ServiceModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      category: json['category'] as String?,
-      durationMinutes: json['durationMinutes'] as int,
-      price: json['price'] as num,
-    );
-  }
+  factory ServiceModel.fromJson(Map<String, dynamic> json) =>
+      _$ServiceModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceModelToJson(this);
 
   String get formattedPrice => 'KSh ${price.round()}';
 
