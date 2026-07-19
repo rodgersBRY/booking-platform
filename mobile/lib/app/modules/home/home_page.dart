@@ -197,6 +197,7 @@ class _ProfessionalStrip extends GetView<HomeController> {
           itemBuilder: (context, i) {
             final member = staff[i];
             return _ProfessionalChip(
+              role: member.role,
               name: member.name,
               avatarUrl: member.avatarUrl,
             );
@@ -209,9 +210,14 @@ class _ProfessionalStrip extends GetView<HomeController> {
 
 class _ProfessionalChip extends StatelessWidget {
   final String name;
+  final String role;
   final String? avatarUrl;
 
-  const _ProfessionalChip({required this.name, required this.avatarUrl});
+  const _ProfessionalChip({
+    required this.name,
+    required this.role,
+    required this.avatarUrl,
+  });
 
   String get _initials {
     final parts =
@@ -254,6 +260,13 @@ class _ProfessionalChip extends StatelessWidget {
             name.split(' ').first,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Text(
+            '~ ${role.capitalize} ~',
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
           ),
         ],
       ),
