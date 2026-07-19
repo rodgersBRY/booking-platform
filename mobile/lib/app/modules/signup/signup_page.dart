@@ -18,7 +18,11 @@ class SignupPage extends GetView<SignupController> {
           children: [
             const SizedBox(height: 12),
             Center(
-              child: Image.asset('assets/images/logo.png', width: 56, height: 56),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 56,
+                height: 56,
+              ),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -29,7 +33,8 @@ class SignupPage extends GetView<SignupController> {
             TextField(
               decoration: const InputDecoration(
                 labelText: 'Phone number',
-                helperText: "Used the same phone before? We'll link your history.",
+                helperText:
+                    "Used the same phone before? We'll link your history.",
               ),
               keyboardType: TextInputType.phone,
               onChanged: (v) => controller.phone.value = v,
@@ -53,8 +58,11 @@ class SignupPage extends GetView<SignupController> {
             const SizedBox(height: 24),
             Obx(
               () => ElevatedButton(
-                onPressed: controller.submitting.value ? null : controller.submit,
-                child: Text(controller.submitting.value ? 'Creating account…' : 'Sign up'),
+                onPressed:
+                    controller.submitting.value ? null : controller.submit,
+                child: Text(
+                  controller.submitting.value ? 'Creating account…' : 'Sign up',
+                ),
               ),
             ),
           ],

@@ -19,7 +19,10 @@ class SlotPage extends GetView<BookingController> {
       appBar: AppBar(title: const Text('Pick a date and time')),
       body: Column(
         children: [
-          const BookingProgressIndicator(current: BookingStep.time),
+          BookingProgressIndicator(
+            currentStep: BookingStep.time.index,
+            totalSteps: BookingStep.values.length,
+          ),
           SizedBox(
             height: 72,
             child: Obx(() {

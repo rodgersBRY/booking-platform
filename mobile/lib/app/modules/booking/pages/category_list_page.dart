@@ -18,7 +18,10 @@ class CategoryListPage extends GetView<BookingController> {
       appBar: AppBar(title: const Text('What are you after?')),
       body: Column(
         children: [
-          const BookingProgressIndicator(current: BookingStep.category),
+          BookingProgressIndicator(
+            currentStep: BookingStep.category.index,
+            totalSteps: BookingStep.values.length,
+          ),
           Expanded(
             child: Obx(() {
               if (controller.servicesLoading.value) {

@@ -4,6 +4,7 @@ import 'barber_dashboard_controller.dart';
 import 'barber_profile_controller.dart';
 import 'barber_schedule_controller.dart';
 import 'barber_shell_controller.dart';
+import 'create_booking/barber_create_booking_controller.dart';
 
 class BarberShellBinding extends Bindings {
   @override
@@ -19,6 +20,10 @@ class BarberShellBinding extends Bindings {
     );
     Get.lazyPut<BarberProfileController>(
       () => BarberProfileController(),
+      fenix: true,
+    );
+    Get.lazyPut<BarberCreateBookingController>(
+      () => BarberCreateBookingController(),
       fenix: true,
     );
   }

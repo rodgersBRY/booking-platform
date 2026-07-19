@@ -20,7 +20,10 @@ class StaffListPage extends GetView<BookingController> {
       appBar: AppBar(title: const Text('Who would you like?')),
       body: Column(
         children: [
-          const BookingProgressIndicator(current: BookingStep.professional),
+          BookingProgressIndicator(
+            currentStep: BookingStep.professional.index,
+            totalSteps: BookingStep.values.length,
+          ),
           Expanded(
             child: Obx(() {
               if (controller.staffLoading.value) {

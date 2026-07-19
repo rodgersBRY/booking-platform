@@ -22,10 +22,12 @@ class SignupController extends GetxController {
       AppToast.error('Please fill in every field.');
       return;
     }
+
     if (password.value.length < 8) {
       AppToast.error('Password must be at least 8 characters.');
       return;
     }
+
     if (password.value != confirmPassword.value) {
       AppToast.error('Passwords don\'t match.');
       return;
@@ -48,13 +50,11 @@ class SignupController extends GetxController {
     }
 
     if (result.pendingConfirmation) {
-      // No session yet — the account needs email confirmation first, so
-      // send them to sign in once they've confirmed instead of leaving them
-      // stranded on the signup form.
       Get.offAllNamed(AppRoutes.login);
       AppToast.success(
         result.message ?? 'Check your email to confirm your account.',
       );
+      
       return;
     }
 

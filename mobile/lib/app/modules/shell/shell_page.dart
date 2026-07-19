@@ -15,7 +15,11 @@ class ShellPage extends GetView<ShellController> {
   const ShellPage({super.key});
 
   static const _tabs = [
-    AppBottomNavTab(icon: Icons.home_outlined, activeIcon: Icons.home, label: 'Home'),
+    AppBottomNavTab(
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home,
+      label: 'Home',
+    ),
     AppBottomNavTab(
       icon: Icons.calendar_month_outlined,
       activeIcon: Icons.calendar_month,
@@ -52,7 +56,7 @@ class ShellPage extends GetView<ShellController> {
               icon: Icons.explore_outlined,
               title: 'Explore',
               subtitle:
-                  'Discover professionals, trending services, and style inspiration. Coming soon.',
+                  'Discover professionals, trending services, and style inspiration. Coming soon...',
             ),
             ProfilePage(),
           ],

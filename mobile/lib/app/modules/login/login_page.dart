@@ -19,7 +19,11 @@ class LoginPage extends GetView<LoginController> {
           children: [
             const SizedBox(height: 12),
             Center(
-              child: Image.asset('assets/images/logo.png', width: 56, height: 56),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 56,
+                height: 56,
+              ),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -35,8 +39,11 @@ class LoginPage extends GetView<LoginController> {
             const SizedBox(height: 24),
             Obx(
               () => ElevatedButton(
-                onPressed: controller.submitting.value ? null : controller.submit,
-                child: Text(controller.submitting.value ? 'Signing in…' : 'Sign in'),
+                onPressed:
+                    controller.submitting.isTrue ? null : controller.submit,
+                child: Text(
+                  controller.submitting.isTrue ? 'Signing in…' : 'Sign in',
+                ),
               ),
             ),
             const SizedBox(height: 16),
