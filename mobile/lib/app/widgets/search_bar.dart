@@ -7,11 +7,19 @@ class AppSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final String hintText;
 
+  /// Defaults to true (the original behavior, right for a freshly-pushed
+  /// search screen like SearchPage). Pass false when this bar lives on a
+  /// screen that can be mounted off-screen — e.g. a bottom-nav tab inside
+  /// an IndexedStack, which builds every tab immediately — where grabbing
+  /// focus/keyboard while invisible would be surprising.
+  final bool autofocus;
+
   const AppSearchBar({
     super.key,
     required this.controller,
     required this.onChanged,
     this.hintText = 'Search',
+    this.autofocus = true,
   });
 
   @override
@@ -22,7 +30,7 @@ class AppSearchBar extends StatelessWidget {
         return TextField(
           controller: controller,
           onChanged: onChanged,
-          autofocus: true,
+          autofocus: autofocus,
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: const Icon(Icons.search),
