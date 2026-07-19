@@ -2,6 +2,8 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAvailability } from "@/lib/booking/availability";
 import { shapeBooking } from "@/lib/booking/shapeBooking";
+import { NAIROBI_DATE_FORMAT } from "@/lib/booking/createBooking";
+import { createStaffNotification } from "@/lib/notifications/createStaffNotification";
 import type { Slot } from "@/lib/booking/types";
 
 export interface RescheduleBookingParams {
@@ -131,5 +133,29 @@ export async function rescheduleBooking(
     return { error: "Something went wrong. Please try again." };
   }
 
-  return { booking: shapeBooking(updated) };
+  const shaped = shapeBooking(updated);
+
+  // This function is only ever reached from the client-owned reschedule
+  // route (it requires clientId and enforces booking ownership above), so
+  // every call here is genuinely client-initiated — no self-notification
+  // concern like createBooking.ts has.
+  if (newStaffId) {
+    const { data: clientRow } = await admin
+      .from("clients")
+      .select("name")
+      .eq("id", clientId)
+      .single();
+    const clientName = (clientRow?.name as string | undefined) ?? "A client";
+
+    // Best-effort — never fail the reschedule itself over a notification write.
+    await createStaffNotification({
+      staffId: newStaffId,
+      type: "booking_rescheduled",
+      title: "Appointment rescheduled",
+      body: `${clientName} rescheduled ${shaped.service?.name ?? "their appointment"} to ${NAIROBI_DATE_FORMAT.format(startDate)}.`,
+      bookingId,
+    });
+  }
+
+  return { booking: shaped };
 }

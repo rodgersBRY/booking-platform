@@ -1,5 +1,6 @@
 import { getClientFromRequest } from "@/lib/clientAuth";
 import { createNotification } from "@/lib/notifications/createNotification";
+import { createStaffNotification } from "@/lib/notifications/createStaffNotification";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,7 +18,7 @@ export async function POST(
 
   const { data: booking, error: bookErr } = await admin
     .from("bookings")
-    .select("id, client_id, status")
+    .select("id, client_id, status, staff_id")
     .eq("id", id)
     .single();
 
@@ -59,6 +60,18 @@ export async function POST(
     body: "Your appointment has been cancelled.",
     bookingId: id,
   });
+
+  // This route is client-owned (a client cancelling their own booking), so
+  // this is always genuinely client-initiated — no self-notification concern.
+  if (booking.staff_id) {
+    await createStaffNotification({
+      staffId: booking.staff_id,
+      type: "booking_cancelled",
+      title: "Appointment cancelled",
+      body: `${client.name} cancelled their appointment.`,
+      bookingId: id,
+    });
+  }
 
   return NextResponse.json({ ok: true });
 }

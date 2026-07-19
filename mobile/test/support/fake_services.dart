@@ -23,6 +23,16 @@ typedef ScriptedResponse = ({int status, Map<String, dynamic> body});
 /// map more specifically.
 class ScriptedAdapter implements HttpClientAdapter {
   final List<String> requestedPaths = [];
+
+  /// The raw `data:` payload of every request, in request order, parallel
+  /// to [requestedPaths] — lets a test assert what a POST/PATCH actually
+  /// sent (e.g. `{'id': 'n1'}` vs `{'all': true}`) without standing up a
+  /// real HTTP body parser. `options.data` is the object the caller passed
+  /// to `dio.post(..., data: ...)` untouched — Dio only serializes it into
+  /// the request stream separately, so this is exactly that Map (or null
+  /// for a body-less request).
+  final List<dynamic> requestedBodies = [];
+
   final Map<String, ScriptedResponse> _script;
 
   ScriptedAdapter(this._script);
@@ -43,6 +53,7 @@ class ScriptedAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     requestedPaths.add(options.path);
+    requestedBodies.add(options.data);
     final method = options.method.toUpperCase();
     final withQuery = _withQuery(options);
     final entry =
@@ -308,6 +319,42 @@ Map<String, dynamic> sampleStaffCustomerProfileJson({
             'services': ['Haircut'],
           },
         ],
+  };
+}
+
+/// One GET /v1/staff/notifications entry — same shape
+/// StaffNotificationModel.fromJson reads, used across the barber
+/// Notifications tab's tests. [readAt] null means unread (the model's
+/// `isUnread` getter), matching the server's contract.
+Map<String, dynamic> sampleStaffNotificationJson({
+  String id = 'notif-1',
+  String type = 'booking_created',
+  String title = 'New booking',
+  String body = 'Brian Mwangi booked a Haircut for 10:00 AM.',
+  String? bookingId = 'b1',
+  String? readAt,
+  String createdAt = '2026-07-19T08:00:00.000Z',
+}) {
+  return {
+    'id': id,
+    'type': type,
+    'title': title,
+    'body': body,
+    'bookingId': bookingId,
+    'readAt': readAt,
+    'createdAt': createdAt,
+  };
+}
+
+/// A GET /v1/staff/notifications response body.
+Map<String, dynamic> sampleStaffNotificationsJson({
+  List<Map<String, dynamic>>? notifications,
+  int? unreadCount,
+}) {
+  final list = notifications ?? [];
+  return {
+    'notifications': list,
+    'unreadCount': unreadCount ?? list.where((n) => n['readAt'] == null).length,
   };
 }
 

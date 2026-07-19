@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../modules/booking/booking_controller.dart' show otherCategoryKey;
 
 /// "hair_dyes" -> "Hair Dyes". [otherCategoryKey] -> "Other".
@@ -35,4 +37,21 @@ String relativeDateLabel(DateTime date, {DateTime? now}) {
   }
   final years = (days / 365).floor();
   return years == 1 ? '1 Year Ago' : '$years Years Ago';
+}
+
+/// Minute/hour-granularity relative time — "Just now", "10 mins ago",
+/// "3h ago", "2d ago", falling back to a "19 Jul" date past a week. Used
+/// by notification timelines (e.g. BARBER-APP.md's "10 mins ago"
+/// example), which need finer granularity than [relativeDateLabel]'s
+/// calendar-day buckets. Mirrors the customer notifications module's
+/// private `_relativeTime` (lib/app/modules/notifications/notifications_page.dart)
+/// so both notification lists read the same way.
+String relativeTimeLabel(DateTime date, {DateTime? now}) {
+  final reference = now ?? DateTime.now();
+  final diff = reference.difference(date);
+  if (diff.inMinutes < 1) return 'Just now';
+  if (diff.inMinutes < 60) return '${diff.inMinutes} mins ago';
+  if (diff.inHours < 24) return '${diff.inHours}h ago';
+  if (diff.inDays < 7) return '${diff.inDays}d ago';
+  return DateFormat('d MMM').format(date);
 }
