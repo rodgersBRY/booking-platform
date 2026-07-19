@@ -57,9 +57,7 @@ class _AppointmentDetailPageState extends State<AppointmentDetailPage> {
       if (Get.isRegistered<AppointmentsController>()) {
         Get.find<AppointmentsController>().load();
       }
-      // Home's IndexedStack tab keeps HomeController alive for the whole
-      // session, so its cached upcoming booking never refreshes on its own
-      // — without this it would keep showing the booking just cancelled.
+      
       if (Get.isRegistered<HomeController>()) {
         Get.find<HomeController>().load();
       }

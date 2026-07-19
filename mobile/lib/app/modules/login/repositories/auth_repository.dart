@@ -7,16 +7,6 @@ import '../models/auth_result.dart';
 import '../../profile/models/client_model.dart';
 import '../../barber/repositories/staff_auth_repository.dart';
 
-/// Client account auth — /api/account/* on the same Next.js backend the
-/// booking flow uses.
-///
-/// One login screen serves both customers and staff. `login()` tries the
-/// client endpoint first; on an auth failure (401/403) it retries against
-/// staff login before giving up. This lives here rather than in the login
-/// controller so every caller of `AuthRepository.login()` gets the
-/// auto-detect behaviour for free, and so the controller stays a thin
-/// dispatcher that only reacts to `AuthResult.isStaff` instead of knowing
-/// two repositories exist.
 class AuthRepository {
   Dio get _dio => Get.find<ApiService>().dio;
   StorageService get _storage => Get.find<StorageService>();
@@ -36,32 +26,20 @@ class AuthRepository {
       final client = ClientModel.fromJson(
         res.data['client'] as Map<String, dynamic>,
       );
+
       return AuthResult.success(client);
     } on DioException catch (e) {
       final status = e.response?.statusCode;
 
-      // Only fall back on an auth rejection, not on network/server
-      // errors — a timeout shouldn't turn into two failing requests, and
-      // this keeps the client error message intact for non-auth failures.
-      //
-      // 404 belongs here alongside 401/403: a staff account's password is
-      // valid against Supabase Auth, so /v1/account/login gets past the
-      // credential check and only fails when it looks up a `clients` row —
-      // that's a 404 (no_client_account), not a 401/403. Every staff login
-      // takes this exact shape, so without 404 here the fallback never
-      // fires for any staff account.
       if (status == 401 || status == 403 || status == 404) {
         final staffResult = await StaffAuthRepository().login(
           email: email,
           password: password,
         );
+
         if (staffResult.success) return staffResult;
       }
 
-      // Both paths rejected (or only the client path was tried): surface
-      // the original client failure. Returning the client's own message
-      // rather than the staff one avoids revealing whether an email
-      // belongs to a staff account.
       final data = e.response?.data;
       final code = data is Map ? data['error'] as String? : null;
       final message = data is Map ? data['message'] as String? : null;
@@ -81,7 +59,12 @@ class AuthRepository {
     try {
       final res = await _dio.post(
         '/v1/account/signup',
-        data: {'name': name, 'phone': phone, 'email': email, 'password': password},
+        data: {
+          'name': name,
+          'phone': phone,
+          'email': email,
+          'password': password,
+        },
       );
       if (res.data['pendingConfirmation'] == true) {
         return AuthResult.pendingConfirmation(res.data['message'] as String?);
@@ -103,8 +86,6 @@ class AuthRepository {
     }
   }
 
-  /// Resolves the current session's client profile, or null if there's no
-  /// valid token (never signed in, or it expired/was revoked).
   Future<ClientModel?> fetchMe() async {
     final token = await _storage.readToken();
     if (token == null) return null;
