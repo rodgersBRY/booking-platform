@@ -43,7 +43,14 @@ class AuthRepository {
       // Only fall back on an auth rejection, not on network/server
       // errors — a timeout shouldn't turn into two failing requests, and
       // this keeps the client error message intact for non-auth failures.
-      if (status == 401 || status == 403) {
+      //
+      // 404 belongs here alongside 401/403: a staff account's password is
+      // valid against Supabase Auth, so /v1/account/login gets past the
+      // credential check and only fails when it looks up a `clients` row —
+      // that's a 404 (no_client_account), not a 401/403. Every staff login
+      // takes this exact shape, so without 404 here the fallback never
+      // fires for any staff account.
+      if (status == 401 || status == 403 || status == 404) {
         final staffResult = await StaffAuthRepository().login(
           email: email,
           password: password,
