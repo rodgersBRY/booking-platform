@@ -2,9 +2,10 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAvailability } from "@/lib/booking/availability";
 import { createNotification } from "@/lib/notifications/createNotification";
+import { createStaffNotification } from "@/lib/notifications/createStaffNotification";
 import type { Slot } from "@/lib/booking/types";
 
-const NAIROBI_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
+export const NAIROBI_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
   timeZone: "Africa/Nairobi",
   weekday: "short",
   month: "short",
@@ -64,18 +65,22 @@ export async function createBooking(
 
   // ── 1. Resolve or create the client ───────────────────────────────────────
   let resolvedClientId: string;
+  // Populated where already cheaply available; otherwise fetched lazily,
+  // just before it's needed for the staff notification below.
+  let resolvedClientName: string | null = null;
 
   if (clientId) {
     resolvedClientId = clientId;
   } else if (client?.phone) {
     const { data: existing } = await admin
       .from("clients")
-      .select("id, preferred_staff_id")
+      .select("id, name, preferred_staff_id")
       .eq("phone", client.phone)
       .maybeSingle();
 
     if (existing) {
       resolvedClientId = existing.id as string;
+      resolvedClientName = existing.name as string;
 
       // Persist preferred barber if the client hasn't had one recorded yet.
       if (staffId && !existing.preferred_staff_id) {
@@ -99,6 +104,7 @@ export async function createBooking(
         return { error: "Something went wrong. Please try again." };
       }
       resolvedClientId = newClient.id as string;
+      resolvedClientName = client.name;
     }
   } else {
     return { error: "Provide either clientId or client.{name,phone}" };
@@ -205,6 +211,28 @@ export async function createBooking(
     body: `Your ${service.name as string} appointment is confirmed for ${NAIROBI_DATE_FORMAT.format(startDate)}.`,
     bookingId: bookingRow.id,
   });
+
+  // Notify the assigned barber too, unless they booked this themselves
+  // (staff_id === created_by_staff_id, e.g. via /v1/staff/bookings) — no
+  // self-notification.
+  if (staffId && createdByStaffId !== staffId) {
+    if (resolvedClientName === null) {
+      const { data: clientRow } = await admin
+        .from("clients")
+        .select("name")
+        .eq("id", resolvedClientId)
+        .single();
+      resolvedClientName = (clientRow?.name as string | undefined) ?? "A client";
+    }
+
+    await createStaffNotification({
+      staffId,
+      type: "booking_created",
+      title: "New booking",
+      body: `${resolvedClientName} booked ${service.name as string} for ${NAIROBI_DATE_FORMAT.format(startDate)}.`,
+      bookingId: bookingRow.id,
+    });
+  }
 
   return { booking: booking as Record<string, unknown> };
 }

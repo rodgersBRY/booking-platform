@@ -57,6 +57,11 @@ export type NotificationType =
   | "promotion"
   | "new_service"
   | "loyalty_reward";
+export type StaffNotificationType =
+  | "booking_created"
+  | "booking_cancelled"
+  | "booking_rescheduled"
+  | "customer_checked_in";
 
 export interface Staff {
   id: string;
@@ -142,6 +147,17 @@ export interface Notification {
   body: string;
   booking_id: string | null;
   read: boolean;
+  created_at: string;
+}
+
+export interface StaffNotification {
+  id: string;
+  staff_id: string;
+  type: StaffNotificationType;
+  title: string;
+  body: string;
+  booking_id: string | null;
+  read_at: string | null;
   created_at: string;
 }
 
