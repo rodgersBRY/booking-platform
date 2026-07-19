@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 // web console only and never get a mobile session from this endpoint.
 export async function POST(request: NextRequest) {
   let body: { email?: string; password?: string };
+  
   try {
     body = await request.json();
   } catch {
