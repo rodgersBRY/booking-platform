@@ -11,6 +11,7 @@ import '../../theme/app_spacing.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/skeleton_loader.dart';
+import '../home/home_controller.dart';
 import 'appointments_controller.dart';
 
 List<String> _nextDates(int count) {
@@ -104,6 +105,12 @@ class _ReschedulePageState extends State<ReschedulePage> {
     if (result.success) {
       if (Get.isRegistered<AppointmentsController>()) {
         Get.find<AppointmentsController>().load();
+      }
+      // Same staleness as cancel — Home's IndexedStack tab keeps
+      // HomeController alive and its upcoming booking cached, so it needs
+      // an explicit refresh or it keeps showing the pre-reschedule time.
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().load();
       }
       Get.back();
       Get.snackbar('Appointment rescheduled', 'See you then.');
