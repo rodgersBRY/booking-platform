@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import 'barber_appointment_detail_page.dart';
 import 'barber_schedule_controller.dart';
+import 'create_booking/barber_create_booking_controller.dart';
+import 'create_booking/pages/customer_page.dart';
 import 'models/staff_appointment_model.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
@@ -118,24 +120,23 @@ class BarberSchedulePage extends GetView<BarberScheduleController> {
 }
 
 /// Bottom-right "+ New Booking" FAB per BARBER-APP.md's Floating Action
-/// Button section. Booking creation is Slice 4 — until that lands, this
-/// stays a disabled/tooltip stub matching the exact pattern
-/// NextAppointmentCard uses for its not-yet-wired buttons, rather than a
-/// button that silently does nothing.
+/// Button section — entry point into the Slice 4 create-booking wizard
+/// (create_booking/). Resets the wizard controller's state before pushing
+/// its first step: the controller is kept alive (fenix) for the whole
+/// barber-shell session, so without this a second booking would silently
+/// resume whatever client/service/slot the barber picked last time.
 class _NewBookingFab extends StatelessWidget {
   const _NewBookingFab();
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: 'Creating bookings is coming in a future update',
-      child: FloatingActionButton.extended(
-        onPressed: null,
-        backgroundColor: Theme.of(context).disabledColor,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: const Text('New Booking'),
-      ),
+    return FloatingActionButton.extended(
+      onPressed: () {
+        Get.find<BarberCreateBookingController>().reset();
+        Get.to(() => const CustomerPage());
+      },
+      icon: const Icon(Icons.add),
+      label: const Text('New Booking'),
     );
   }
 }

@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../theme/app_spacing.dart';
-import '../../../utils/format.dart';
-import '../../../widgets/booking_progress_indicator.dart';
-import '../../../widgets/empty_state.dart';
-import '../../../widgets/service_card.dart';
-import '../../../widgets/skeleton_loader.dart';
-import '../booking_controller.dart';
+import '../../../../theme/app_spacing.dart';
+import '../../../../widgets/booking_progress_indicator.dart';
+import '../../../../widgets/empty_state.dart';
+import '../../../../widgets/service_card.dart';
+import '../../../../widgets/skeleton_loader.dart';
+import '../barber_create_booking_controller.dart';
 
-class ServiceListPage extends GetView<BookingController> {
-  const ServiceListPage({super.key});
+/// Step 2 of the barber create-booking wizard: pick the service, already
+/// filtered server-side to this barber's own role.
+class ServicePage extends GetView<BarberCreateBookingController> {
+  const ServicePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Obx(
-          () => Text(categoryLabel(controller.selectedCategory.value ?? '')),
-        ),
-      ),
+      appBar: AppBar(title: const Text('What service?')),
       body: Column(
         children: [
           BookingProgressIndicator(
-            currentStep: BookingStep.service.index,
-            totalSteps: BookingStep.values.length,
+            currentStep: BarberBookingStep.service.index,
+            totalSteps: BarberBookingStep.values.length,
           ),
           Expanded(
             child: Obx(() {
@@ -40,19 +37,19 @@ class ServiceListPage extends GetView<BookingController> {
                   onAction: controller.loadServices,
                 );
               }
-              final services = controller.servicesInSelectedCategory;
+              final services = controller.services;
               if (services.isEmpty) {
                 return const EmptyState(
                   icon: Icons.event_busy,
-                  title: 'Nothing here right now',
-                  subtitle: 'No services in this category at the moment.',
+                  title: 'No services available',
+                  subtitle: 'Nothing is set up for your role yet.',
                 );
               }
               return ListView.separated(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 itemCount: services.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(height: AppSpacing.sm + 4),
+                separatorBuilder:
+                    (_, __) => const SizedBox(height: AppSpacing.sm + 4),
                 itemBuilder: (context, i) {
                   final service = services[i];
                   return Obx(

@@ -201,6 +201,60 @@ Map<String, dynamic> sampleStaffAccountJson() {
   };
 }
 
+/// One GET /v1/staff/clients/search entry / POST /v1/staff/clients
+/// `client` payload — same shape StaffClientModel.fromJson reads, used
+/// across the barber create-booking wizard's tests.
+Map<String, dynamic> sampleStaffClientJson({
+  String id = 'client-1',
+  String name = 'Brian Mwangi',
+  String phone = '0700000001',
+  String? preferredStaffId,
+  String? preferredStaffName,
+  int totalVisits = 3,
+  String? lastVisitAt,
+  bool isRegular = false,
+}) {
+  return {
+    'id': id,
+    'name': name,
+    'phone': phone,
+    'preferredStaffId': preferredStaffId,
+    'preferredStaffName': preferredStaffName,
+    'totalVisits': totalVisits,
+    'lastVisitAt': lastVisitAt,
+    'isRegular': isRegular,
+  };
+}
+
+/// One GET /v1/staff/services entry — same shape the customer booking
+/// wizard's ServiceModel.fromJson reads.
+Map<String, dynamic> sampleStaffServiceJson({
+  String id = 'svc-1',
+  String name = 'Haircut',
+  String? category = 'haircuts',
+  int durationMinutes = 45,
+  num price = 800,
+}) {
+  return {
+    'id': id,
+    'name': name,
+    'category': category,
+    'durationMinutes': durationMinutes,
+    'price': price,
+  };
+}
+
+/// One GET /v1/staff/availability slot entry — same shape the customer
+/// booking wizard's SlotModel.fromJson reads.
+Map<String, dynamic> sampleStaffSlotJson({
+  required String start,
+  required String end,
+  required String label,
+  String staffId = 'staff-1',
+}) {
+  return {'start': start, 'end': end, 'label': label, 'staffId': staffId};
+}
+
 /// In-memory StorageService double — avoids FlutterSecureStorage's
 /// platform channel, which isn't available under flutter_test.
 class FakeStorageService extends StorageService {
