@@ -255,6 +255,62 @@ Map<String, dynamic> sampleStaffSlotJson({
   return {'start': start, 'end': end, 'label': label, 'staffId': staffId};
 }
 
+/// One GET /v1/staff/clients entry — the barber's "My Customers" list,
+/// same shape StaffCustomerModel.fromJson reads. Not
+/// sampleStaffClientJson: that's the *shop-wide* client-search shape used
+/// by the create-booking wizard, a distinct endpoint family with
+/// different fields (totalVisits/preferredStaff vs this per-relationship
+/// visitCount/lastVisitAt).
+Map<String, dynamic> sampleStaffCustomerJson({
+  String id = 'client-1',
+  String name = 'Brian Mwangi',
+  String phone = '0700000001',
+  int visitCount = 4,
+  String lastVisitAt = '2026-07-10T10:00:00.000Z',
+}) {
+  return {
+    'id': id,
+    'name': name,
+    'phone': phone,
+    'visitCount': visitCount,
+    'lastVisitAt': lastVisitAt,
+  };
+}
+
+/// A GET /v1/staff/clients/[id] response body — the Customer Profile
+/// screen's shape (StaffCustomerProfileModel.fromJson), including the
+/// per-staff visit timeline.
+Map<String, dynamic> sampleStaffCustomerProfileJson({
+  String id = 'client-1',
+  String name = 'Brian Mwangi',
+  String phone = '0700000001',
+  int visitCount = 2,
+  String? customerNotes = 'Prefers Skin Fade.',
+  String? staffNotes = 'Usually books every three weeks.',
+  List<Map<String, dynamic>>? visits,
+}) {
+  return {
+    'id': id,
+    'name': name,
+    'phone': phone,
+    'visitCount': visitCount,
+    'customerNotes': customerNotes,
+    'staffNotes': staffNotes,
+    'visits':
+        visits ??
+        [
+          {
+            'date': '2026-07-10T10:00:00.000Z',
+            'services': ['Haircut', 'Beard Trim'],
+          },
+          {
+            'date': '2026-06-19T10:00:00.000Z',
+            'services': ['Haircut'],
+          },
+        ],
+  };
+}
+
 /// In-memory StorageService double — avoids FlutterSecureStorage's
 /// platform channel, which isn't available under flutter_test.
 class FakeStorageService extends StorageService {

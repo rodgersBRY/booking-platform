@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import 'barber_customers_controller.dart';
 import 'barber_dashboard_controller.dart';
 import 'barber_profile_controller.dart';
 import 'barber_schedule_controller.dart';
@@ -16,6 +17,10 @@ class BarberShellBinding extends Bindings {
     );
     Get.lazyPut<BarberScheduleController>(
       () => BarberScheduleController(),
+      fenix: true,
+    );
+    Get.lazyPut<BarberCustomersController>(
+      () => BarberCustomersController(),
       fenix: true,
     );
     Get.lazyPut<BarberProfileController>(
