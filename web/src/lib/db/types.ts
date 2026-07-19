@@ -8,6 +8,7 @@ export type StaffRole =
   | "beautician"
   | "masseuse";
 export type ClientStatus = "active" | "inactive" | "blocked";
+export type StaffPresence = "available" | "busy" | "on_break" | "off_duty";
 export type AcquisitionSource =
   | "social"
   | "website"
@@ -53,6 +54,8 @@ export interface Staff {
   auth_user_id: string | null;
   avatar_url: string | null;
   status: ClientStatus;
+  presence: StaffPresence;
+  presence_updated_at: string | null;
   created_at: string;
 }
 

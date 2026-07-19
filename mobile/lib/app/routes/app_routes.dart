@@ -3,6 +3,7 @@ abstract class AppRoutes {
   static const login = '/login';
   static const signup = '/signup';
   static const shell = '/shell';
+  static const barberShell = '/barber-shell';
   static const bookCategory = '/book/category';
   static const bookService = '/book/service';
   static const bookStaff = '/book/staff';

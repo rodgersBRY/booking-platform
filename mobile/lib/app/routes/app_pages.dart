@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/barber/barber_shell_binding.dart';
+import '../modules/barber/barber_shell_page.dart';
 import '../modules/booking/booking_binding.dart';
 import '../modules/booking/pages/category_list_page.dart';
 import '../modules/booking/pages/confirmation_page.dart';
@@ -33,6 +35,11 @@ class AppPages {
       name: AppRoutes.shell,
       page: () => const ShellPage(),
       binding: ShellBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.barberShell,
+      page: () => const BarberShellPage(),
+      binding: BarberShellBinding(),
     ),
     GetPage(
       name: AppRoutes.bookCategory,
