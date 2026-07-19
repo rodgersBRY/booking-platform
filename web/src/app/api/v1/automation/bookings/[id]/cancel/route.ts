@@ -1,4 +1,5 @@
 import { assertAutomationKey } from "@/lib/auth/automation";
+import { createNotification } from "@/lib/notifications/createNotification";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,7 +17,7 @@ export async function POST(
 
   const { data: booking, error: fetchError } = await admin
     .from("bookings")
-    .select("id, status")
+    .select("id, client_id, status")
     .eq("id", id)
     .maybeSingle();
 
@@ -26,7 +27,7 @@ export async function POST(
     return NextResponse.json({ error: "Booking not found" }, { status: 404 });
   }
 
-  type BookingRow = { id: string; status: string };
+  type BookingRow = { id: string; client_id: string; status: string };
   const row = booking as BookingRow;
 
   if (row.status !== "booked") {
@@ -42,6 +43,14 @@ export async function POST(
     .eq("id", id);
 
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
+
+  await createNotification({
+    clientId: row.client_id,
+    type: "booking_cancelled",
+    title: "Appointment cancelled",
+    body: "Your appointment has been cancelled.",
+    bookingId: id,
+  });
 
   return NextResponse.json({ cancelled: true, bookingId: id });
 }

@@ -1,4 +1,5 @@
 import { getCurrentStaff } from "@/lib/auth";
+import { createNotification } from "@/lib/notifications/createNotification";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -19,7 +20,7 @@ export async function POST(
 
   const { data: booking, error: bookErr } = await admin
     .from("bookings")
-    .select("id, status")
+    .select("id, client_id, status")
     .eq("id", id)
     .single();
 
@@ -38,6 +39,14 @@ export async function POST(
       { status: 500 },
     );
   }
+
+  await createNotification({
+    clientId: booking.client_id as string,
+    type: "booking_cancelled",
+    title: "Appointment cancelled",
+    body: "Your appointment has been cancelled.",
+    bookingId: id,
+  });
 
   return NextResponse.json({ ok: true });
 }

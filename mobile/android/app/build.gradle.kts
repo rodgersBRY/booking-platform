@@ -8,6 +8,8 @@ plugins {
 android {
     namespace = "com.barberiacuts.barberia_cuts"
     compileSdk = 36
+    // flutter.ndkVersion (26.3.x) is older than what flutter_secure_storage,
+    // path_provider_android, and sqflite_android require (27.0.12077973).
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -24,7 +26,8 @@ android {
         applicationId = "com.barberiacuts.barberia_cuts"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        // flutter_secure_storage requires 23+; flutter.minSdkVersion (21) is too low.
+        // flutter_secure_storage requires minSdk 23+; flutter.minSdkVersion
+        // (21) is too low.
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

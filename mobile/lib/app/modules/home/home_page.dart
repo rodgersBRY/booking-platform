@@ -6,10 +6,12 @@ import '../../routes/app_routes.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/format.dart';
+import '../../widgets/appointment_card.dart';
 import '../../widgets/category_card.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/service_card.dart';
 import '../../widgets/skeleton_loader.dart';
+import '../shell/shell_controller.dart';
 import 'home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -44,6 +46,7 @@ class HomePage extends GetView<HomeController> {
               children: [
                 const _Header(),
                 const SizedBox(height: AppSpacing.lg),
+                const _UpcomingAppointment(),
                 const _BookHero(),
                 const SizedBox(height: AppSpacing.lg),
                 const _SectionTitle('Quick categories'),
@@ -90,12 +93,55 @@ class _Header extends GetView<HomeController> {
               ],
             ),
           ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: 'Search',
+            onPressed: () => Get.toNamed(AppRoutes.search),
+          ),
+          Obx(() {
+            final unread = controller.unreadNotifications.value;
+            return IconButton(
+              icon: Badge(
+                label: Text('$unread'),
+                isLabelVisible: unread > 0,
+                child: const Icon(Icons.notifications_outlined),
+              ),
+              tooltip: 'Notifications',
+              onPressed: () => Get.toNamed(AppRoutes.notifications),
+            );
+          }),
           if (client == null)
             TextButton(
               onPressed: () => Get.toNamed(AppRoutes.login),
               child: const Text('Sign in'),
             ),
         ],
+      );
+    });
+  }
+}
+
+class _UpcomingAppointment extends GetView<HomeController> {
+  const _UpcomingAppointment();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final booking = controller.upcomingBooking.value;
+      if (booking == null) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Upcoming appointment', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: AppSpacing.sm + 4),
+            AppointmentCard(
+              booking: booking,
+              onTap: () => Get.find<ShellController>().changeTab(appointmentsTabIndex),
+            ),
+          ],
+        ),
       );
     });
   }
