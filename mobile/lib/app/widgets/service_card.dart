@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../data/models/service_model.dart';
+import '../modules/booking/models/service_model.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 

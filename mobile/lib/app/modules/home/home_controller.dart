@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 
-import '../../data/models/booking_model.dart';
-import '../../data/models/client_model.dart';
-import '../../data/models/service_model.dart';
-import '../../data/models/staff_model.dart';
-import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/booking_repository.dart';
-import '../../data/repositories/bookings_repository.dart';
-import '../../data/repositories/notifications_repository.dart';
+import '../appointments/models/booking_model.dart';
+import '../profile/models/client_model.dart';
+import '../booking/models/service_model.dart';
+import '../booking/models/staff_model.dart';
+import '../login/repositories/auth_repository.dart';
+import '../booking/repositories/booking_repository.dart';
+import '../appointments/repositories/bookings_repository.dart';
+import '../notifications/repositories/notifications_repository.dart';
 import '../booking/booking_binding.dart';
 import '../booking/booking_controller.dart';
 

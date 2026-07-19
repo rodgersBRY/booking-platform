@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../data/models/staff_account_model.dart';
-import '../../data/repositories/staff_auth_repository.dart';
+import 'models/staff_account_model.dart';
+import 'repositories/staff_auth_repository.dart';
 import '../../routes/app_routes.dart';
 
 class BarberProfileController extends GetxController {

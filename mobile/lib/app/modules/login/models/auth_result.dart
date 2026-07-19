@@ -1,5 +1,5 @@
-import 'client_model.dart';
-import 'staff_account_model.dart';
+import '../../profile/models/client_model.dart';
+import '../../barber/models/staff_account_model.dart';
 
 /// Result of a login/signup attempt. Carries either a [client] or a
 /// [staff] account (never both) so `AuthRepository.login()` can report a

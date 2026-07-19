@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
-import '../../services/api_service.dart';
-import '../../services/storage_service.dart';
+import '../../../services/api_service.dart';
+import '../../../services/storage_service.dart';
 import '../models/auth_result.dart';
-import '../models/client_model.dart';
-import 'staff_auth_repository.dart';
+import '../../profile/models/client_model.dart';
+import '../../barber/repositories/staff_auth_repository.dart';
 
 /// Client account auth — /api/account/* on the same Next.js backend the
 /// booking flow uses.

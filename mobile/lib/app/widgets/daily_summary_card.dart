@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../data/models/day_summary_model.dart';
+import '../modules/barber/models/day_summary_model.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 

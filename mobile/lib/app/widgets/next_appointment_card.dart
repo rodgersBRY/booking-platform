@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../data/models/staff_appointment_model.dart';
+import '../modules/barber/models/staff_appointment_model.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import 'booking_source_badge.dart';

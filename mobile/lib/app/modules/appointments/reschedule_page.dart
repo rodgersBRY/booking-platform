@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../data/models/booking_model.dart';
-import '../../data/models/slot_model.dart';
-import '../../data/repositories/booking_repository.dart';
-import '../../data/repositories/bookings_repository.dart';
+import 'models/booking_model.dart';
+import '../booking/models/slot_model.dart';
+import '../booking/repositories/booking_repository.dart';
+import 'repositories/bookings_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/empty_state.dart';

@@ -1,5 +1,5 @@
 import 'booking_model.dart';
-import 'slot_model.dart';
+import '../../booking/models/slot_model.dart';
 
 /// Shared result type for cancel/reschedule — follows the same
 /// named-constructor pattern as AuthResult/BookingSubmitResult. Cancel

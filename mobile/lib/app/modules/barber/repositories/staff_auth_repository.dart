@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
-import '../../services/api_service.dart';
-import '../../services/storage_service.dart';
-import '../models/auth_result.dart';
+import '../../../services/api_service.dart';
+import '../../../services/storage_service.dart';
+import '../../login/models/auth_result.dart';
 import '../models/staff_account_model.dart';
 
 /// Staff account auth — /api/v1/staff/* on the same Next.js backend the

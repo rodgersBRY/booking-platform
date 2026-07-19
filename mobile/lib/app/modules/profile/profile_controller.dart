@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../data/models/client_model.dart';
-import '../../data/repositories/auth_repository.dart';
+import 'models/client_model.dart';
+import '../login/repositories/auth_repository.dart';
 import '../../routes/app_routes.dart';
 
 class ProfileController extends GetxController {

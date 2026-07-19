@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../data/models/booking_model.dart';
+import '../modules/appointments/models/booking_model.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import 'status_chip.dart';

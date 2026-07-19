@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/staff_account_model.dart';
-import '../../data/models/staff_day_model.dart';
-import '../../data/models/staff_day_result.dart';
-import '../../data/models/staff_presence.dart';
-import '../../data/repositories/staff_auth_repository.dart';
-import '../../data/repositories/staff_day_repository.dart';
+import 'models/staff_account_model.dart';
+import 'models/staff_day_model.dart';
+import 'models/staff_day_result.dart';
+import 'models/staff_presence.dart';
+import 'repositories/staff_auth_repository.dart';
+import 'repositories/staff_day_repository.dart';
 import 'barber_shell_controller.dart';
 
 /// Drives the barber Dashboard tab: today's day payload (presence,

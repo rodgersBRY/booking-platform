@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
-import '../../data/models/booking_model.dart';
-import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/bookings_repository.dart';
+import 'models/booking_model.dart';
+import '../login/repositories/auth_repository.dart';
+import 'repositories/bookings_repository.dart';
 
 class AppointmentsController extends GetxController {
   final BookingsRepository _repo = BookingsRepository();
