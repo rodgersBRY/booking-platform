@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../routes/app_routes.dart';
-import '../../theme/app_colors.dart';
 import '../../widgets/password_field.dart';
 import 'login_controller.dart';
 
@@ -40,16 +39,6 @@ class LoginPage extends GetView<LoginController> {
                 child: Text(controller.submitting.value ? 'Signing in…' : 'Sign in'),
               ),
             ),
-            const SizedBox(height: 12),
-            Obx(() {
-              final error = controller.errorMessage.value;
-              if (error == null) return const SizedBox.shrink();
-              return Text(
-                error,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.late, fontSize: 13),
-              );
-            }),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () => Get.toNamed(AppRoutes.signup),

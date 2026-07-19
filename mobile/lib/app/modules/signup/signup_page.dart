@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../theme/app_colors.dart';
 import '../../widgets/password_field.dart';
 import 'signup_controller.dart';
 
@@ -58,25 +57,6 @@ class SignupPage extends GetView<SignupController> {
                 child: Text(controller.submitting.value ? 'Creating account…' : 'Sign up'),
               ),
             ),
-            const SizedBox(height: 12),
-            Obx(() {
-              final error = controller.errorMessage.value;
-              if (error == null) return const SizedBox.shrink();
-              return Text(
-                error,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.late, fontSize: 13),
-              );
-            }),
-            Obx(() {
-              final success = controller.successMessage.value;
-              if (success == null) return const SizedBox.shrink();
-              return Text(
-                success,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.free, fontSize: 13),
-              );
-            }),
           ],
         ),
       ),

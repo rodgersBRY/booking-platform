@@ -13,17 +13,12 @@ import 'support/fake_services.dart';
 void main() {
   setUp(() {
     Get.testMode = true;
-    // The Dashboard and Profile tabs are real GetViews, so IndexedStack
-    // building every tab eagerly (not just the visible one) resolves
-    // both BarberDashboardController and BarberProfileController.
-    // Dashboard's controller always fetches /v1/staff/day regardless of
-    // auth state, so it needs a scripted response; no token means
-    // BarberProfileController/fetchMe() short-circuits before touching
-    // the adapter, so /v1/staff/me deliberately has no script — a stray
-    // call to it would still fail loudly.
+    
     Get.put<ApiService>(
       FakeApiService(
-        ScriptedAdapter({'/v1/staff/day': (status: 200, body: sampleStaffDayJson())}),
+        ScriptedAdapter({
+          '/v1/staff/day': (status: 200, body: sampleStaffDayJson()),
+        }),
       ),
     );
     Get.put<StorageService>(FakeStorageService());

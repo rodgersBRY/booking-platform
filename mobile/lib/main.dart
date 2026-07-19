@@ -31,8 +31,6 @@ class BarberiaCutsApp extends StatelessWidget {
       title: 'Baberia Cuts',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      // Seeds GetX's live theme-mode notifier — ThemeController.setMode()
-      // updates it afterwards via Get.changeThemeMode().
       themeMode: initialThemeMode,
       initialRoute: AppRoutes.welcome,
       getPages: AppPages.routes,

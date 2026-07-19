@@ -28,9 +28,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('renders a loaded day with the next appointment', (
-    tester,
-  ) async {
+  testWidgets('renders a loaded day with the next appointment', (tester) async {
     await pumpDashboard(tester, {
       '/v1/staff/day': (
         status: 200,
@@ -79,33 +77,34 @@ void main() {
     expect(find.text('Available'), findsOneWidget);
   });
 
-  testWidgets('the status sheet changes presence and confirms against the API', (
-    tester,
-  ) async {
-    await pumpDashboard(tester, {
-      '/v1/staff/day': (
-        status: 200,
-        body: sampleStaffDayJson(presence: 'available'),
-      ),
-      '/v1/staff/me': (status: 200, body: sampleStaffAccountJson()),
-      '/v1/staff/presence': (
-        status: 200,
-        body: {
-          'presence': 'busy',
-          'presenceUpdatedAt': '2026-07-18T09:00:00.000Z',
-        },
-      ),
-    });
+  testWidgets(
+    'the status sheet changes presence and confirms against the API',
+    (tester) async {
+      await pumpDashboard(tester, {
+        '/v1/staff/day': (
+          status: 200,
+          body: sampleStaffDayJson(presence: 'available'),
+        ),
+        '/v1/staff/me': (status: 200, body: sampleStaffAccountJson()),
+        '/v1/staff/presence': (
+          status: 200,
+          body: {
+            'presence': 'busy',
+            'presenceUpdatedAt': '2026-07-18T09:00:00.000Z',
+          },
+        ),
+      });
 
-    expect(find.text('Available'), findsOneWidget);
+      expect(find.text('Available'), findsOneWidget);
 
-    await tester.tap(find.text('Change Status'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Change Status'));
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Busy'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Busy'));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Busy'), findsOneWidget);
-    expect(find.text('Available'), findsNothing);
-  });
+      expect(find.text('Busy'), findsOneWidget);
+      expect(find.text('Available'), findsNothing);
+    },
+  );
 }
