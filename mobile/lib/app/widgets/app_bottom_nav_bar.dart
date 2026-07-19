@@ -25,11 +25,19 @@ class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
+  /// Unread-style counter badge per tab, aligned by index with [tabs].
+  /// Null (the default) or a shorter list means no badge for that tab —
+  /// the customer shell doesn't pass this at all, only the barber shell's
+  /// Notifications tab does (per Slice 6 of
+  /// docs/superpowers/specs/2026-07-18-barber-workspace-design.md).
+  final List<int>? badgeCounts;
+
   const AppBottomNavBar({
     super.key,
     required this.tabs,
     required this.currentIndex,
     required this.onTap,
+    this.badgeCounts,
   });
 
   @override
@@ -60,6 +68,10 @@ class AppBottomNavBar extends StatelessWidget {
                 tab: tabs[i],
                 selected: i == currentIndex,
                 onTap: () => onTap(i),
+                badgeCount:
+                    (badgeCounts != null && i < badgeCounts!.length)
+                    ? badgeCounts![i]
+                    : 0,
               ),
           ],
         ),
@@ -72,11 +84,13 @@ class _NavButton extends StatelessWidget {
   final AppBottomNavTab tab;
   final bool selected;
   final VoidCallback onTap;
+  final int badgeCount;
 
   const _NavButton({
     required this.tab,
     required this.selected,
     required this.onTap,
+    this.badgeCount = 0,
   });
 
   @override
@@ -93,7 +107,22 @@ class _NavButton extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(selected ? tab.activeIcon : tab.icon, color: color, size: 24),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Icon(
+                  selected ? tab.activeIcon : tab.icon,
+                  color: color,
+                  size: 24,
+                ),
+                if (badgeCount > 0)
+                  Positioned(
+                    right: -6,
+                    top: -4,
+                    child: _Badge(count: badgeCount),
+                  ),
+              ],
+            ),
             const SizedBox(height: 4),
             Text(
               tab.label,
@@ -104,6 +133,37 @@ class _NavButton extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Small red counter pill drawn over a nav icon — caps the printed number
+/// at "9+" so it never outgrows the badge.
+class _Badge extends StatelessWidget {
+  final int count;
+
+  const _Badge({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      decoration: BoxDecoration(
+        color: AppColors.late,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.navy, width: 1.5),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        count > 9 ? '9+' : '$count',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          height: 1,
         ),
       ),
     );

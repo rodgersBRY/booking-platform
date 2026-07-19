@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import 'barber_customers_controller.dart';
 import 'barber_dashboard_controller.dart';
+import 'barber_notifications_controller.dart';
 import 'barber_profile_controller.dart';
 import 'barber_schedule_controller.dart';
 import 'barber_shell_controller.dart';
@@ -21,6 +22,10 @@ class BarberShellBinding extends Bindings {
     );
     Get.lazyPut<BarberCustomersController>(
       () => BarberCustomersController(),
+      fenix: true,
+    );
+    Get.lazyPut<BarberNotificationsController>(
+      () => BarberNotificationsController(),
       fenix: true,
     );
     Get.lazyPut<BarberProfileController>(

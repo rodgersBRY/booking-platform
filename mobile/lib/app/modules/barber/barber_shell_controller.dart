@@ -11,6 +11,12 @@ const barberProfileTabIndex = 4;
 class BarberShellController extends GetxController {
   final currentTab = barberDashboardTabIndex.obs;
 
+  // Set by BarberNotificationsController whenever its unread count changes
+  // (Get.find<BarberShellController>().unreadNotifications.value = ...) so
+  // the Notifications tab's bottom-nav badge stays in sync without the
+  // shell needing to know how notifications are fetched.
+  final unreadNotifications = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
