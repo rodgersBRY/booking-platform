@@ -108,7 +108,7 @@ class _BarberCustomerProfilePageState
               ),
               const SizedBox(height: AppSpacing.md),
               _NotesCard(
-                title: 'Barber Notes',
+                title: 'Staff Notes',
                 icon: Icons.lock_outline,
                 subtitle: 'Private — only you can see this',
                 emptyPlaceholder: 'No private notes yet.',

@@ -239,7 +239,7 @@ class _BarberAppointmentDetailPageState
               ),
               const SizedBox(height: AppSpacing.md),
               _NotesSection(
-                title: 'Barber Notes',
+                title: 'Staff Notes',
                 icon: Icons.lock_outline,
                 subtitle: 'Private — only you can see this',
                 emptyPlaceholder: 'No private notes yet.',
