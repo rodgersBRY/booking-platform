@@ -74,9 +74,11 @@ export async function seatBooking(bookingId: string): Promise<SeatBookingResult>
     .single();
 
   if (updateErr) {
-    // Postgres exclusion constraint violation — barber already in a booking.
+    // Postgres exclusion constraint violation — staff member already in a
+    // booking. Role-neutral wording: this staff member may be a barber,
+    // beautician, or masseuse.
     if (updateErr.code === "23P01") {
-      return { error: "staff_busy", message: "That barber is busy right now." };
+      return { error: "staff_busy", message: "This staff member is busy right now." };
     }
     return {
       error: "server_error",

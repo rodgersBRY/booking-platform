@@ -106,7 +106,7 @@ class StaffScheduleRepository {
       final err = _errorFrom(e);
       if (e.response?.statusCode == 409 && err.code == 'staff_busy') {
         return BookingStartResult.staffBusy(
-          err.message ?? 'That barber is busy right now.',
+          err.message ?? 'This staff member is busy right now.',
         );
       }
       return BookingStartResult.failure(
