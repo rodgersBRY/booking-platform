@@ -20,6 +20,7 @@ class AuthRepository {
         '/v1/account/login',
         data: {'email': email, 'password': password},
       );
+
       final token = res.data['token'] as String;
       await _storage.writeToken(token);
       await _storage.writeAccountType('client');
@@ -31,6 +32,8 @@ class AuthRepository {
     } on DioException catch (e) {
       final status = e.response?.statusCode;
 
+      // check if there's a staff account available with the credentials entered
+      // allow for staff login
       if (status == 401 || status == 403 || status == 404) {
         final staffResult = await StaffAuthRepository().login(
           email: email,
@@ -66,9 +69,11 @@ class AuthRepository {
           'password': password,
         },
       );
+
       if (res.data['pendingConfirmation'] == true) {
         return AuthResult.pendingConfirmation(res.data['message'] as String?);
       }
+
       final token = res.data['token'] as String;
       await _storage.writeToken(token);
       final client = ClientModel.fromJson(
@@ -89,6 +94,7 @@ class AuthRepository {
   Future<ClientModel?> fetchMe() async {
     final token = await _storage.readToken();
     if (token == null) return null;
+    
     try {
       final res = await _dio.get('/v1/account/me');
       return ClientModel.fromJson(res.data['client'] as Map<String, dynamic>);

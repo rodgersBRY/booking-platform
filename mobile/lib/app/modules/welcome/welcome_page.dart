@@ -27,18 +27,24 @@ class _WelcomePageState extends State<WelcomePage> {
     if (accountType == 'staff') {
       final results = await Future.wait<Object?>([
         StaffAuthRepository().fetchMe(),
+
         Future.delayed(const Duration(milliseconds: 500)),
       ]);
+
       if (!mounted) return;
+
       final staff = results[0];
       Get.offAllNamed(staff != null ? AppRoutes.barberShell : AppRoutes.login);
+
       return;
     }
 
     await Future.wait<Object?>([
       AuthRepository().fetchMe(),
+
       Future.delayed(const Duration(milliseconds: 500)),
     ]);
+    
     if (!mounted) return;
     Get.offAllNamed(AppRoutes.shell);
   }

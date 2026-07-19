@@ -28,6 +28,7 @@ class LoginController extends GetxController {
 
     if (result.success) {
       Get.offAllNamed(result.isStaff ? AppRoutes.barberShell : AppRoutes.shell);
+      
       return;
     }
 
