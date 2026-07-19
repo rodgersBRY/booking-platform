@@ -11,6 +11,7 @@ import '../../widgets/secondary_button.dart';
 import '../../widgets/status_chip.dart';
 import '../booking/booking_binding.dart';
 import '../booking/booking_controller.dart';
+import '../home/home_controller.dart';
 import 'appointments_controller.dart';
 import 'reschedule_page.dart';
 
@@ -55,6 +56,12 @@ class _AppointmentDetailPageState extends State<AppointmentDetailPage> {
     if (result.success) {
       if (Get.isRegistered<AppointmentsController>()) {
         Get.find<AppointmentsController>().load();
+      }
+      // Home's IndexedStack tab keeps HomeController alive for the whole
+      // session, so its cached upcoming booking never refreshes on its own
+      // — without this it would keep showing the booking just cancelled.
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().load();
       }
       Get.back();
       Get.snackbar('Appointment cancelled', 'See you next time.');
