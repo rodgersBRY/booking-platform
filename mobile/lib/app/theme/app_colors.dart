@@ -22,6 +22,13 @@ abstract class AppColors {
   static const late = Color(0xFFDC2626);
   static const lateBg = Color(0xFFFEE2E2);
 
+  // Slice 3: "in progress" (booking status in_chair) gets its own purple —
+  // distinct from inChair's blue, which now means "confirmed" on the
+  // barber Schedule/appointment-detail status legend
+  // (docs/superpowers/specs/2026-07-18-barber-workspace-design.md).
+  static const inProgress = Color(0xFF9333EA);
+  static const inProgressBg = Color(0xFFF3E8FF);
+
   // Dark-mode surfaces — brightness-dependent, not a simple opacity shift
   // of the light tokens above.
   static const canvasDark = Color(0xFF10131F);

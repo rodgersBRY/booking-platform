@@ -12,11 +12,29 @@ typedef ScriptedResponse = ({int status, Map<String, dynamic> body});
 /// to canned JSON responses instead of touching the network, and records
 /// every path requested so a test can assert which endpoints were (or
 /// weren't) called and in what order.
+///
+/// Lookup tries, most specific first: `"$METHOD $path?$sortedQuery"`,
+/// `"$METHOD $path"`, `"$path?$sortedQuery"`, then plain `path` — so
+/// existing scripts keyed by bare path (the common case: one method, no
+/// query params, per path) keep working unchanged, while a test that
+/// needs to disambiguate GET vs PATCH on the same path (e.g.
+/// /v1/staff/bookings/[id]) or different query params on the same path
+/// (e.g. /v1/staff/schedule?range=...) can opt in by keying its script
+/// map more specifically.
 class ScriptedAdapter implements HttpClientAdapter {
   final List<String> requestedPaths = [];
   final Map<String, ScriptedResponse> _script;
 
   ScriptedAdapter(this._script);
+
+  String _withQuery(RequestOptions options) {
+    if (options.queryParameters.isEmpty) return options.path;
+    final sorted =
+        options.queryParameters.entries.toList()
+          ..sort((a, b) => a.key.compareTo(b.key));
+    final query = sorted.map((e) => '${e.key}=${e.value}').join('&');
+    return '${options.path}?$query';
+  }
 
   @override
   Future<ResponseBody> fetch(
@@ -25,9 +43,15 @@ class ScriptedAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     requestedPaths.add(options.path);
-    final entry = _script[options.path];
+    final method = options.method.toUpperCase();
+    final withQuery = _withQuery(options);
+    final entry =
+        _script['$method $withQuery'] ??
+        _script['$method ${options.path}'] ??
+        _script[withQuery] ??
+        _script[options.path];
     if (entry == null) {
-      throw StateError('No scripted response for ${options.path}');
+      throw StateError('No scripted response for $method $withQuery');
     }
     return ResponseBody.fromString(
       jsonEncode(entry.body),
@@ -85,6 +109,77 @@ Map<String, dynamic> sampleStaffDayJson({
     'summary': summary ?? {'total': 8, 'completed': 3, 'remaining': 5},
     'nextAppointment': nextAppointment,
     'schedule': schedule ?? (nextAppointment != null ? [nextAppointment] : []),
+  };
+}
+
+/// One GET /v1/staff/schedule?range=... entry — same shape as
+/// /v1/staff/day's schedule rows (StaffAppointmentModel), reused across
+/// barber Schedule widget tests.
+Map<String, dynamic> sampleScheduleEntryJson({
+  String bookingId = 'b1',
+  String clientName = 'Brian Mwangi',
+  List<String> services = const ['Haircut', 'Beard Trim'],
+  String scheduledStart = '2026-07-18T10:30:00.000Z',
+  String scheduledEnd = '2026-07-18T11:15:00.000Z',
+  int durationMinutes = 45,
+  String status = 'booked',
+  String channel = 'online',
+}) {
+  return {
+    'bookingId': bookingId,
+    'clientName': clientName,
+    'services': services,
+    'scheduledStart': scheduledStart,
+    'scheduledEnd': scheduledEnd,
+    'durationMinutes': durationMinutes,
+    'status': status,
+    'channel': channel,
+  };
+}
+
+/// A GET /v1/staff/schedule?range=... response body.
+Map<String, dynamic> sampleScheduleJson({
+  String range = 'today',
+  List<Map<String, dynamic>>? schedule,
+}) {
+  return {'range': range, 'schedule': schedule ?? []};
+}
+
+/// A GET /v1/staff/bookings/[id] response body — also matches the
+/// `booking` shape POST /v1/staff/bookings/[id]/start returns.
+Map<String, dynamic> sampleBookingDetailJson({
+  String bookingId = 'b1',
+  String status = 'arrived',
+  String channel = 'online',
+  String scheduledStart = '2026-07-18T10:30:00.000Z',
+  String scheduledEnd = '2026-07-18T11:15:00.000Z',
+  int durationMinutes = 45,
+  List<String> services = const ['Haircut', 'Beard Trim'],
+  String clientName = 'Brian Mwangi',
+  String clientPhone = '0700000000',
+  int totalVisits = 14,
+  String? customerNotes = 'Prefers Skin Fade.',
+  String? staffNotes = 'Usually books every three weeks.',
+  bool canStart = true,
+  bool canComplete = false,
+}) {
+  return {
+    'bookingId': bookingId,
+    'status': status,
+    'channel': channel,
+    'scheduledStart': scheduledStart,
+    'scheduledEnd': scheduledEnd,
+    'durationMinutes': durationMinutes,
+    'services': services,
+    'client': {
+      'name': clientName,
+      'phone': clientPhone,
+      'totalVisits': totalVisits,
+      'customerNotes': customerNotes,
+    },
+    'staffNotes': staffNotes,
+    'canStart': canStart,
+    'canComplete': canComplete,
   };
 }
 

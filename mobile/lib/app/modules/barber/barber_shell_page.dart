@@ -5,13 +5,14 @@ import '../../widgets/app_bottom_nav_bar.dart';
 import '../../widgets/coming_soon_page.dart';
 import 'barber_dashboard_page.dart';
 import 'barber_profile_page.dart';
+import 'barber_schedule_page.dart';
 import 'barber_shell_controller.dart';
 
 /// The barber workspace's shell — mirrors ShellPage's structure (an
 /// IndexedStack of tabs behind the shared bottom nav bar) with the barber
 /// tab set: Dashboard, Schedule, Customers, Notifications, Profile.
-/// Schedule/Customers/Notifications are placeholders in this slice;
-/// Dashboard and Profile are wired to real data.
+/// Customers/Notifications are placeholders in this slice; Dashboard,
+/// Schedule, and Profile are wired to real data.
 class BarberShellPage extends GetView<BarberShellController> {
   const BarberShellPage({super.key});
 
@@ -51,11 +52,7 @@ class BarberShellPage extends GetView<BarberShellController> {
           index: controller.currentTab.value,
           children: const [
             BarberDashboardPage(),
-            ComingSoonPage(
-              icon: Icons.calendar_month_outlined,
-              title: 'Schedule',
-              subtitle: 'Your appointments for today, tomorrow, and the week.',
-            ),
+            BarberSchedulePage(),
             ComingSoonPage(
               icon: Icons.people_outline,
               title: 'Customers',

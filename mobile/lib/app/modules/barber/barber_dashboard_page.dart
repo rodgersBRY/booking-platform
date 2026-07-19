@@ -11,6 +11,7 @@ import '../../widgets/daily_summary_card.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/next_appointment_card.dart';
 import '../../widgets/skeleton_loader.dart';
+import 'barber_appointment_detail_page.dart';
 import 'barber_dashboard_controller.dart';
 
 /// The barber workspace's Dashboard tab — "managing today's work" per
@@ -90,7 +91,22 @@ class BarberDashboardPage extends GetView<BarberDashboardController> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: AppSpacing.sm + 4),
-                    NextAppointmentCard(appointment: day.nextAppointment!),
+                    NextAppointmentCard(
+                      appointment: day.nextAppointment!,
+                      onViewDetails:
+                          () => Get.to(
+                            () => BarberAppointmentDetailPage(
+                              bookingId: day.nextAppointment!.bookingId,
+                            ),
+                          ),
+                      // onStartService stays unwired: StaffAppointmentModel
+                      // (day.nextAppointment's type) has no canStart flag —
+                      // only the detail endpoint knows whether starting is
+                      // actually valid right now. Guessing here risks
+                      // firing start on a booking that isn't
+                      // arrived/in_chair yet. View Details is the safe path
+                      // to that action in this slice.
+                    ),
                     const SizedBox(height: AppSpacing.lg),
                   ],
                   if (remaining.isNotEmpty) ...[
