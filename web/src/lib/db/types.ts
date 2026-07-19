@@ -16,7 +16,14 @@ export type AcquisitionSource =
   | "walkby"
   | "whatsapp"
   | "other";
-export type BookingChannel = "walkin" | "online" | "whatsapp" | "phone";
+export type BookingChannel =
+  | "walkin"
+  | "online"
+  | "whatsapp"
+  | "phone"
+  | "mobile_app"
+  | "reception"
+  | "barber";
 export type BookingStatus =
   | "booked"
   | "arrived"
@@ -95,6 +102,8 @@ export interface Client {
   total_visits: number;
   last_visit_at: string | null;
   status: ClientStatus;
+  customer_notes: string | null;
+  staff_notes: string | null;
   created_at: string;
 }
 
