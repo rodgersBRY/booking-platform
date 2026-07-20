@@ -73,7 +73,7 @@ jobs:
 
       # Note the updated path to the APK including your subfolder prefix
       - name: Upload to Firebase App Distribution
-        uses: w9jds/firebase-action@v2.6.0
+        uses: w9jds/firebase-action@v15.24.0
         with:
           args: appdistribution:distribute mobile/build/app/outputs/flutter-apk/app-release.apk --app ${{ secrets.FIREBASE_APP_ID }} --groups "baberia-testers"
         env:
