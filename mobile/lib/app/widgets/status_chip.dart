@@ -20,13 +20,20 @@ class StatusChip extends StatelessWidget {
     'cancelled': 'Cancelled',
   };
 
+  // Status colors per BARBER-APP.md's Schedule legend: blue = confirmed
+  // (booked), orange = checked in (arrived), purple = in progress
+  // (in_chair), green = completed, red = cancelled. `late` isn't part of
+  // that legend but keeps its existing orange treatment since it shares
+  // "needs attention" meaning with arrived; `no_show` rides along with
+  // cancelled's red since both are terminal non-completions.
   @override
   Widget build(BuildContext context) {
     final (fg, bg) = switch (status) {
       'completed' => (AppColors.free, AppColors.freeBg),
       'cancelled' || 'no_show' => (AppColors.late, AppColors.lateBg),
-      'late' => (AppColors.waiting, AppColors.waitingBg),
-      'arrived' || 'in_chair' => (AppColors.inChair, AppColors.inChairBg),
+      'late' || 'arrived' => (AppColors.waiting, AppColors.waitingBg),
+      'in_chair' => (AppColors.inProgress, AppColors.inProgressBg),
+      'booked' => (AppColors.inChair, AppColors.inChairBg),
       _ => (AppColors.brass, Color(0xFFF8EFDD)),
     };
 

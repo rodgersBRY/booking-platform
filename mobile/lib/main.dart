@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'firebase_options.dart';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/services/api_service.dart';
@@ -11,6 +13,9 @@ import 'app/theme/app_theme.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await Get.putAsync(() => StorageService().init());
   await Get.putAsync(() => ApiService().init());
@@ -31,8 +36,6 @@ class BarberiaCutsApp extends StatelessWidget {
       title: 'Baberia Cuts',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      // Seeds GetX's live theme-mode notifier — ThemeController.setMode()
-      // updates it afterwards via Get.changeThemeMode().
       themeMode: initialThemeMode,
       initialRoute: AppRoutes.welcome,
       getPages: AppPages.routes,

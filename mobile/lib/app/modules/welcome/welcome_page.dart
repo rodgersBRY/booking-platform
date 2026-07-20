@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../data/repositories/auth_repository.dart';
+import '../login/repositories/auth_repository.dart';
+import '../barber/repositories/staff_auth_repository.dart';
 import '../../routes/app_routes.dart';
+import '../../services/storage_service.dart';
 import '../../theme/app_colors.dart';
 
-/// Splash screen — checks for a valid stored session, then always lands in
-/// the shell. The shell's tabs already handle guest vs signed-in state on
-/// their own (sign-in prompts on Appointments/Profile, greeting on Home),
-/// so there's nothing else to branch on here.
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
@@ -24,12 +22,29 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future<void> _checkSessionAndRoute() async {
-    // Keep the splash on screen briefly even when the session check is
-    // instant, so it reads as an intentional splash rather than a flash.
-    await Future.wait([
+    final accountType = await Get.find<StorageService>().readAccountType();
+
+    if (accountType == 'staff') {
+      final results = await Future.wait<Object?>([
+        StaffAuthRepository().fetchMe(),
+
+        Future.delayed(const Duration(milliseconds: 500)),
+      ]);
+
+      if (!mounted) return;
+
+      final staff = results[0];
+      Get.offAllNamed(staff != null ? AppRoutes.barberShell : AppRoutes.login);
+
+      return;
+    }
+
+    await Future.wait<Object?>([
       AuthRepository().fetchMe(),
+
       Future.delayed(const Duration(milliseconds: 500)),
     ]);
+    
     if (!mounted) return;
     Get.offAllNamed(AppRoutes.shell);
   }
@@ -38,10 +53,6 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget build(BuildContext context) => const WelcomeSplashContent();
 }
 
-/// The splash's visuals, kept separate from [WelcomePage] so they can be
-/// rendered/tested without triggering the session check or the navigation
-/// timer. The logo pulses gently on a loop — that's the loading indicator,
-/// so there's no separate spinner.
 class WelcomeSplashContent extends StatefulWidget {
   const WelcomeSplashContent({super.key});
 
@@ -56,11 +67,15 @@ class _WelcomeSplashContentState extends State<WelcomeSplashContent>
     duration: const Duration(milliseconds: 900),
   )..repeat(reverse: true);
 
-  late final Animation<double> _scale = Tween<double>(begin: 0.92, end: 1.0)
-      .animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
+  late final Animation<double> _scale = Tween<double>(
+    begin: 0.92,
+    end: 1.0,
+  ).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
 
-  late final Animation<double> _opacity = Tween<double>(begin: 0.6, end: 1.0)
-      .animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
+  late final Animation<double> _opacity = Tween<double>(
+    begin: 0.6,
+    end: 1.0,
+  ).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
 
   @override
   void dispose() {
@@ -78,11 +93,16 @@ class _WelcomeSplashContentState extends State<WelcomeSplashContent>
           children: [
             AnimatedBuilder(
               animation: _pulse,
-              builder: (context, child) => Opacity(
-                opacity: _opacity.value,
-                child: Transform.scale(scale: _scale.value, child: child),
+              builder:
+                  (context, child) => Opacity(
+                    opacity: _opacity.value,
+                    child: Transform.scale(scale: _scale.value, child: child),
+                  ),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 88,
+                height: 88,
               ),
-              child: Image.asset('assets/images/logo.png', width: 88, height: 88),
             ),
             const SizedBox(height: 12),
             const Text(

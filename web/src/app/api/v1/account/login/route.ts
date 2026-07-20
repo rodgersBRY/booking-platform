@@ -3,10 +3,6 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { shapeClient, type ClientWithAuthId } from "@/lib/clientAuth";
 import { NextRequest, NextResponse } from "next/server";
 
-// Client-facing login for the mobile app. Returns a Supabase access token the
-// app stores and sends back as `Authorization: Bearer <token>` on future
-// requests — there's no cookie jar on mobile, so this can't use the
-// cookie-based session pattern lib/auth.ts uses for staff.
 export async function POST(request: NextRequest) {
   let body: { email?: string; password?: string };
   try {

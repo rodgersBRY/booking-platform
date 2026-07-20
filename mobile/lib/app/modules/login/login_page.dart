@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../routes/app_routes.dart';
-import '../../theme/app_colors.dart';
 import '../../widgets/password_field.dart';
 import 'login_controller.dart';
 
@@ -20,7 +19,11 @@ class LoginPage extends GetView<LoginController> {
           children: [
             const SizedBox(height: 12),
             Center(
-              child: Image.asset('assets/images/logo.png', width: 56, height: 56),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 56,
+                height: 56,
+              ),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -36,20 +39,13 @@ class LoginPage extends GetView<LoginController> {
             const SizedBox(height: 24),
             Obx(
               () => ElevatedButton(
-                onPressed: controller.submitting.value ? null : controller.submit,
-                child: Text(controller.submitting.value ? 'Signing in…' : 'Sign in'),
+                onPressed:
+                    controller.submitting.isTrue ? null : controller.submit,
+                child: Text(
+                  controller.submitting.isTrue ? 'Signing in…' : 'Sign in',
+                ),
               ),
             ),
-            const SizedBox(height: 12),
-            Obx(() {
-              final error = controller.errorMessage.value;
-              if (error == null) return const SizedBox.shrink();
-              return Text(
-                error,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.late, fontSize: 13),
-              );
-            }),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () => Get.toNamed(AppRoutes.signup),

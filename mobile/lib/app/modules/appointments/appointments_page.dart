@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/booking_model.dart';
+import 'models/booking_model.dart';
 import '../../routes/app_routes.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/appointment_card.dart';

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../data/models/booking_model.dart';
-import '../../data/repositories/bookings_repository.dart';
+import 'models/booking_model.dart';
+import 'repositories/bookings_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/primary_button.dart';
@@ -11,6 +11,7 @@ import '../../widgets/secondary_button.dart';
 import '../../widgets/status_chip.dart';
 import '../booking/booking_binding.dart';
 import '../booking/booking_controller.dart';
+import '../home/home_controller.dart';
 import 'appointments_controller.dart';
 import 'reschedule_page.dart';
 
@@ -55,6 +56,10 @@ class _AppointmentDetailPageState extends State<AppointmentDetailPage> {
     if (result.success) {
       if (Get.isRegistered<AppointmentsController>()) {
         Get.find<AppointmentsController>().load();
+      }
+      
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().load();
       }
       Get.back();
       Get.snackbar('Appointment cancelled', 'See you next time.');

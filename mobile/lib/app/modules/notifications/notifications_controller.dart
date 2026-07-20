@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
-import '../../data/models/notification_model.dart';
-import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/notifications_repository.dart';
+import 'models/notification_model.dart';
+import '../login/repositories/auth_repository.dart';
+import 'repositories/notifications_repository.dart';
 
 class NotificationsController extends GetxController {
   final NotificationsRepository _repo = NotificationsRepository();
@@ -18,6 +18,7 @@ class NotificationsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
     load();
   }
 
@@ -45,7 +46,6 @@ class NotificationsController extends GetxController {
 
   Future<void> markRead(NotificationModel notification) async {
     if (notification.read) return;
-    // Optimistic — the list doesn't need to round-trip to reflect this.
     final index = notifications.indexWhere((n) => n.id == notification.id);
     if (index != -1) {
       notifications[index] = NotificationModel(
@@ -59,6 +59,7 @@ class NotificationsController extends GetxController {
       );
       unreadCount.value = (unreadCount.value - 1).clamp(0, 1 << 30);
     }
+
     try {
       await _repo.markRead(notification.id);
     } catch (_) {

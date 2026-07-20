@@ -27,7 +27,10 @@ class DetailsPage extends GetView<BookingController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const BookingProgressIndicator(current: BookingStep.review),
+              BookingProgressIndicator(
+                currentStep: BookingStep.review.index,
+                totalSteps: BookingStep.values.length,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Obx(() {
                 // Read every reactive value synchronously here — Obx only

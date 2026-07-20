@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "621143327887",
+    "project_id": "booking-platform-d0694",
+    "storage_bucket": "booking-platform-d0694.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621143327887:android:61661dd7e4466aa5be1cfa",
+        "android_client_info": {
+          "package_name": "com.mawirab.baberiacuts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD89q8bOn8hpmWRqI4_AICtPtYsv9pv40U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

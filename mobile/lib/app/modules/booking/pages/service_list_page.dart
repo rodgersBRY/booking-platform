@@ -22,7 +22,10 @@ class ServiceListPage extends GetView<BookingController> {
       ),
       body: Column(
         children: [
-          const BookingProgressIndicator(current: BookingStep.service),
+          BookingProgressIndicator(
+            currentStep: BookingStep.service.index,
+            totalSteps: BookingStep.values.length,
+          ),
           Expanded(
             child: Obx(() {
               if (controller.servicesLoading.value) {

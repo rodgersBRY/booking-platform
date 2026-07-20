@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
-/// Wraps secure on-device storage for the auth session token and the
-/// user's appearance preference. Registered as a permanent GetxService in
-/// main.dart.
+/// Wraps secure on-device storage for the auth session token, which
+/// workspace that session belongs to, and the user's appearance
+/// preference. Registered as a permanent GetxService in main.dart.
 class StorageService extends GetxService {
   static const _tokenKey = 'auth_token';
+  static const _accountTypeKey = 'account_type';
   static const _themeModeKey = 'theme_mode';
 
   final _storage = const FlutterSecureStorage();
@@ -18,7 +19,18 @@ class StorageService extends GetxService {
   Future<void> writeToken(String token) =>
       _storage.write(key: _tokenKey, value: token);
 
-  Future<void> clearToken() => _storage.delete(key: _tokenKey);
+  /// Which workspace the stored token belongs to: `"client"` or `"staff"`.
+  /// Read at startup to decide whether to open the customer shell or the
+  /// barber shell.
+  Future<String?> readAccountType() => _storage.read(key: _accountTypeKey);
+
+  Future<void> writeAccountType(String accountType) =>
+      _storage.write(key: _accountTypeKey, value: accountType);
+
+  Future<void> clearToken() async {
+    await _storage.delete(key: _tokenKey);
+    await _storage.delete(key: _accountTypeKey);
+  }
 
   /// Defaults to ThemeMode.system when nothing has been saved yet.
   Future<ThemeMode> readThemeMode() async {

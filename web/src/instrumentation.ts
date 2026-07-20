@@ -4,6 +4,7 @@ export async function register() {
       import("@/lib/init/owner"),
       import("@/lib/init/serviceSeed"),
     ]);
+    
     await seedOwner();
     await seedServices();
   }

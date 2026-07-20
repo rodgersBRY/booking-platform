@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 
-import '../../data/models/client_model.dart';
-import '../../data/models/service_model.dart';
-import '../../data/models/slot_model.dart';
-import '../../data/models/staff_model.dart';
-import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/booking_repository.dart';
+import '../profile/models/client_model.dart';
+import 'models/service_model.dart';
+import 'models/slot_model.dart';
+import 'models/staff_model.dart';
+import '../login/repositories/auth_repository.dart';
+import 'repositories/booking_repository.dart';
 import '../../routes/app_routes.dart';
 
 const anyStaffId = 'any';

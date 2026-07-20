@@ -1,5 +1,6 @@
 import { getCurrentStaff } from "@/lib/auth";
 import { isBookableRole } from "@/lib/staff/roles";
+import { createStaffNotification } from "@/lib/notifications/createStaffNotification";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -25,7 +26,7 @@ export async function POST(
 
   const { data: booking, error: bookErr } = await admin
     .from("bookings")
-    .select("id, status, staff_id")
+    .select("id, status, staff_id, clients(name)")
     .eq("id", id)
     .single();
 
@@ -55,6 +56,24 @@ export async function POST(
       { error: "Something went wrong. Please try again." },
       { status: 500 },
     );
+  }
+
+  // Notify the assigned barber, unless they checked their own client in
+  // themselves — no self-notification.
+  if (booking.staff_id && booking.staff_id !== staff.id) {
+    const clientRel = booking.clients as
+      | { name: string }
+      | { name: string }[]
+      | null;
+    const client = Array.isArray(clientRel) ? clientRel[0] : clientRel;
+
+    await createStaffNotification({
+      staffId: booking.staff_id,
+      type: "customer_checked_in",
+      title: "Customer checked in",
+      body: `${client?.name ?? "A customer"} has checked in.`,
+      bookingId: id,
+    });
   }
 
   return NextResponse.json({ ok: true });

@@ -1,5 +1,5 @@
 import { getCurrentStaff } from "@/lib/auth";
-import { createNotification } from "@/lib/notifications/createNotification";
+import { completeBooking } from "@/lib/booking/completeBooking";
 import { isBookableRole } from "@/lib/staff/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
@@ -37,10 +37,11 @@ export async function POST(
   const { id } = await params;
   const admin = createAdminClient();
 
-  // Fetch booking.
+  // Fetch just enough to enforce 404 / ownership before delegating the
+  // transition itself to the shared completeBooking() lib function.
   const { data: booking, error: bookErr } = await admin
     .from("bookings")
-    .select("id, client_id, staff_id, service_id, status")
+    .select("id, staff_id")
     .eq("id", id)
     .single();
 
@@ -53,69 +54,20 @@ export async function POST(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  if (booking.status === "completed") {
-    return NextResponse.json({ error: "Booking already completed" }, { status: 409 });
+  const result = await completeBooking(id, { amountCharged, paymentMethod });
+
+  if (result.error === "not_found") {
+    return NextResponse.json({ error: "Booking not found" }, { status: 404 });
   }
-
-  const now = new Date().toISOString();
-
-  // Mark booking completed.
-  const { error: updateErr } = await admin
-    .from("bookings")
-    .update({ status: "completed" })
-    .eq("id", id);
-
-  if (updateErr) {
+  if (result.error === "status_conflict") {
+    return NextResponse.json({ error: result.message }, { status: 409 });
+  }
+  if (result.error === "server_error") {
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 },
     );
   }
 
-  // Insert visit row.
-  const { data: visit, error: visitErr } = await admin
-    .from("visits")
-    .insert({
-      booking_id: id,
-      client_id: booking.client_id as string,
-      staff_id: booking.staff_id as string | null,
-      service_id: booking.service_id as string,
-      completed_at: now,
-      amount_charged: amountCharged,
-      payment_method: paymentMethod,
-    })
-    .select()
-    .single();
-
-  if (visitErr) {
-    return NextResponse.json(
-      { error: "Something went wrong. Please try again." },
-      { status: 500 },
-    );
-  }
-
-  // Bump client total_visits and last_visit_at.
-  const { data: client } = await admin
-    .from("clients")
-    .select("total_visits")
-    .eq("id", booking.client_id as string)
-    .single();
-
-  await admin
-    .from("clients")
-    .update({
-      total_visits: ((client?.total_visits as number | undefined) ?? 0) + 1,
-      last_visit_at: now,
-    })
-    .eq("id", booking.client_id as string);
-
-  await createNotification({
-    clientId: booking.client_id as string,
-    type: "booking_completed",
-    title: "Visit complete",
-    body: "Thanks for visiting Baberia Cuts! We hope you loved the result.",
-    bookingId: id,
-  });
-
-  return NextResponse.json({ visit });
+  return NextResponse.json({ visit: result.visit });
 }
